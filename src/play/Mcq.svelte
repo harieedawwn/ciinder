@@ -58,7 +58,7 @@
   .opt {
     display: flex; align-items: flex-start; gap: 12px; width: 100%; min-height: 48px; padding: 11px 14px;
     text-align: left; border-radius: var(--r-ctl); border: 1px solid var(--line); background: var(--raised);
-    box-shadow: inset 0 0 0 0 var(--accent); transition: box-shadow var(--t-std) var(--ease-out), border-color var(--t-std) var(--ease-out);
+    box-shadow: inset 0 0 0 0 var(--accent); transition: border-color var(--t-std) var(--ease-out);
   }
   .opt.sel { border-color: var(--accent); box-shadow: inset 2px 0 0 0 var(--accent); }
   .opt.good { border-color: var(--good); }

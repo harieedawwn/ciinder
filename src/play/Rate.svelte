@@ -29,7 +29,7 @@
     display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 8px;
     border-radius: var(--r-ctl); border: 1px solid var(--line); background: var(--raised);
     font-size: var(--fs-sm); font-weight: 600; line-height: 1.25;
-    transition: border-color var(--t-std) var(--ease-out), box-shadow var(--t-std) var(--ease-out);
+    transition: border-color var(--t-std) var(--ease-out);
   }
   .rate.sel { border-color: var(--accent); box-shadow: inset 0 -2px 0 0 var(--accent); }
   .rate.again.sel { border-color: var(--bad); box-shadow: inset 0 -2px 0 0 var(--bad); }

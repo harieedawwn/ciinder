@@ -2,6 +2,15 @@
 
 Newest on top. Each phase adds ≤ 8 lines: what was done, decisions, known issues. Last line of each entry: `Next: Phase N — <model>, <effort>`.
 
+## Phase 8 — QA & polish
+- Bundle: initial JS 72 KB gzip (≤ 90); markdown/KaTeX/Editor already lazy. Standalone player 163 KB gzip.
+- Contrast: scripted check of ink/muted/accent/good/bad on bg, surface and soft fills; darkened accent (Lá, Đào, Oải hương), good and bad in the 4 light themes to ≥ 4.5:1. DESIGN table + theme swatches updated. Đêm already passed.
+- iOS: fields get `max(16px, 1em)` only under `@supports (-webkit-touch-callout: none)` (no focus zoom; phone root is 15px); editor gutter shares `--fs-code` so line numbers stay aligned.
+- Motion: dropped box-shadow transitions in Mcq/Match/Group/Rate (only transform/opacity/clip-path + cheap color fades remain). Icon buttons all labelled; reduced motion already global.
+- Checked (Playwright Chromium): every guide example stepped at 360×740, 390×844, 507×900 (split view), 768×1024, 1280×800, 844×390 — no horizontal overflow, no console errors; iPhone 13 and Zalo UA editor OK. README.md added.
+- Known: real iOS Safari / Zalo WebView not tested on hardware (only emulated); standalone sound needs network; shared set progress resets if its link is reopened after saving.
+Next: none — all phases done (Backlog only on request)
+
 ## Phase 7 — sharing, export, offline
 - Share sheet (SetSheet → Chia sẻ): copy link, `navigator.share`, long-link note > 12000, Tải tệp HTML / nội dung. `lib/download.svelte.ts` falls back to a sheet (copy link / content) inside Zalo/Facebook/etc. File names are ASCII-folded (headless Chromium dropped name + extension for diacritics).
 - `#s=` links: `views/Shared` decodes from the full href, registers a temp set (`library.registerTemp`, id = hash of source), plays at once with `SaveBar` ("Lưu vào thư viện" moves progress to the new id); broken link → friendly screen. Zalo-polluted URLs covered by share tests.

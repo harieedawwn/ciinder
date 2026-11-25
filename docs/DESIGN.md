@@ -20,14 +20,15 @@ Idea: **study desk**. Questions are index cards that deal from a stack; the acce
 | --ink | #16181D | #18221B | #2B1E1C | #1F1B2E | #E9E6E1 |
 | --muted | #636A75 | #5D6B60 | #7A6561 | #686279 | #9A9790 |
 | --line | #E2E5EA | #D9E0D7 | #EBDAD5 | #DEDAEC | #2C3036 |
-| --accent | #2B59C3 | #3F7A4F | #C4554D | #6A55C2 | #E3B15C |
+| --accent | #2B59C3 | #3B7149 | #A34740 | #6752BC | #E3B15C |
 | --on-accent | #FFFFFF | #FFFFFF | #FFFFFF | #FFFFFF | #1A1408 |
 | --accent-soft | #E3EAF8 | #DDE9DF | #F6DEDA | #E5E0F6 | #3A3122 |
 | --mark (highlighter) | #FFE27A | #F3D98B | #FFD9A8 | #FFE48A | #6B5622 |
-| --good | #23845A | #2F7D4A | #2F7D57 | #2F7D5B | #6FC49A |
+| --good | #1F7751 | #2C7445 | #2C7451 | #2C7455 | #6FC49A |
 | --good-soft | #DDF1E6 | #DCEEDF | #DDEFE3 | #DDEFE6 | #1E3A2D |
-| --bad | #C8443A | #B9473B | #B8382F | #C0443E | #E5796E |
+| --bad | #B23D34 | #AC4237 | #B2362E | #AF3E38 | #E5796E |
 | --bad-soft | #F8E1DE | #F5E0DC | #F7DCD7 | #F6E0DE | #42231F |
+Text pairs (ink/muted/accent/good/bad on bg, surface and their soft fills) are ≥ 4.5:1 in every theme; Phase 8 darkened accent/good/bad where needed.
 Theme names in UI exactly: Sáng, Lá, Đào, Oải hương, Đêm. Theme picker = row of small swatch cards (bg + accent + mark), no text descriptions. Update `<meta name="theme-color">` on change.
 
 ## Type

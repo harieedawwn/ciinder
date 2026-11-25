@@ -137,7 +137,7 @@
     border: 1px solid var(--line); border-radius: var(--r-chip); background: var(--raised); box-shadow: var(--shadow);
     font-size: var(--fs-md); line-height: 1.35; overflow-wrap: anywhere; cursor: grab;
     user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
-    transition: border-color var(--t-std) var(--ease-out), box-shadow var(--t-std) var(--ease-out);
+    transition: border-color var(--t-std) var(--ease-out);
   }
   .chip.sel { border-color: var(--accent); box-shadow: inset 2px 0 0 0 var(--accent); }
   .chip.good { border-color: var(--good); }

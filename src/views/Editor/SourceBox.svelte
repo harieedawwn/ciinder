@@ -31,12 +31,12 @@
 <style>
   .box { display: flex; min-height: 0; height: 100%; background: var(--raised); border: 1px solid var(--line); border-radius: var(--r-ctl); overflow: hidden; }
   .box:focus-within { outline: 2px solid var(--accent); border-color: transparent; }
-  .gutter { flex: none; width: 3.2em; overflow: hidden; background: var(--bg); color: var(--muted); text-align: right; font: 0.8125rem/1.6 ui-monospace, Menlo, Consolas, monospace; padding-top: 10px; }
+  .gutter { flex: none; width: 3.2em; overflow: hidden; background: var(--bg); color: var(--muted); text-align: right; font: var(--fs-code)/1.6 ui-monospace, Menlo, Consolas, monospace; padding-top: 10px; }
   .gutter div { will-change: transform; }
   .gutter span { display: block; padding-right: 8px; }
   .gutter .bad { color: var(--on-accent); background: var(--bad); }
   textarea {
     flex: 1; min-width: 0; resize: none; border: 0; outline: 0; background: transparent;
-    padding: 10px 12px; font: 0.8125rem/1.6 ui-monospace, Menlo, Consolas, monospace; tab-size: 2;
+    padding: 10px 12px; font: var(--fs-code)/1.6 ui-monospace, Menlo, Consolas, monospace; tab-size: 2;
   }
 </style>

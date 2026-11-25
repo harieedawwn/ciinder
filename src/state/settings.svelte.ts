@@ -3,9 +3,9 @@ import { get, set } from 'idb-keyval'
 
 export const THEMES = [
   { id: 'sang', name: 'Sáng', bg: '#F4F5F7', accent: '#2B59C3', mark: '#FFE27A' },
-  { id: 'la', name: 'Lá', bg: '#ECF0EA', accent: '#3F7A4F', mark: '#F3D98B' },
-  { id: 'dao', name: 'Đào', bg: '#F7EDEA', accent: '#C4554D', mark: '#FFD9A8' },
-  { id: 'oai', name: 'Oải hương', bg: '#EEECF6', accent: '#6A55C2', mark: '#FFE48A' },
+  { id: 'la', name: 'Lá', bg: '#ECF0EA', accent: '#3B7149', mark: '#F3D98B' },
+  { id: 'dao', name: 'Đào', bg: '#F7EDEA', accent: '#A34740', mark: '#FFD9A8' },
+  { id: 'oai', name: 'Oải hương', bg: '#EEECF6', accent: '#6752BC', mark: '#FFE48A' },
   { id: 'dem', name: 'Đêm', bg: '#121416', accent: '#E3B15C', mark: '#6B5622' },
 ] as const
 export type ThemeId = (typeof THEMES)[number]['id']

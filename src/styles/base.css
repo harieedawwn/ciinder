@@ -4,6 +4,7 @@
 * { margin: 0; }
 html {
   --scale: 1;
+  --fs-code: 0.8125rem;
   font-size: calc(15px * var(--scale));
   -webkit-text-size-adjust: 100%; text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
@@ -27,3 +28,8 @@ a { color: var(--accent); }
 ::selection { background: var(--mark); color: var(--ink); }
 .num { font-variant-numeric: tabular-nums; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* iOS Safari zooms into any field under 16px on focus. */
+@supports (-webkit-touch-callout: none) {
+  html { --fs-code: 16px; }
+  input:not([type='range']):not([type='checkbox']):not([type='radio']), textarea, select { font-size: max(16px, 1em) !important; }
+}
