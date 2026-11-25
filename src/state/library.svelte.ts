@@ -49,7 +49,7 @@ function newId(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
 }
 
-function summarize(source: string): Pick<SetEntry, 'title' | 'subject' | 'count'> {
+export function summarize(source: string): Pick<SetEntry, 'title' | 'subject' | 'count'> {
   const { set: quiz } = parse(source)
   return { title: quiz.title, subject: quiz.meta.subject, count: quiz.items.length }
 }

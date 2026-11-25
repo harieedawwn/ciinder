@@ -1,11 +1,13 @@
 <script lang="ts">
-  // `#s=A…` (inline payload) and `#k=<id>` (short link) links: parse from the full href (Zalo/Facebook append junk), then play at once.
+  // `#s=A…` (inline payload) and `#k=<id>` (short link) links: parse from the full href (Zalo/Facebook append junk),
+  // then show the start screen (mode + options) so visitors can pick what to practise.
   import { decodeShare } from '../../core/share'
   import { CloudFailure, get, parseShortId } from '../../lib/cloud'
-  import { registerTemp } from '../../state/library.svelte'
+  import { getSet, registerTemp, summarize } from '../../state/library.svelte'
   import { go } from '../../state/router.svelte'
   import Button from '../../ui/Button.svelte'
-  import Play from '../Play/Play.svelte'
+  import Start from '../Standalone/Start.svelte'
+  import SaveBar from './SaveBar.svelte'
 
   type State = { kind: 'loading' } | { kind: 'ready'; id: string } | { kind: 'error'; message: string }
 
@@ -40,7 +42,13 @@
 </script>
 
 {#if state.kind === 'ready'}
-  <Play id={state.id} />
+  {#await getSet(state.id) then rec}
+    {#if rec}
+      {@const info = summarize(rec.source)}
+      <div class="save"><SaveBar id={state.id} to={() => '/'} /></div>
+      <Start id={state.id} title={info.title} subject={info.subject} count={info.count} />
+    {/if}
+  {/await}
 {:else if state.kind === 'error'}
   <section class="broken">
     <p>{state.message}</p>
@@ -51,6 +59,7 @@
 {/if}
 
 <style>
+  .save { max-width: 480px; margin: 0 auto; padding: 8px max(16px, var(--safe-r)) 0 max(16px, var(--safe-l)); }
   .broken { display: grid; grid-template-columns: minmax(0, 1fr); justify-items: start; gap: 16px; max-width: 680px; margin: 0 auto; padding: 24px max(16px, var(--safe-r)) 0 max(16px, var(--safe-l)); }
   .broken p { font-size: var(--fs-xl); font-weight: 600; line-height: 1.25; }
 </style>

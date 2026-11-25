@@ -234,6 +234,6 @@ Done when: verify passes; filters + count produce the right attempt; key page pr
 
 ## Backlog (not scheduled; only if the user asks)
 - In-app AI using the user's own free Gemini key (BYOK, key stays in localStorage) to generate sets directly.
-- Short links via a free backend (Firebase/Supabase) for very large sets.
+- Per-set link previews (title/description/image in Zalo/Facebook cards): needs a tiny server, e.g. a free Cloudflare Worker at /s/<id> that reads the Firestore doc and returns OG tags + redirects to `#k=<id>` (GitHub Pages cannot do it: crawlers ignore the hash and run no JS). Store `title`/`n` fields next to `z` and allow them in firestore.rules.
 - Spaced-repetition schedule for flash/essay mastery; class mode with results collection.
 - New kinds: hotspot on image, error-spotting in a sentence, timeline drag.

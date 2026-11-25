@@ -31,7 +31,7 @@
   let resume = $state('')
   let print = $state<Print | null>(null)
   let quiz = $state<QuizSet | null>(null)
-  let optionsOpen = $state(false)
+  let optionsOpen = $state(true)
   let opt = $state<StartPrefs>({ mode: 'practice', shuffle: true, mixOptions: true, kinds: [], sections: [], count: 0, seed: newSeed() })
 
   const kinds = $derived(quiz ? kindCounts(quiz, PLAYABLE) : [])

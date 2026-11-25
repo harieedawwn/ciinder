@@ -10,7 +10,7 @@
   import Sheet from '../../ui/Sheet.svelte'
   import { toast } from '../../ui/toast.svelte'
 
-  let { entry, open = $bindable(false) }: { entry: Pick<SetEntry, 'id' | 'title'> | null; open?: boolean } = $props()
+  let { entry, open = $bindable(false) }: { entry: (Pick<SetEntry, 'id' | 'title'> & { count?: number }) | null; open?: boolean } = $props()
 
   let source = $state('')
   let busy = $state(false)
@@ -54,7 +54,9 @@
 
   async function share() {
     try {
-      await navigator.share({ title: entry?.title, url: await bestLink() })
+      const t = entry?.title ?? 'Bộ câu hỏi'
+      // Link previews can't show per-set info (hash links), so the message itself carries the title.
+      await navigator.share({ title: t, text: `${t}${entry?.count ? ` · ${entry.count} câu` : ''}`, url: await bestLink() })
     } catch {
       // Cancelled by the user.
     }

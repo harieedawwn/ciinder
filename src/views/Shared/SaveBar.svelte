@@ -6,7 +6,8 @@
   import Button from '../../ui/Button.svelte'
   import { toast } from '../../ui/toast.svelte'
 
-  let { id }: { id: string } = $props()
+  /** `to`: where to go after saving (default: keep playing the saved copy). */
+  let { id, to = (next: string) => `/play/${next}` }: { id: string; to?: (next: string) => string } = $props()
 
   async function save() {
     flush()
@@ -14,7 +15,7 @@
     if (!next) return
     moveProgress(next)
     toast('Đã lưu vào thư viện')
-    go(`/play/${next}`)
+    go(to(next))
   }
 </script>
 
