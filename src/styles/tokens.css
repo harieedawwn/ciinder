@@ -1,0 +1,43 @@
+/* Theme tokens (docs/DESIGN.md). [data-theme] is set on <html> by state/settings. */
+:root,
+[data-theme='sang'] {
+  color-scheme: light;
+  --bg: #f4f5f7; --surface: #ffffff; --raised: #ffffff; --ink: #16181d; --muted: #636a75; --line: #e2e5ea;
+  --accent: #2b59c3; --on-accent: #ffffff; --accent-soft: #e3eaf8; --mark: #ffe27a;
+  --good: #23845a; --good-soft: #ddf1e6; --bad: #c8443a; --bad-soft: #f8e1de;
+}
+[data-theme='la'] {
+  color-scheme: light;
+  --bg: #ecf0ea; --surface: #fbfcfa; --raised: #ffffff; --ink: #18221b; --muted: #5d6b60; --line: #d9e0d7;
+  --accent: #3f7a4f; --on-accent: #ffffff; --accent-soft: #dde9df; --mark: #f3d98b;
+  --good: #2f7d4a; --good-soft: #dceedf; --bad: #b9473b; --bad-soft: #f5e0dc;
+}
+[data-theme='dao'] {
+  color-scheme: light;
+  --bg: #f7edea; --surface: #fff9f7; --raised: #ffffff; --ink: #2b1e1c; --muted: #7a6561; --line: #ebdad5;
+  --accent: #c4554d; --on-accent: #ffffff; --accent-soft: #f6deda; --mark: #ffd9a8;
+  --good: #2f7d57; --good-soft: #ddefe3; --bad: #b8382f; --bad-soft: #f7dcd7;
+}
+[data-theme='oai'] {
+  color-scheme: light;
+  --bg: #eeecf6; --surface: #fcfbff; --raised: #ffffff; --ink: #1f1b2e; --muted: #686279; --line: #dedaec;
+  --accent: #6a55c2; --on-accent: #ffffff; --accent-soft: #e5e0f6; --mark: #ffe48a;
+  --good: #2f7d5b; --good-soft: #ddefe6; --bad: #c0443e; --bad-soft: #f6e0de;
+}
+[data-theme='dem'] {
+  color-scheme: dark;
+  --bg: #121416; --surface: #1b1e22; --raised: #23272c; --ink: #e9e6e1; --muted: #9a9790; --line: #2c3036;
+  --accent: #e3b15c; --on-accent: #1a1408; --accent-soft: #3a3122; --mark: #6b5622;
+  --good: #6fc49a; --good-soft: #1e3a2d; --bad: #e5796e; --bad-soft: #42231f;
+}
+:root {
+  --r-card: 14px; --r-ctl: 10px; --r-chip: 8px; --r-sheet: 18px;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+  --shadow-drag: 0 8px 24px rgb(0 0 0 / 0.12);
+  --scrim: rgb(0 0 0 / 0.32);
+  --fs-xs: 0.8125rem; --fs-sm: 0.875rem; --fs-md: 1rem; --fs-lg: 1.125rem; --fs-xl: 1.375rem; --fs-2xl: 1.75rem;
+  --font-ui: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-read: 'Lora', Georgia, 'Times New Roman', serif;
+  --safe-t: env(safe-area-inset-top, 0px); --safe-r: env(safe-area-inset-right, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px); --safe-l: env(safe-area-inset-left, 0px);
+}
