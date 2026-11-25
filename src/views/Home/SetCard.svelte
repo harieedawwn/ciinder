@@ -1,16 +1,15 @@
 <script lang="ts">
-  import { go } from '../../state/router.svelte'
   import type { SetEntry } from '../../state/library.svelte'
   import Menu, { type MenuItem } from '../../ui/Menu.svelte'
   import { ago } from './time'
 
-  let { entry, actions }: { entry: SetEntry; actions: MenuItem[] } = $props()
+  let { entry, actions, onopen }: { entry: SetEntry; actions: MenuItem[]; onopen: () => void } = $props()
 
   const pct = $derived(entry.lastScore === undefined ? undefined : Math.round(entry.lastScore * 100))
 </script>
 
 <article class="card">
-  <a class="main" href="#/play/{encodeURIComponent(entry.id)}" onclick={(e) => (e.preventDefault(), go(`/play/${entry.id}`))}>
+  <button class="main" onclick={onopen}>
     <h2>{entry.title}</h2>
     <p class="meta">
       {#if entry.subject}<span>{entry.subject}</span>{/if}
@@ -22,7 +21,7 @@
       {/if}
       <span class="when">{ago(entry.openedAt ?? entry.updatedAt)}</span>
     </div>
-  </a>
+  </button>
   <div class="more"><Menu items={actions} label="Tùy chọn" /></div>
 </article>
 
@@ -35,7 +34,7 @@
   .card:has(.main:active) { transform: scale(0.99); }
   .card:has(:global([aria-expanded="true"])) { z-index: 2; }
   @media (hover: hover) { .card:hover { border-color: var(--muted); } }
-  .main { display: grid; gap: 6px; padding: 16px 52px 16px 16px; color: inherit; text-decoration: none; border-radius: var(--r-card); }
+  .main { display: grid; width: 100%; text-align: left; gap: 6px; padding: 16px 52px 16px 16px; color: inherit; text-decoration: none; border-radius: var(--r-card); }
   h2 { font-size: var(--fs-lg); overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .meta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: var(--fs-sm); color: var(--muted); }
   .foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 6px; min-height: 24px; }

@@ -2,6 +2,14 @@
 
 Newest on top. Each phase adds ≤ 8 lines: what was done, decisions, known issues. Last line of each entry: `Next: Phase N — <model>, <effort>`.
 
+## Phase 3 — import & editor
+- Guide sheet (`#/guide` opens it over the library): Sao chép (clipboard + execCommand fallback, then visible textarea) / Tải về. Editor (lazy chunk, 4 KB gzip): textarea + line gutter, 250 ms debounced parse, issues panel (tap → selects line; warnings collapsed), "Sao chép báo cáo lỗi", preview (tabs on phones, side-by-side ≥ 900px), save → library → set sheet opens.
+- Set sheet on card tap: Luyện tập/Làm bài + shuffle (defaults from `@mode`/`@shuffle`, stored in `state/session.svelte.ts`), Sửa, Chia sẻ (disabled until Phase 7).
+- Import: Dán nội dung / Mở tệp / drag & drop (library + editor); JSON (`source` or array / `{sets}`) saved straight to the library (`core/importjson.ts`, tested).
+- Decisions: unsaved guard = `leaveGuard` in router (hash restored + confirm sheet) + beforeunload; preview shows plain text (rich render in Phase 6); no wrapping in the editor so gutter lines match.
+- Known: play route is still a placeholder; Bắt đầu only sets options and opens it.
+Next: Phase 4 — Opus 5.5, medium
+
 ## Phase 2 — app shell, design system, sound, library home
 - Styles (5 themes, fonts via own @font-face with vi/latin unicode-range, motion tokens + ink press), settings/router/library rune stores, sound (Web Audio, lazy pack, gains/throttles), fullscreen (+ focus-mode fallback, F key), env, haptics.
 - UI kit: Button, Icon, Sheet (native <dialog>, swipe-down on phones), Toast (+ undo), Segmented, Switch, Menu. Top bar, Settings sheet, Library home + set cards; other routes are placeholders.

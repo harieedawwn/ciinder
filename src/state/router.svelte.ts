@@ -27,7 +27,17 @@ export const viewTransitions = 'startViewTransition' in document
 
 type DocWithVT = Document & { startViewTransition?: (cb: () => void) => unknown }
 
+/** Set by a view with unsaved work: return true to block leaving (hash is restored; the view decides what to do). */
+export const leaveGuard = { check: null as ((target: string) => boolean) | null }
+let accepted = location.hash
+
 window.addEventListener('hashchange', () => {
+  if (location.hash === accepted) return
+  if (leaveGuard.check?.(location.hash)) {
+    location.hash = accepted
+    return
+  }
+  accepted = location.hash
   const next = parseHash(location.hash)
   const doc = document as DocWithVT
   const reduce = document.documentElement.dataset.motion === 'reduce'

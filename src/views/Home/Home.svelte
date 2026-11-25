@@ -1,5 +1,9 @@
 <script lang="ts">
-  import { go } from '../../state/router.svelte'
+  import { startWithClipboard, startWithFile } from '../../lib/ingest'
+  import { go, router } from '../../state/router.svelte'
+  import { library_ui } from '../../state/session.svelte'
+  import GuideSheet from '../Guide/GuideSheet.svelte'
+  import SetSheet from './SetSheet.svelte'
   import { duplicateSet, library, removeSet, renameSet, sortedEntries, type SetEntry } from '../../state/library.svelte'
   import Button from '../../ui/Button.svelte'
   import Sheet from '../../ui/Sheet.svelte'
@@ -7,6 +11,37 @@
   import SetCard from './SetCard.svelte'
 
   const entries = $derived(sortedEntries())
+
+  let guideOpen = $state(router.route.name === 'guide')
+  let selected = $state<SetEntry | null>(null)
+  let setOpen = $state(false)
+  let dragging = $state(false)
+
+  $effect(() => {
+    guideOpen = router.route.name === 'guide'
+  })
+  $effect(() => {
+    if (router.route.name === 'guide' && !guideOpen) go('/')
+  })
+  $effect(() => {
+    const id = library_ui.openId
+    const e = id ? library.entries.find((x) => x.id === id) : undefined
+    if (e) {
+      library_ui.openId = null
+      openSet(e)
+    }
+  })
+
+  function openSet(e: SetEntry) {
+    selected = e
+    setOpen = true
+  }
+
+  const dropFile = (e: DragEvent) => {
+    e.preventDefault()
+    dragging = false
+    void startWithFile(e.dataTransfer?.files?.[0] ?? null)
+  }
 
   let renaming = $state<SetEntry | null>(null)
   let renameOpen = $state(false)
@@ -43,11 +78,24 @@
 
 {#snippet starters(primary: boolean)}
   <Button variant={primary ? 'primary' : 'secondary'} icon="guide" onclick={() => go('/guide')}>Hướng dẫn cho AI</Button>
-  <Button variant="secondary" icon="paste" onclick={() => go('/new')}>Dán nội dung</Button>
-  <Button variant="secondary" icon="file" onclick={() => go('/new')}>Mở tệp</Button>
+  <Button variant="secondary" icon="paste" onclick={() => void startWithClipboard()}>Dán nội dung</Button>
+  <Button variant="secondary" icon="file" onclick={() => void startWithFile()}>Mở tệp</Button>
 {/snippet}
 
-<section class="page">
+<svelte:window
+  ondragover={(e) => {
+    if (e.dataTransfer?.types.includes('Files')) {
+      e.preventDefault()
+      dragging = true
+    }
+  }}
+  ondragleave={(e) => {
+    if (!e.relatedTarget) dragging = false
+  }}
+  ondrop={dropFile}
+/>
+
+<section class="page" class:dragging>
   {#if !library.ready}
     <div aria-busy="true"></div>
   {:else if entries.length === 0}
@@ -62,11 +110,14 @@
     </div>
     <div class="grid">
       {#each entries as e (e.id)}
-        <SetCard entry={e} actions={actionsFor(e)} />
+        <SetCard entry={e} actions={actionsFor(e)} onopen={() => openSet(e)} />
       {/each}
     </div>
   {/if}
 </section>
+
+<GuideSheet bind:open={guideOpen} />
+<SetSheet entry={selected} bind:open={setOpen} />
 
 <Sheet bind:open={renameOpen} title="Đổi tên">
   <form class="rename" onsubmit={submitRename}>
@@ -80,6 +131,7 @@
     width: 100%; max-width: 1200px; margin: 0 auto;
     padding: 8px max(16px, var(--safe-r)) calc(32px + var(--safe-b)) max(16px, var(--safe-l));
   }
+  .page.dragging { outline: 2px dashed var(--accent); outline-offset: -8px; }
   .head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 8px 0 20px; }
   h1 { font-size: var(--fs-2xl); }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: 12px; }
