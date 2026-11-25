@@ -14,6 +14,8 @@ Model/effort is chosen by the user before the session; it's listed so the previo
 | 6 | Essay study modes + markdown/math rendering | Opus 5.5 | medium | yes |
 | 7 | Share link, standalone HTML, exports, backup, PWA offline | Sonnet 5.5 | high | yes |
 | 8 | QA & polish across devices, perf, a11y, final pass | Opus 5.5 | medium | yes |
+| 9 | Redesign v2 part 1: desk system, Home, empty state, set sheet, editor, sheets, transitions | Opus 5.5 | high | yes |
+| 10 | Redesign v2 part 2: player, all question kinds, result, essay, standalone player | Opus 5.5 | medium | yes |
 
 Why these picks: Sonnet 5.5 medium for well-specified, testable logic (cheapest that holds quality); Opus 5.5 medium where taste,
 interaction feel or tricky pointer logic matter (Opus medium ≥ Sonnet high at similar cost). Phase 7 is fiddly build config → Sonnet high.
@@ -111,6 +113,33 @@ Tasks:
 5. Write `README.md` (short, Vietnamese: what it is, link, how to use with AI, credits: UI SFX CC0, fonts OFL).
 6. Fix everything in docs/INBOX.md.
 Done when: verify passes, deployed, PROGRESS lists remaining known issues (if any) honestly.
+
+## Phase 9 — Redesign v2, part 1 (desk system + everything outside the player)
+Read: docs/DESIGN.md (whole file, "Layout v2" is the brief), docs/INBOX.md. Then the files you change.
+Tasks:
+1. Tokens: add --mark-strong; `ui/IndexCard.svelte` (margin line, optional tabs), `ui/Mark.svelte` (SVG highlighter,
+   wipe), `ui/Fingerprint.svelte`, stack edges utility, press-spring for Button; `lib/vt.ts` (View Transitions helper with
+   FLIP fallback + reduced-motion bypass).
+2. Home as specified (rail on desktop, bottom tabs on phone, tilted desk grid, subject divider tabs, stagger-in).
+3. Empty desk with paste-in-card + global Ctrl/Cmd+V paste → editor, file drop behaviour.
+4. Set sheet as specified, with card→sheet morph. Editor two-card layout + clipped issue notes. Settings, Guide and Share
+   sheets restyled as IndexCards; theme change circle reveal.
+5. Keep all behaviour, routes and tests working; remove now-unused CSS/components.
+6. Check 360×740, 390×844, 768×1024, 1280×800 (Playwright or preview, ≤ 6 screenshots), fps sanity (no layout animations).
+Done when: verify passes; the Home screen is recognisably "ciinder" at a glance (desk, cards, tabs, highlighter, fingerprint)
+and still clean; no item from the do-not list.
+
+## Phase 10 — Redesign v2, part 2 (player + result)
+Read: docs/DESIGN.md "Layout v2" + "Motion", src/ui/IndexCard.svelte, src/ui/Mark.svelte, src/lib/vt.ts, src/play/registry.ts.
+Tasks:
+1. Player per brief: IndexCard question on the desk with stack, `3 / 20` counter, highlighter progress, ruled option rows
+   with letter stamps, fixed thumb-zone action bar; deal transition kept/refined; set card → player morph.
+2. Restyle every kind in src/play (Mcq, Tf, Short, Cloze, Match, Order, Group, Flash, Note, Essay + essay modes, Rate) to the
+   same language: stamps, ruled rows, Mark for correct, strike for wrong, IndexCard for flash faces.
+3. Result per brief (score numeral + Mark, final fingerprint, section rows, flip-through stack of wrong items).
+4. Standalone player (`player.html`) gets the same look; check its size stays reasonable.
+5. Device check as Phase 9. Fix anything in INBOX.
+Done when: verify passes; a full set plays beautifully on phone and desktop; nothing generic left.
 
 ## Backlog (not scheduled; only if the user asks)
 - In-app AI using the user's own free Gemini key (BYOK, key stays in localStorage) to generate sets directly.

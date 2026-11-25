@@ -1,5 +1,8 @@
 # DESIGN — look, motion, sound, words
 
+> v2 (after user review): the v1 build was clean but generic — centered column of buttons, nothing memorable.
+> Section "Layout v2" below is now the main brief. Calm and clean still, but every screen must have a recognisable idea.
+
 Idea: **study desk**. Questions are index cards that deal from a stack; the accent of the app is a **highlighter**
 (keyword masks, progress, correct marks are highlighter strokes). Clean, calm, tactile. Content is the hero.
 
@@ -55,28 +58,12 @@ Signature interactions (these make the app feel unique — build them well, keep
 7. **Sheets/dialogs**: bottom sheet on phones (drag handle, swipe down to close), centered dialog ≥ 600px. Scrim `rgb(0 0 0 / .32)`, no blur.
 Never animate width/height/top/left. Never run continuous animations while idle.
 
-## Sound (`src/lib/sound.ts`, files in `public/sfx/<pack>/` — UI SFX by romainsimon, CC0)
-Packs (setting "Âm thanh"): Tắt · Mềm (`soft`, default) · Trong (`glass`) · Gọn (`minimal`). Master gain .5, per-cue gain below.
-| event | file | gain | rule |
-|---|---|---|---|
-| button tap | press | .35 | throttle 60ms; not for every tiny control |
-| choose option / tf / bank word | select | .5 | |
-| unselect | deselect | .4 | |
-| answer correct | check | .7 | |
-| answer wrong | error | .45 | soft, never repeated in a row within 400ms |
-| next / previous question | forward / back | .4 | |
-| reveal keyword / hint / explanation | expand | .45 | |
-| collapse | collapse | .35 | |
-| match pair made | snap | .55 | |
-| drag start / drop / reorder | drag-start / drop / reorder | .4 | |
-| toggle setting | toggle-on / toggle-off | .4 | |
-| open / close sheet | open / close | .35 | |
-| 3, 5, 10 correct in a row | streak | .5 | only at those counts |
-| finish set | complete | .6 | |
-| finish with ≥ 90% or essay marked "Đã thuộc" | achievement / success | .6 | |
-| link copied | copy | .5 | |
-| essay slider passes a sentence end | progress-step | .25 | at most every 120ms |
-Unlock AudioContext on first pointerdown. Haptics: `navigator.vibrate(8)` on correct, `[6,40,6]` on wrong, where supported (Android); own toggle "Rung" (default on), independent of sound.
+## Sound (`src/lib/sound.ts`, synthesized — no audio files)
+Every cue = band-passed noise tick (2–5 ms contact) + pitch-dropping triangle body (thock), low-passed, through a light
+compressor. Character: short, dry, solid ("đặc"), low-mid. Never chimes, bells, arcade bleeps or reverb.
+Single setting: Âm thanh on/off (Switch, next to Rung). Tune only in RECIPES inside sound.ts; keep every cue ≤ 200 ms except
+complete/achievement (≤ 400 ms). Same event→cue map as before (press, select, check, error, forward/back, snap, drop, streak at 3/5/10...).
+Haptics: `navigator.vibrate(8)` on correct, `[6,40,6]` on wrong (Android); own toggle "Rung".
 
 ## Words (Vietnamese, plain, friendly, never cute)
 Use these labels (sentence case, no "!" spam, no emoji, no slang, no hype):
@@ -91,3 +78,64 @@ App icon (SVG master `public/icon.svg` → PNG 192/512/maskable/apple-touch 180 
 rounded square in --accent (#2B59C3); centered a slightly rotated (−6°) white index card with soft corner; across the card one thick
 --mark (#FFE27A) highlighter stroke with round ends shaped like a lowercase "c" opening to the right. Flat colors, no gradient, no shadow.
 Must read clearly at 16px (favicon variant may drop the card and keep only the "c" stroke on accent).
+
+## Layout v2 — the desk (main brief for Phases 9–10)
+Metaphor, used consistently: the screen is a **desk**, sets are **index cards**, navigation are **divider tabs**, the accent
+is the **highlighter**. Paper details are subtle and functional (one margin line, tabs, stacks) — never skeuomorphic
+textures, never background patterns.
+
+### Signature elements (build as reusable ui/ components)
+1. `IndexCard`: surface card, 14px radius, 1px line, a single thin vertical **margin line** in --accent-soft 18px from
+   the left edge (index-card feel), content starts after it. Optional `tab` prop: a divider tab sticking out of the top edge
+   (rounded top corners 8px, 1px line, same surface colour, label 0.8125rem 600) — used for section labels and actions.
+2. **Set fingerprint**: every set card shows one row of thin vertical ticks, one per question, coloured by kind
+   (mcq/tf/short/cloze: --ink at 3 opacities; match/order/group: --accent; essay/flash: --mark-strong). It is the set's
+   visual identity — unique per set, informative, zero text. Ticks already answered correctly in the last attempt are full
+   height, others half height → the fingerprint doubles as progress.
+3. **Highlighter** (`ui/Mark.svelte`): a --mark stroke with slightly irregular rounded ends (SVG path, not a rectangle)
+   drawn behind text with a left→right clip-path wipe. Used for: active nav tab label, last score under set titles,
+   correct answers, score numeral on Result, selected theme. One component, everywhere.
+4. **Stack**: cards with remaining items show 1–2 offset edges beneath (translate 4/8px, rotate ±1°), drawn with
+   pseudo-elements (cheap). Sets with progress show the stack; finished sets lie flat.
+
+### Screens
+- **Home (desk)**. Desktop ≥ 1024: left rail 248px: wordmark at top, then vertical divider tabs "Thư viện",
+  "Tạo bộ mới", "Hướng dẫn cho AI" (active one marked with the highlighter), settings + fullscreen at the bottom of the rail.
+  Right: the desk — set cards in a masonry-like grid, each with a tiny stable tilt (−1.2°…1.2°, derived from set id hash)
+  that straightens to 0° and lifts 3px on hover/focus (--spring). Group by subject when ≥ 2 subjects: each group headed
+  by a divider tab with the subject name. Phone: top bar (wordmark left, icons right), cards in one column without tilt,
+  bottom bar with the 3 actions as compact tabs (thumb zone, safe-area aware).
+- **Empty desk**: one large IndexCard (max 560px) slightly tilted, title "Chưa có bộ câu hỏi nào." on the first ruled
+  position; inside, the paste area itself: a big quiet field "Dán nội dung vào đây" — pasting (or Ctrl/Cmd+V anywhere on
+  Home) goes straight to the editor with the text. Two divider tabs on the card's top edge: "Hướng dẫn cho AI" (primary,
+  accent) and "Mở tệp". Dropping a file anywhere: the whole card straightens and its margin line turns --accent.
+- **Set detail** (sheet): the set's IndexCard opens big: title, fingerprint at large size, mode choice as two
+  side-by-side cards (Luyện tập / Làm bài) with the chosen one stacked "on top", Bắt đầu as a full-width primary button.
+- **Editor**: two IndexCards side by side on desktop (source | preview) like cards on a desk; phone: one card with two
+  tabs. Issues appear as small notes clipped to the card's right edge at the line's height (desktop) / a list under the
+  card (phone).
+- **Player**: the question is an IndexCard centred on the desk with the remaining stack visible beneath; counter top-left
+  as `3 / 20` in muted tabular numbers; progress = highlighter stroke across the top of the screen. Options are rows on
+  the card's ruled lines (1px --line between them), each with a small square letter stamp (A B C D, 24px, 6px radius);
+  selected = stamp filled --ink + ink-press fill. Bottom action bar fixed, thumb reachable on phones.
+- **Result**: big score numeral (3.5rem, tabular) with the highlighter drawn under it after a 200ms delay; under it the set
+  fingerprint in final state; sections as rows with mini bars; wrong items as a small stack of cards you can flip through.
+
+### Transitions (the memorable part; all transform/opacity/clip-path; reduced motion → fades)
+1. **Card → screen morph**: opening a set uses the View Transitions API with `view-transition-name` on the tapped card
+   so it grows into the set sheet / player card; back reverses it. Fallback (no VT API): FLIP with Web Animations.
+2. **Deal**: next question as in Motion §1 (current card slides out up-left with −2° rotate, next rises from the stack).
+3. **Tab switch**: highlighter slides between divider tabs (one element animated with transform), content cross-fades
+   with 6px horizontal shift in the tab's direction.
+4. **Theme change**: View Transition with an expanding `clip-path: circle()` from the tapped swatch.
+5. **Sheet**: rises with --spring and a 1.5° rotation that settles to 0 (like pulling a card), scrim fades.
+6. **Press**: every button/card scales to .97 on pointerdown, springs back on release. Primary buttons: a highlighter
+   underline grows under the label on hover (desktop only).
+7. **Stagger**: on first Home render cards fall onto the desk with 30ms stagger (translateY 10px + rotate settle),
+   max 12 cards animated, rest appear instantly.
+Budget: 60 fps on a mid Android phone; max 2 animated elements per transition besides the moved cards; no animation
+loops at idle.
+
+### New tokens
+`--mark-strong` (more saturated highlighter for ticks: Sáng #F2C230, Lá #D9B34A, Đào #F2A65A, Oải hương #EBC23F, Đêm #C9A227),
+`--desk` (desk background, = --bg), `--tilt` set per card inline. Keep every other token.

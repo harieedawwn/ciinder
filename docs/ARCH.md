@@ -40,7 +40,7 @@ src/
   lib/                    browser helpers: sound.ts, fullscreen.ts, env.ts (in-app browser detection), download.ts, haptics.ts
   styles/                 tokens.css (themes), base.css, motion.css
 player.html + src/player-main.ts   entry for the standalone offline player (vite.player.config.ts → dist/player.html; src/player/ holds its localStorage + CDN-KaTeX swaps)
-public/                   ciinder-guide.md, sfx/<pack>/*.mp3, icons, manifest
+public/                   ciinder-guide.md, icons, manifest (sounds are synthesized in src/lib/sound.ts)
 docs/                     specs for AI developers (this folder)
 ```
 
@@ -58,7 +58,7 @@ Backup: Settings → Sao lưu exports/imports all sets + progress as one `.json`
 - Animate only `transform`, `opacity`, `clip-path`. No `backdrop-filter`, no big box-shadow animation, no layout-thrashing animations.
 - Fonts: only `vietnamese` + `latin` subsets, weights 400/500/600/700 for Be Vietnam Pro; Lora 400/600 only for essay reading. `font-display: swap`.
 - Long lists: `content-visibility: auto`. Avoid re-rendering whole quiz on each answer (keyed each, per-item state).
-- Sounds: Web Audio `AudioBuffer`s decoded once after first user gesture; only the selected pack is fetched.
+- Sounds: synthesized with Web Audio nodes on demand (no files); AudioContext created on first gesture.
 
 ## In-app browsers (Zalo, Facebook, Messenger, Instagram, TikTok)
 - `lib/env.ts`: detect by UA (`Zalo`, `FBAN|FBAV|FB_IAB`, `Instagram`, `musical_ly|TikTok`).

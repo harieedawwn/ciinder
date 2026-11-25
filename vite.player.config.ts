@@ -21,7 +21,7 @@ function standaloneSwaps(): Plugin {
 }
 
 // Builds dist-player/player.html: one self-contained file (JS, CSS, fonts inlined). vite.config.ts copies it into dist.
-// Sound effects are fetched from the hosted site when online (BASE_URL is the hosted site) and stay silent offline.
+// Sound effects are synthesized (src/lib/sound.ts), so they work offline too.
 export default defineConfig({
   base: './',
   plugins: [standaloneSwaps(), svelte(), viteSingleFile()],

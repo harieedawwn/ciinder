@@ -10,20 +10,12 @@ export const THEMES = [
 ] as const
 export type ThemeId = (typeof THEMES)[number]['id']
 
-export const SOUND_PACKS = [
-  { id: 'off', name: 'Tắt' },
-  { id: 'soft', name: 'Mềm' },
-  { id: 'glass', name: 'Trong' },
-  { id: 'minimal', name: 'Gọn' },
-] as const
-export type SoundPack = (typeof SOUND_PACKS)[number]['id']
-
 export const TEXT_SIZES = [90, 100, 110, 120, 130] as const
 
 export interface Settings {
   /** null = follow system (Sáng / Đêm). */
   theme: ThemeId | null
-  sound: SoundPack
+  sound: boolean
   haptics: boolean
   textSize: number
   reduceMotion: boolean
@@ -32,7 +24,7 @@ export interface Settings {
 const KEY = 'settings'
 /** Read synchronously by the inline script in index.html to avoid a theme flash. */
 const THEME_HINT = 'ciinder:theme'
-const DEFAULTS: Settings = { theme: null, sound: 'soft', haptics: true, textSize: 100, reduceMotion: false }
+const DEFAULTS: Settings = { theme: null, sound: true, haptics: true, textSize: 100, reduceMotion: false }
 
 const darkQuery = typeof matchMedia === 'function' ? matchMedia('(prefers-color-scheme: dark)') : null
 const motionQuery = typeof matchMedia === 'function' ? matchMedia('(prefers-reduced-motion: reduce)') : null
@@ -64,7 +56,8 @@ export async function loadSettings(): Promise<void> {
 function sanitize(s: Partial<Settings>): Partial<Settings> {
   const out: Partial<Settings> = {}
   if (s.theme === null || THEMES.some((t) => t.id === s.theme)) out.theme = s.theme
-  if (SOUND_PACKS.some((p) => p.id === s.sound)) out.sound = s.sound
+  if (typeof s.sound === 'boolean') out.sound = s.sound
+  else if (typeof s.sound === 'string') out.sound = s.sound !== 'off' // migrate old pack setting
   if (typeof s.haptics === 'boolean') out.haptics = s.haptics
   if (typeof s.textSize === 'number' && (TEXT_SIZES as readonly number[]).includes(s.textSize)) out.textSize = s.textSize
   if (typeof s.reduceMotion === 'boolean') out.reduceMotion = s.reduceMotion

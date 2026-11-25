@@ -2,6 +2,12 @@
 
 Newest on top. Each phase adds ≤ 8 lines: what was done, decisions, known issues. Last line of each entry: `Next: Phase N — <model>, <effort>`.
 
+## Review after Phase 8 (planner)
+- User feedback: UI too basic/generic; sound packs sounded bad. → New brief "Layout v2" in DESIGN.md, Phases 9–10 added.
+- Sound rewritten by planner: `src/lib/sound.ts` now synthesizes all cues (tick + thock), `public/sfx` removed, setting is a
+  single Âm thanh switch (old pack values migrate to on/off), sfx runtime cache removed. Same `play(cue)` API.
+Next: Phase 9 — Opus 5.5, high
+
 ## Phase 8 — QA & polish
 - Bundle: initial JS 72 KB gzip (≤ 90); markdown/KaTeX/Editor already lazy. Standalone player 163 KB gzip.
 - Contrast: scripted check of ink/muted/accent/good/bad on bg, surface and soft fills; darkened accent (Lá, Đào, Oải hương), good and bad in the 4 light themes to ≥ 4.5:1. DESIGN table + theme swatches updated. Đêm already passed.

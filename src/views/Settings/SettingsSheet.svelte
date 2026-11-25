@@ -2,7 +2,7 @@
   import { canVibrate } from '../../lib/haptics'
   import type { Snippet } from 'svelte'
   import { play } from '../../lib/sound'
-  import { SOUND_PACKS, TEXT_SIZES, THEMES, activeTheme, settings, type ThemeId } from '../../state/settings.svelte'
+  import { TEXT_SIZES, THEMES, activeTheme, settings, type ThemeId } from '../../state/settings.svelte'
   import Segmented from '../../ui/Segmented.svelte'
   import Sheet from '../../ui/Sheet.svelte'
   import Switch from '../../ui/Switch.svelte'
@@ -39,19 +39,13 @@
     </div>
   </section>
 
-  {#if sound}
-    <section>
-      <h3>Âm thanh</h3>
-      <Segmented bind:value={settings.sound} options={SOUND_PACKS} label="Âm thanh" />
-    </section>
-  {/if}
-
   <section>
     <h3>Cỡ chữ</h3>
     <Segmented bind:value={settings.textSize} options={sizes} label="Cỡ chữ" />
   </section>
 
   <section class="switches">
+    {#if sound}<Switch bind:checked={settings.sound} label="Âm thanh" />{/if}
     {#if canVibrate}<Switch bind:checked={settings.haptics} label="Rung" />{/if}
     <Switch bind:checked={settings.reduceMotion} label="Giảm chuyển động" />
   </section>

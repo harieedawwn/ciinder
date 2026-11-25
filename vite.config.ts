@@ -34,7 +34,6 @@ export default defineConfig({
         globIgnores: ['**/node_modules/**'],
         navigateFallback: 'index.html',
         navigateFallbackDenylist: [/player\.html$/],
-        runtimeCaching: [{ urlPattern: /\/sfx\/.+\.mp3$/, handler: 'CacheFirst', options: { cacheName: 'sfx', expiration: { maxEntries: 120 } } }],
       },
     }),
   ],
