@@ -2,6 +2,15 @@
 
 Newest on top. Each phase adds ≤ 8 lines: what was done, decisions, known issues. Last line of each entry: `Next: Phase N — <model>, <effort>`.
 
+## Phase 5 — interactive kinds
+- `play/drag.ts`: Pointer Events drag action (touch/mouse/pen, 6px threshold, per-frame re-measure so the node stays under the pointer through edge auto-scroll and live reorders, click after drag swallowed, `touch-action: none` only on handles/chips, no text selection while dragging).
+- Match (tap left/right in either order, pair number badges, tap paired to re-pick; keys 1–9 pick left then right; reveal: wrong pairs show the correct right with highlighter). Stacked columns below 520px card width.
+- Order (grip drag with live reorder + `animate:flip`, Lên/Xuống buttons keep focus; reveal marks each position and shows the correct number). Group (tray + boxes; tap chip → tap box/tray, drag, or keys: 1–9 picks a tray chip then a group).
+- Flash (3D rotateY flip, crossfade under reduced motion; Chưa thuộc / Nhớ một phần / Đã thuộc, keys 1–3). New `Answer` kind `flash`; ratings also kept in `prog:<id>.mastery`. Flash is never checked or scored: `Player.checkable`/`done`, unanswered counts scored items only; flash-only results show "Đã thuộc n/N thẻ".
+- Core helpers `matchRights`, `orderStart` (never pre-solved), `groupTray` + `core/kinds.test.ts`.
+- Checked 390×844 / 360×740 touch (CDP touch drag for order + group) and 1280×800 keyboard + mouse drag; no console errors.
+Next: Phase 6 — Opus 5.5, medium
+
 ## Phase 4 — player core
 - `play/` registry + Mcq (single/multi), Tf (Đ/S per statement, a–f labels), Short (decimal keyboard when numeric), Cloze (inputs or tap bank), Note (collapsible above its questions). Feedback: highlighter wipe / shake + strike (`styles/feedback.css`, `lib/wipe.ts`).
 - Play view: card deal (`views/Play/deal.ts`, JS twin of --spring), stack edges, highlighter progress stroke, counter → question grid sheet, keys 1–9 / Enter / ←→, touch swipe outside controls. Practice: Kiểm tra, verdict, Giải thích, Gợi ý; streak sounds 3/5/10. Test: timer from `@time` (deadline stored, auto-submit), Nộp bài confirm when unanswered.

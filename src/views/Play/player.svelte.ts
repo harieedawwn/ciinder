@@ -1,12 +1,12 @@
 // Player controller: position, answers, practice checks, finishing. Mutates the attempt held in state/progress.
 import { isAnswered } from '../../core/attempt'
 import { gradeItem, scoreSet, type Answer } from '../../core/grade'
-import type { Item, QuizSet } from '../../core/types'
+import { isScored, type Item, type QuizSet } from '../../core/types'
 import type { KindApi } from '../../play/registry'
 import { buzz } from '../../lib/haptics'
 import { play } from '../../lib/sound'
 import { touchSet } from '../../state/library.svelte'
-import { finishAttempt, saveSoon, type Attempt } from '../../state/progress.svelte'
+import { finishAttempt, progress, saveSoon, type Attempt } from '../../state/progress.svelte'
 
 const STREAK_AT = new Set([3, 5, 10])
 
@@ -61,6 +61,7 @@ export class Player {
   setAnswer(id: string, a: Answer): void {
     if (this.locked(id)) return
     this.attempt.answers[id] = a
+    if (a.kind === 'flash') progress.data.mastery[id] = a.rating
     saveSoon()
   }
 
@@ -68,8 +69,18 @@ export class Player {
     return isAnswered(this.attempt.answers[id])
   }
 
+  /** Practice: the current item still waits for Kiểm tra (self-rated kinds never do). */
+  get checkable(): boolean {
+    return !this.review && this.practice && isScored(this.item) && this.shown(this.item.id) === undefined
+  }
+
+  /** Items that count toward progress: checked (practice) or answered (test); flash once rated. */
+  done(it: Item): boolean {
+    return this.practice && isScored(it) ? this.shown(it.id) !== undefined : this.answered(it.id)
+  }
+
   unanswered(): number {
-    return this.items.filter((it) => !this.answered(it.id)).length
+    return this.items.filter((it) => isScored(it) && !this.answered(it.id)).length
   }
 
   moveTo(i: number): void {
@@ -94,7 +105,7 @@ export class Player {
   /** Practice: grade the current item and give feedback. */
   check(): void {
     const it = this.item
-    if (this.locked(it.id) || !this.answered(it.id)) return
+    if (!this.checkable || !this.answered(it.id)) return
     const score = gradeItem(it, this.attempt.answers[it.id]!) ?? 0
     this.attempt.scores[it.id] = score
     saveSoon()
@@ -113,6 +124,7 @@ export class Player {
   finish(): number {
     const scores: Record<string, number> = {}
     for (const it of this.items) {
+      if (!isScored(it)) continue
       const a = this.attempt.answers[it.id]
       scores[it.id] = this.attempt.scores[it.id] ?? (a ? (gradeItem(it, a) ?? 0) : 0)
     }

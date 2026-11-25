@@ -33,6 +33,13 @@
       return it && isScored(it) ? [{ it, n }] : []
     })
   })
+  /** Flash-only sets have no score: show how many cards were rated Đã thuộc. */
+  const cards = $derived.by(() => {
+    const ids = new Set(quiz?.items.filter((it) => it.kind === 'flash').map((it) => it.id))
+    const seen = (attempt?.order ?? []).filter((iid) => ids.has(iid))
+    const answers = attempt?.answers ?? {}
+    return { total: seen.length, known: seen.filter((iid) => { const a = answers[iid]; return a?.kind === 'flash' && a.rating === 'known' }).length }
+  })
   const wrong = $derived(played.filter(({ it }) => (scores[it.id] ?? 0) < 1))
   const right = $derived(played.length - wrong.length)
   const percent = $derived(attempt?.percent ?? 0)
@@ -51,13 +58,18 @@
 {#if quiz && attempt}
   <section class="result">
     <h1>{quiz.title}</h1>
-    <div class="score">
-      <p class="big num">{percent}%</p>
-      <p class="ten num">{ten}/10</p>
-    </div>
+    {#if played.length}
+      <div class="score">
+        <p class="big num">{percent}%</p>
+        <p class="ten num">{ten}/10</p>
+      </div>
+    {:else}
+      <div class="score"><p class="big num">{cards.known}/{cards.total}</p></div>
+    {/if}
     <p class="meta num">
       <span>{attempt.mode === 'test' ? 'Làm bài' : 'Luyện tập'}</span>
-      <span>Đúng {right}/{played.length} câu</span>
+      {#if played.length}<span>Đúng {right}/{played.length} câu</span>{/if}
+      {#if cards.total}<span>Đã thuộc {cards.known}/{cards.total} thẻ</span>{/if}
     </p>
 
     {#if sections.length > 1}

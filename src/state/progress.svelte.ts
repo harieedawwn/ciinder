@@ -1,6 +1,6 @@
 // Per-set progress in IndexedDB (`prog:<id>`): the running attempt (resume), last finished attempt, history, per-item results.
 import { get, set } from 'idb-keyval'
-import type { Answer } from '../core/grade'
+import type { Answer, Mastery } from '../core/grade'
 
 export type Mode = 'practice' | 'test'
 
@@ -36,11 +36,13 @@ export interface Progress {
   history: HistoryRow[]
   /** Last score per item id. */
   results: Record<string, number>
+  /** Flash card self-ratings by item id. */
+  mastery: Record<string, Mastery>
 }
 
 const HISTORY_MAX = 30
 const key = (setId: string) => `prog:${setId}`
-const empty = (): Progress => ({ current: null, last: null, history: [], results: {} })
+const empty = (): Progress => ({ current: null, last: null, history: [], results: {}, mastery: {} })
 
 export const progress = $state({ setId: '', data: empty() })
 

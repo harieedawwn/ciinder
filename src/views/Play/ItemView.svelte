@@ -35,7 +35,7 @@
 
 <article class="card" aria-label="Câu {player.pos + 1}">
   {#if note}<Note item={note} />{/if}
-  {#if item.kind !== 'cloze'}<h2 class="prompt">{item.prompt}</h2>{/if}
+  {#if item.kind !== 'cloze' && item.kind !== 'flash'}<h2 class="prompt">{item.prompt}</h2>{/if}
   {#if Kind}
     <Kind bind:this={api} {item} answer={player.answer(item.id)} onanswer={(a) => player.setAnswer(item.id, a)} seed={player.attempt.seed} locked={player.locked(item.id)} {reveal} {score} />
   {/if}

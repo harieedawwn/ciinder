@@ -33,3 +33,7 @@
   clip-path: circle(150% at var(--px, 50%) var(--py, 50%)); opacity: 1;
   transition: clip-path var(--t-std) var(--ease-out), opacity 0s;
 }
+
+/* Item being dragged (play/drag.ts): lifted, follows the pointer with no easing. */
+.dragging { position: relative; z-index: 20; box-shadow: var(--shadow-drag) !important; transition: none !important; cursor: grabbing; }
+.drag-active, .drag-active * { user-select: none; -webkit-user-select: none; cursor: grabbing; }

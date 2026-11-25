@@ -3,7 +3,11 @@ import type { Component } from 'svelte'
 import type { Answer } from '../core/grade'
 import type { Item, Kind } from '../core/types'
 import Cloze from './Cloze.svelte'
+import Flash from './Flash.svelte'
+import Group from './Group.svelte'
+import Match from './Match.svelte'
 import Mcq from './Mcq.svelte'
+import Order from './Order.svelte'
 import Short from './Short.svelte'
 import Tf from './Tf.svelte'
 
@@ -34,6 +38,10 @@ export const REGISTRY: Partial<Record<Kind, KindComponent>> = {
   tf: Tf,
   short: Short,
   cloze: Cloze,
+  match: Match,
+  order: Order,
+  group: Group,
+  flash: Flash,
 }
 
 export const PLAYABLE: ReadonlySet<Kind> = new Set(Object.keys(REGISTRY) as Kind[])

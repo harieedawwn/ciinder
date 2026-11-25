@@ -60,7 +60,7 @@
     const p = player
     if (!p) return 0
     if (p.review) return (p.pos + 1) / p.items.length
-    const done = p.items.filter((it) => (p.practice ? p.shown(it.id) !== undefined : p.answered(it.id))).length
+    const done = p.items.filter((it) => p.done(it)).length
     return done / p.items.length
   })
 
@@ -102,7 +102,7 @@
   function primary() {
     const p = player
     if (!p) return
-    if (!p.review && p.practice && p.shown(p.item.id) === undefined) p.check()
+    if (p.checkable) p.check()
     else if (p.last) submit()
     else p.next()
   }

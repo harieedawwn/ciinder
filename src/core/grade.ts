@@ -14,6 +14,8 @@ export type Answer =
   | { kind: 'order'; sequence: number[] }
   /** placements[g][i] = group index chosen for item i of group g, or null. */
   | { kind: 'group'; placements: (number | null)[][] }
+  /** Self-rating of a flash card; not scored. */
+  | { kind: 'flash'; rating: Mastery }
 
 export type Mastery = 'again' | 'partial' | 'known'
 
@@ -73,6 +75,8 @@ export function gradeItem(item: Item, answer: Answer): number | null {
       )
       return fraction(right, total)
     }
+    case 'flash':
+      return null
   }
 }
 

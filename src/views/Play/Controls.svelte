@@ -4,7 +4,7 @@
 
   let { player, onprimary }: { player: Player; onprimary: () => void } = $props()
 
-  const checking = $derived(!player.review && player.practice && player.shown(player.item.id) === undefined)
+  const checking = $derived(player.checkable)
   const label = $derived(
     checking ? 'Kiểm tra' : !player.last ? 'Câu tiếp' : player.review || player.practice ? 'Xong' : 'Nộp bài',
   )
