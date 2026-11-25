@@ -6,7 +6,9 @@ Newest on top. Each phase adds ≤ 8 lines: what was done, decisions, known issu
 - User feedback: UI too basic/generic; sound packs sounded bad. → New brief "Layout v2" in DESIGN.md, Phases 9–10 added.
 - Sound rewritten by planner: `src/lib/sound.ts` now synthesizes all cues (tick + thock), `public/sfx` removed, setting is a
   single Âm thanh switch (old pack values migrate to on/off), sfx runtime cache removed. Same `play(cue)` API.
-Next: Phase 9 — Opus 5.5, high
+- Then (cost): Phase 9 split into 9/10/11 for Sonnet 5.5 medium. Planner wrote the taste-critical building blocks
+  (IndexCard, Mark, Fingerprint, desk.ts, desk.css, vt.ts, --mark-strong); phases only compose them (see PHASES.md).
+Next: Phase 9 — Sonnet 5.5, medium
 
 ## Phase 8 — QA & polish
 - Bundle: initial JS 72 KB gzip (≤ 90); markdown/KaTeX/Editor already lazy. Standalone player 163 KB gzip.

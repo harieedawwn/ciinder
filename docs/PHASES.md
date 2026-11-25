@@ -14,8 +14,9 @@ Model/effort is chosen by the user before the session; it's listed so the previo
 | 6 | Essay study modes + markdown/math rendering | Opus 5.5 | medium | yes |
 | 7 | Share link, standalone HTML, exports, backup, PWA offline | Sonnet 5.5 | high | yes |
 | 8 | QA & polish across devices, perf, a11y, final pass | Opus 5.5 | medium | yes |
-| 9 | Redesign v2 part 1: desk system, Home, empty state, set sheet, editor, sheets, transitions | Opus 5.5 | high | yes |
-| 10 | Redesign v2 part 2: player, all question kinds, result, essay, standalone player | Opus 5.5 | medium | yes |
+| 9 | Redesign v2 A: Home desk, empty state, set sheet | Sonnet 5.5 | medium | no |
+| 10 | Redesign v2 B: editor, sheets, theme reveal, morph into player | Sonnet 5.5 | medium | yes |
+| 11 | Redesign v2 C: player, question kinds, result | Sonnet 5.5 | medium | yes |
 
 Why these picks: Sonnet 5.5 medium for well-specified, testable logic (cheapest that holds quality); Opus 5.5 medium where taste,
 interaction feel or tricky pointer logic matter (Opus medium ≥ Sonnet high at similar cost). Phase 7 is fiddly build config → Sonnet high.
@@ -114,32 +115,64 @@ Tasks:
 6. Fix everything in docs/INBOX.md.
 Done when: verify passes, deployed, PROGRESS lists remaining known issues (if any) honestly.
 
-## Phase 9 — Redesign v2, part 1 (desk system + everything outside the player)
-Read: docs/DESIGN.md (whole file, "Layout v2" is the brief), docs/INBOX.md. Then the files you change.
-Tasks:
-1. Tokens: add --mark-strong; `ui/IndexCard.svelte` (margin line, optional tabs), `ui/Mark.svelte` (SVG highlighter,
-   wipe), `ui/Fingerprint.svelte`, stack edges utility, press-spring for Button; `lib/vt.ts` (View Transitions helper with
-   FLIP fallback + reduced-motion bypass).
-2. Home as specified (rail on desktop, bottom tabs on phone, tilted desk grid, subject divider tabs, stagger-in).
-3. Empty desk with paste-in-card + global Ctrl/Cmd+V paste → editor, file drop behaviour.
-4. Set sheet as specified, with card→sheet morph. Editor two-card layout + clipped issue notes. Settings, Guide and Share
-   sheets restyled as IndexCards; theme change circle reveal.
-5. Keep all behaviour, routes and tests working; remove now-unused CSS/components.
-6. Check 360×740, 390×844, 768×1024, 1280×800 (Playwright or preview, ≤ 6 screenshots), fps sanity (no layout animations).
-Done when: verify passes; the Home screen is recognisably "ciinder" at a glance (desk, cards, tabs, highlighter, fingerprint)
-and still clean; no item from the do-not list.
+## Redesign v2 — building blocks (ALREADY WRITTEN by the planner, use them, don't rewrite them)
+- `src/ui/IndexCard.svelte` — card with margin line + `tabs` prop (divider tabs on top edge; `primary`, `active`, `onclick`), `hot`, `plain`.
+- `src/ui/Mark.svelte` — highlighter behind text: `<Mark on={x} strong delay={200}>…</Mark>`.
+- `src/ui/Fingerprint.svelte` — `<Fingerprint kinds={Kind[]} done={boolean[]} size="sm|lg" />`.
+- `src/ui/desk.ts` — `tiltFor(id)` → `"0.73deg"` for `style="--tilt: …"`.
+- `src/styles/desk.css` (global classes): `press` (spring press), `tilt` (tilted card, straightens on hover; flat on phones),
+  `stack` / `stack stack-1` (card edges beneath), `fall` + `style="--i: n"` (stagger in), `pull-in` (sheet entrance), `strike` + `on`.
+- `src/lib/vt.ts` — `transition(update)`, `morph(el, name, update)` (shared-element morph via View Transitions), `themeReveal(x, y, update)`.
+- Tokens: `--mark-strong` added. DESIGN.md "Layout v2" describes the intended result for every screen.
+Rule for 9–11: compose these; style with existing tokens; do not add new visual ideas beyond the brief.
 
-## Phase 10 — Redesign v2, part 2 (player + result)
-Read: docs/DESIGN.md "Layout v2" + "Motion", src/ui/IndexCard.svelte, src/ui/Mark.svelte, src/lib/vt.ts, src/play/registry.ts.
+## Phase 9 — Redesign v2 A: Home
+Read: docs/DESIGN.md "Layout v2" (Screens: Home, Empty desk, Set detail), the building blocks above, src/views/Home/*.
 Tasks:
-1. Player per brief: IndexCard question on the desk with stack, `3 / 20` counter, highlighter progress, ruled option rows
-   with letter stamps, fixed thumb-zone action bar; deal transition kept/refined; set card → player morph.
-2. Restyle every kind in src/play (Mcq, Tf, Short, Cloze, Match, Order, Group, Flash, Note, Essay + essay modes, Rate) to the
-   same language: stamps, ruled rows, Mark for correct, strike for wrong, IndexCard for flash faces.
-3. Result per brief (score numeral + Mark, final fingerprint, section rows, flip-through stack of wrong items).
-4. Standalone player (`player.html`) gets the same look; check its size stays reasonable.
-5. Device check as Phase 9. Fix anything in INBOX.
-Done when: verify passes; a full set plays beautifully on phone and desktop; nothing generic left.
+1. Layout: ≥ 1024px → left rail 248px (wordmark; vertical tabs Thư viện / Tạo bộ mới / Hướng dẫn cho AI with `<Mark on>`
+   behind the active label; settings + fullscreen icons at rail bottom) + desk area. < 1024px → existing top bar + a bottom
+   bar with the same 3 actions (icon above short label, safe-area padding).
+2. SetCard → IndexCard with `class="tilt press fall"`, `style="--tilt:{tiltFor(id)}; --i:{index}"`, `stack` when the set has
+   unfinished progress. Content: title (1.25rem 600), subject · số câu in muted, `<Fingerprint>` (done = last-attempt correct),
+   last score as `<Mark on strong>` behind the % text. Grid: `repeat(auto-fill, minmax(260px, 1fr))`, gap 24px desktop / 12px phone.
+3. Group cards by subject when ≥ 2 subjects: each group has a header rendered as a single divider tab (IndexCard tabs style
+   on a thin line), then its grid.
+4. Empty desk: one IndexCard (max-width 560px, `tilt`, --tilt -1deg) with tabs [Hướng dẫn cho AI (primary), Mở tệp];
+   title "Chưa có bộ câu hỏi nào."; below it a large textarea-like button "Dán nội dung vào đây" (min-height 160px,
+   solid 1px --line, radius 10px, muted text) that reads the clipboard / focuses a paste field.
+   Global `paste` event on Home (when focus isn't in an input) → open editor with the pasted text. Drag-over → `hot` on the card.
+5. Set sheet: content wrapped in an IndexCard look; big `<Fingerprint size="lg">`; mode choice = two small IndexCards side by
+   side (Luyện tập / Làm bài), selected one gets `stack stack-1` + `hot`; Bắt đầu full width primary.
+6. Remove unused old Home CSS. Check 390×844 and 1280×800 (≤ 4 screenshots).
+Done when: verify passes; Home matches the brief.
+
+## Phase 10 — Redesign v2 B: editor, sheets, transitions
+Read: docs/DESIGN.md "Layout v2" (Editor, Transitions), building blocks, src/views/Editor/*, src/ui/Sheet.svelte, src/views/Settings/SettingsSheet.svelte, src/state/router.svelte.ts.
+Tasks:
+1. Editor: desktop = two IndexCards side by side (tabs: [Nội dung] and [Xem trước]); phone = one IndexCard whose tabs switch
+   the two panes. Issues: under the source card as a compact list (keep current behaviour).
+2. Sheet.svelte: panel uses `pull-in` and the IndexCard margin line (add the same `::before` line), no other change in behaviour.
+3. Settings theme swatches: on click call `themeReveal(e.clientX, e.clientY, () => settings.theme = id)`; selected swatch
+   shows `<Mark on>` under its name.
+4. Route changes: wrap router navigation in `transition()`. Opening a set from Home: `morph(cardEl, 'set-card', open)`; the
+   set sheet's card element gets `style="view-transition-name: set-card"` while open. Back reverses naturally.
+5. Guide and Share sheets: content as IndexCard sections (tabs as section labels instead of h3 headings).
+Done when: verify passes; transitions work in Chrome/Safari 18 and degrade to instant in Firefox / reduced motion.
+
+## Phase 11 — Redesign v2 C: player + result
+Read: docs/DESIGN.md "Layout v2" (Player, Result), building blocks, src/views/Play/Deck.svelte, src/views/Play/ItemView.svelte,
+src/play/Mcq.svelte (then apply the same pattern to the other kinds one by one), src/views/Result/Result.svelte.
+Tasks:
+1. Deck: each question is an IndexCard with `stack` (stack-1 when 1 left, none on last). Counter `3 / 20` top-left of the
+   card (muted, tabular). Progress highlighter at screen top: a `--mark-strong` bar scaled with `transform: scaleX()`.
+2. Options (Mcq, Tf rows, Cloze bank words, Match/Order/Group items): rows separated by 1px --line (ruled lines), letter
+   stamp 24px square radius 6px (outlined; selected → filled --ink, text --surface). Correct → text wrapped in `<Mark on>`;
+   wrong → `strike on`. Keep all logic, only markup/CSS.
+3. Flash faces and essay answer area as IndexCards; Rate buttons as three small tabs.
+4. Result: score numeral 3.5rem 600 tabular inside `<Mark on strong delay={200}>`; `<Fingerprint size="lg">` of this attempt;
+   section rows with thin bars (transform scaleX); wrong items as a `stack` IndexCard you can step through (prev/next).
+5. Standalone player inherits all of this (same components); keep its size < 400 KB.
+Done when: verify passes; full set plays on 390×844 and 1280×800 without layout jumps.
 
 ## Backlog (not scheduled; only if the user asks)
 - In-app AI using the user's own free Gemini key (BYOK, key stays in localStorage) to generate sets directly.

@@ -3,31 +3,31 @@
 [data-theme='sang'] {
   color-scheme: light;
   --bg: #f4f5f7; --surface: #ffffff; --raised: #ffffff; --ink: #16181d; --muted: #636a75; --line: #e2e5ea;
-  --accent: #2b59c3; --on-accent: #ffffff; --accent-soft: #e3eaf8; --mark: #ffe27a;
+  --accent: #2b59c3; --on-accent: #ffffff; --accent-soft: #e3eaf8; --mark: #ffe27a; --mark-strong: #f2c230;
   --good: #1f7751; --good-soft: #ddf1e6; --bad: #b23d34; --bad-soft: #f8e1de;
 }
 [data-theme='la'] {
   color-scheme: light;
   --bg: #ecf0ea; --surface: #fbfcfa; --raised: #ffffff; --ink: #18221b; --muted: #5d6b60; --line: #d9e0d7;
-  --accent: #3b7149; --on-accent: #ffffff; --accent-soft: #dde9df; --mark: #f3d98b;
+  --accent: #3b7149; --on-accent: #ffffff; --accent-soft: #dde9df; --mark: #f3d98b; --mark-strong: #d9b34a;
   --good: #2c7445; --good-soft: #dceedf; --bad: #ac4237; --bad-soft: #f5e0dc;
 }
 [data-theme='dao'] {
   color-scheme: light;
   --bg: #f7edea; --surface: #fff9f7; --raised: #ffffff; --ink: #2b1e1c; --muted: #7a6561; --line: #ebdad5;
-  --accent: #a34740; --on-accent: #ffffff; --accent-soft: #f6deda; --mark: #ffd9a8;
+  --accent: #a34740; --on-accent: #ffffff; --accent-soft: #f6deda; --mark: #ffd9a8; --mark-strong: #f2a65a;
   --good: #2c7451; --good-soft: #ddefe3; --bad: #b2362e; --bad-soft: #f7dcd7;
 }
 [data-theme='oai'] {
   color-scheme: light;
   --bg: #eeecf6; --surface: #fcfbff; --raised: #ffffff; --ink: #1f1b2e; --muted: #686279; --line: #dedaec;
-  --accent: #6752bc; --on-accent: #ffffff; --accent-soft: #e5e0f6; --mark: #ffe48a;
+  --accent: #6752bc; --on-accent: #ffffff; --accent-soft: #e5e0f6; --mark: #ffe48a; --mark-strong: #ebc23f;
   --good: #2c7455; --good-soft: #ddefe6; --bad: #af3e38; --bad-soft: #f6e0de;
 }
 [data-theme='dem'] {
   color-scheme: dark;
   --bg: #121416; --surface: #1b1e22; --raised: #23272c; --ink: #e9e6e1; --muted: #9a9790; --line: #2c3036;
-  --accent: #e3b15c; --on-accent: #1a1408; --accent-soft: #3a3122; --mark: #6b5622;
+  --accent: #e3b15c; --on-accent: #1a1408; --accent-soft: #3a3122; --mark: #6b5622; --mark-strong: #c9a227;
   --good: #6fc49a; --good-soft: #1e3a2d; --bad: #e5796e; --bad-soft: #42231f;
 }
 :root {

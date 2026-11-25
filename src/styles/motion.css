@@ -37,3 +37,9 @@
 /* Item being dragged (play/drag.ts): lifted, follows the pointer with no easing. */
 .dragging { position: relative; z-index: 20; box-shadow: var(--shadow-drag) !important; transition: none !important; cursor: grabbing; }
 .drag-active, .drag-active * { user-select: none; -webkit-user-select: none; cursor: grabbing; }
+
+/* View transition variants set by lib/vt.ts via html[data-vt]. */
+[data-vt='theme']::view-transition-old(root) { animation: none; }
+[data-vt='theme']::view-transition-new(root) { animation: vt-circle var(--t-large) var(--ease-in-out) both; }
+@keyframes vt-circle { from { clip-path: circle(0 at var(--vt-x) var(--vt-y)); } to { clip-path: circle(var(--vt-r) at var(--vt-x) var(--vt-y)); } }
+[data-vt='morph']::view-transition-group(*) { animation-duration: var(--t-large); animation-timing-function: var(--ease-out); }

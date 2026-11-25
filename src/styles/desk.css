@@ -1,0 +1,39 @@
+/* "Desk" visual language (docs/DESIGN.md "Layout v2"). Import once in main.ts / player-main.ts.
+   Everything here animates only transform / opacity / clip-path. */
+
+/* Press spring: add class="press" to any tappable card or button. */
+.press { transition: transform var(--t-std) var(--spring); }
+.press:active { transform: scale(0.97); transition-duration: var(--t-micro); transition-timing-function: var(--ease-out); }
+
+/* Tilt on the desk: set style="--tilt: <deg>" (use tiltFor(id) from ui/desk.ts). Straightens + lifts on hover/focus. */
+.tilt { transform: rotate(var(--tilt, 0deg)); transition: transform var(--t-large) var(--spring); }
+@media (hover: hover) {
+  .tilt:hover { transform: translateY(-3px) rotate(0deg); }
+}
+.tilt:focus-visible { transform: translateY(-3px) rotate(0deg); }
+@media (max-width: 599px) { .tilt { --tilt: 0deg; } }
+
+/* Stack edges under a card: add class="stack" (2 edges) or "stack stack-1" (1 edge). Card must have a background. */
+.stack { position: relative; isolation: isolate; }
+.stack::before, .stack::after {
+  content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit;
+  background: var(--surface); border: 1px solid var(--line);
+}
+.stack::before { transform: translate(4px, 5px) rotate(1deg); }
+.stack::after { transform: translate(8px, 10px) rotate(-0.8deg); opacity: 0.7; }
+.stack.stack-1::after { display: none; }
+
+/* Cards falling onto the desk on first render: class="fall" + style="--i: <index>" (cap at 12). */
+.fall { animation: desk-fall 420ms var(--spring) both; animation-delay: calc(min(var(--i, 0), 12) * 30ms); }
+@keyframes desk-fall { from { opacity: 0; transform: translateY(10px) rotate(calc(var(--tilt, 0deg) + 2deg)); } }
+
+/* Sheets/cards pulled from a deck. */
+.pull-in { animation: desk-pull var(--t-large) var(--spring) both; }
+@keyframes desk-pull { from { opacity: 0; transform: translateY(24px) rotate(1.5deg); } }
+
+/* Strike-through for wrong answers: wrap text in <span class="strike">, add .on to draw it. */
+.strike { background: linear-gradient(var(--bad), var(--bad)) no-repeat 0 55% / 0% 2px; transition: background-size var(--t-large) var(--ease-out); }
+.strike.on { background-size: 100% 2px; }
+
+[data-motion='reduce'] .fall, [data-motion='reduce'] .pull-in { animation: vt-fade 120ms both; }
+[data-motion='reduce'] .tilt, [data-motion='reduce'] .tilt:hover { transform: none; }
