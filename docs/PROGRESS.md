@@ -8,7 +8,7 @@ Newest on top. Each phase adds ≤ 8 lines: what was done, decisions, known issu
 - Result: score in `<Mark strong delay=200>`, lg Fingerprint of this attempt, sections in an IndexCard with thin bars, wrong items = stack card with prev/next.
 - Decision: Cloze bank / Match / Order / Group keep their current item styling (logic untouched); only the card around them changed. Standalone player 379 KB.
 - Known: not screenshot-checked in a browser (headless); verify passes.
-Next: none — all phases complete (handle INBOX / Backlog on request)
+Next: Phase 12 — Sonnet 5.5, medium (needs src/lib/cloud.config.ts filled by the user first)
 
 ## Phase 10 — Redesign v2 B: editor, sheets, transitions
 - Editor = two IndexCards (desktop, plain labels) / one card whose tabs switch panes (< 900px); Segmented removed. Issues stay under the source card.
