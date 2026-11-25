@@ -45,14 +45,15 @@
     border-radius: var(--r-card); text-align: center; -webkit-tap-highlight-color: transparent;
   }
   .face {
-    grid-area: 1 / 1; display: grid; place-items: center; padding: 24px 20px;
-    border: 1px solid var(--line); border-radius: var(--r-card); background: var(--bg);
+    grid-area: 1 / 1; position: relative; display: grid; place-items: center; padding: 24px 20px;
+    border: 1px solid var(--line); border-radius: var(--r-card); background: var(--surface); box-shadow: var(--shadow);
     font-size: var(--fs-lg); line-height: 1.5; overflow-wrap: anywhere;
     backface-visibility: hidden; -webkit-backface-visibility: hidden;
     transition: transform var(--t-large) var(--ease-out), opacity var(--t-micro) linear;
   }
+  .face::before { content: ''; position: absolute; top: 0; bottom: 0; left: 18px; width: 1px; background: var(--accent-soft); }
   .front { font-size: var(--fs-xl); font-weight: 600; }
-  .rear { transform: rotateY(180deg); background: var(--raised); text-align: left; place-items: center start; }
+  .rear { transform: rotateY(180deg); text-align: left; place-items: center start; }
   .back .front { transform: rotateY(-180deg); }
   .back .rear { transform: rotateY(0); }
   /* Reduced motion: crossfade instead of the 3D turn. */

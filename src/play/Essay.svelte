@@ -62,7 +62,11 @@
 {/if}
 
 <style>
-  .answer { max-width: 68ch; }
+  .answer {
+    position: relative; max-width: 68ch; padding: 14px 16px 14px 30px; background: var(--surface);
+    border: 1px solid var(--line); border-radius: var(--r-card); box-shadow: var(--shadow);
+  }
+  .answer::before { content: ''; position: absolute; top: 0; bottom: 0; left: 14px; width: 1px; background: var(--accent-soft); }
   .answer :global(.rich) { font-family: var(--font-read); font-size: 1.0625rem; line-height: 1.7; }
   .done { display: grid; }
 </style>

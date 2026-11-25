@@ -2,6 +2,14 @@
 
 Newest on top. Each phase adds ≤ 8 lines: what was done, decisions, known issues. Last line of each entry: `Next: Phase N — <model>, <effort>`.
 
+## Phase 11 — Redesign v2 C: player + result
+- Player: each question is an IndexCard with `stack` (2/1/0 edges by remaining), counter `3 / 20` inside the card; Deck's own edges removed; top progress bar uses `--mark-strong`.
+- Mcq/Tf rows are ruled (1px --line), 24px letter stamp r6 (selected = filled --ink); correct text in `<Mark>`, wrong in `strike`. Flash faces/essay answer = card with margin line; Rate = three small tabs (selected on --mark).
+- Result: score in `<Mark strong delay=200>`, lg Fingerprint of this attempt, sections in an IndexCard with thin bars, wrong items = stack card with prev/next.
+- Decision: Cloze bank / Match / Order / Group keep their current item styling (logic untouched); only the card around them changed. Standalone player 379 KB.
+- Known: not screenshot-checked in a browser (headless); verify passes.
+Next: none — all phases complete (handle INBOX / Backlog on request)
+
 ## Phase 10 — Redesign v2 B: editor, sheets, transitions
 - Editor = two IndexCards (desktop, plain labels) / one card whose tabs switch panes (< 900px); Segmented removed. Issues stay under the source card.
 - Sheet: margin line, `pull-in` on ≥ 600px (phones keep the slide so the spring does not fight the transform transition), optional `vtName`. Settings: `themeReveal` + `<Mark>` under the selected theme. Guide/Share content = IndexCard sections.

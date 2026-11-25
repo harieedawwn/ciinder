@@ -5,6 +5,7 @@
   import Note from '../../play/Note.svelte'
   import { REGISTRY, type KindApi } from '../../play/registry'
   import Button from '../../ui/Button.svelte'
+  import IndexCard from '../../ui/IndexCard.svelte'
   import type { Player } from './player.svelte'
 
   let { player, item }: { player: Player; item: Item } = $props()
@@ -24,6 +25,7 @@
   const score = $derived(player.shown(item.id))
   const reveal = $derived(score !== undefined)
   const verdict = $derived(score === undefined ? '' : score === 1 ? 'Đúng' : score === 0 ? 'Sai' : 'Đúng một phần')
+  const behind = $derived(Math.min(2, player.items.length - 1 - player.pos))
   let hint = $state(false)
   let explain = $state(false)
 
@@ -34,7 +36,9 @@
   }
 </script>
 
-<article class="card" aria-label="Câu {player.pos + 1}">
+<IndexCard class={behind > 1 ? 'stack' : behind === 1 ? 'stack stack-1' : ''} aria-label="Câu {player.pos + 1}">
+<article class="inner">
+  <p class="count num">{player.pos + 1} / {player.items.length}</p>
   {#if note}<Note item={note} />{/if}
   {#if item.kind !== 'cloze' && item.kind !== 'flash'}<div class="prompt" role="heading" aria-level="2"><Rich src={item.prompt} /></div>{/if}
   {#if Kind}
@@ -56,13 +60,11 @@
     {#if hint}<div class="more"><Rich src={item.hint} /></div>{/if}
   {/if}
 </article>
+</IndexCard>
 
 <style>
-  .card {
-    container: card / inline-size;
-    display: grid; gap: 16px; align-content: start; padding: 20px;
-    background: var(--raised); border: 1px solid var(--line); border-radius: var(--r-card); box-shadow: var(--shadow);
-  }
+  .inner { container: card / inline-size; display: grid; gap: 16px; align-content: start; }
+  .count { font-size: var(--fs-xs); font-weight: 600; color: var(--muted); }
   .prompt { font-size: var(--fs-lg); font-weight: 500; line-height: 1.5; overflow-wrap: anywhere; }
   .after { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 12px; margin: -4px 0 -8px; }
   .after :global(.quiet) { color: var(--muted); }
@@ -71,5 +73,4 @@
   .verdict.good { color: var(--good); }
   .verdict.bad { color: var(--bad); }
   .more { padding: 12px 14px; border-radius: var(--r-ctl); background: var(--bg); line-height: 1.55; overflow-wrap: anywhere; }
-  @media (max-width: 420px) { .card { padding: 16px; } }
 </style>

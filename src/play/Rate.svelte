@@ -24,18 +24,18 @@
 </div>
 
 <style>
-  .rates { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .rates { display: flex; gap: 6px; }
   .rate {
-    display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 8px;
-    border-radius: var(--r-ctl); border: 1px solid var(--line); background: var(--raised);
-    font-size: var(--fs-sm); font-weight: 600; line-height: 1.25;
-    transition: border-color var(--t-std) var(--ease-out);
+    flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 6px 8px;
+    border-radius: var(--r-chip) var(--r-chip) 0 0; border: 1px solid var(--line); border-bottom: 0; background: var(--surface);
+    font-size: var(--fs-xs); font-weight: 600; line-height: 1.25; color: var(--muted);
+    transition: color var(--t-std) var(--ease-out), background-color var(--t-std) var(--ease-out);
   }
-  .rate.sel { border-color: var(--accent); box-shadow: inset 0 -2px 0 0 var(--accent); }
-  .rate.again.sel { border-color: var(--bad); box-shadow: inset 0 -2px 0 0 var(--bad); }
-  .rate.known.sel { border-color: var(--good); box-shadow: inset 0 -2px 0 0 var(--good); }
+  .rate.sel { color: var(--ink); background: var(--mark); }
+  .rate.again.sel { color: var(--bad); }
+  .rate.known.sel { color: var(--good); }
   .rate[aria-disabled='true'] { cursor: default; }
-  .key { font-size: var(--fs-xs); color: var(--muted); }
+  .key { font-size: var(--fs-xs); }
   @container card (max-width: 360px) { .key { display: none; } }
-  @media (hover: hover) { .rate:not([aria-disabled='true']):hover { border-color: var(--muted); } }
+  @media (hover: hover) { .rate:not([aria-disabled='true']):hover { color: var(--ink); } }
 </style>

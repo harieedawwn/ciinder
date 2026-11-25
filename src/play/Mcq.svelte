@@ -4,6 +4,7 @@
   import type { McqItem } from '../core/types'
   import { ink } from '../lib/ink'
   import { play } from '../lib/sound'
+  import Mark from '../ui/Mark.svelte'
   import { LETTERS, type KindProps } from './registry'
 
   let { item, answer, onanswer, seed, locked, reveal }: KindProps<McqItem> = $props()
@@ -47,32 +48,31 @@
       use:ink
     >
       <span class="key" class:box={item.multi}>{LETTERS[d]}</span>
-      <span class="text"><span class:hl={opt.correct} class:strike={sel && !opt.correct} class:on={reveal}><Rich inline src={opt.text} /></span></span>
+      <span class="text">{#if opt.correct}<Mark on={reveal}><Rich inline src={opt.text} /></Mark>{:else}<span class="strike" class:on={reveal && sel}><Rich inline src={opt.text} /></span>{/if}</span>
     </button>
   {/each}
 </div>
 
 <style>
   .multi { font-size: var(--fs-sm); color: var(--muted); }
-  .opts { display: grid; gap: 8px; }
+  .opts { display: grid; margin: 0 -4px; }
   .opt {
-    display: flex; align-items: flex-start; gap: 12px; width: 100%; min-height: 48px; padding: 11px 14px;
-    text-align: left; border-radius: var(--r-ctl); border: 1px solid var(--line); background: var(--raised);
-    box-shadow: inset 0 0 0 0 var(--accent); transition: border-color var(--t-std) var(--ease-out);
+    display: flex; align-items: flex-start; gap: 12px; width: 100%; min-height: 48px; padding: 11px 4px;
+    text-align: left; border-top: 1px solid var(--line); border-radius: 0; transition: background-color var(--t-std) var(--ease-out);
   }
-  .opt.sel { border-color: var(--accent); box-shadow: inset 2px 0 0 0 var(--accent); }
-  .opt.good { border-color: var(--good); }
-  .opt.bad { border-color: var(--bad); box-shadow: inset 2px 0 0 0 var(--bad); }
+  .opt:first-child { border-top: 0; }
+  .opt.sel { background: var(--accent-soft); }
   .opt[aria-disabled='true'] { cursor: default; }
   .key {
-    flex: none; display: grid; place-items: center; width: 26px; height: 26px; margin-top: -1px;
-    border-radius: 50%; border: 1px solid var(--line); font-size: var(--fs-sm); font-weight: 600; color: var(--muted);
+    flex: none; display: grid; place-items: center; width: 24px; height: 24px; margin-top: -1px;
+    border-radius: 6px; border: 1px solid var(--muted); font-size: var(--fs-sm); font-weight: 600; color: var(--muted);
+    transition: background-color var(--t-std) var(--ease-out);
   }
-  .key.box { border-radius: 6px; }
-  .sel .key { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-  .bad .key { background: var(--bad); border-color: var(--bad); color: var(--on-accent); }
+  .sel .key { background: var(--ink); border-color: var(--ink); color: var(--surface); }
   .good .key { border-color: var(--good); color: var(--good); }
-  .sel.good .key { background: var(--good); color: var(--on-accent); }
+  .sel.good .key { background: var(--good); color: var(--surface); }
+  .bad .key { border-color: var(--bad); color: var(--bad); }
+  .sel.bad .key { background: var(--bad); color: var(--surface); }
   .text { flex: 1; min-width: 0; font-size: var(--fs-md); line-height: 1.45; overflow-wrap: anywhere; }
-  @media (hover: hover) { .opt:not([aria-disabled='true']):hover { border-color: var(--muted); } .opt.sel:hover { border-color: var(--accent); } }
+  @media (hover: hover) { .opt:not([aria-disabled='true']):hover .key { border-color: var(--ink); } }
 </style>

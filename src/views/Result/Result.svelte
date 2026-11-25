@@ -8,6 +8,9 @@
   import { go } from '../../state/router.svelte'
   import { startOptions } from '../../state/session.svelte'
   import Button from '../../ui/Button.svelte'
+  import Fingerprint from '../../ui/Fingerprint.svelte'
+  import IndexCard from '../../ui/IndexCard.svelte'
+  import Mark from '../../ui/Mark.svelte'
   import { promptText } from '../Editor/summary'
   import SaveBar from '../Shared/SaveBar.svelte'
 
@@ -48,6 +51,10 @@
   const ten = $derived((Math.round(percent) / 10).toLocaleString('vi-VN', { maximumFractionDigits: 1 }))
   const sections = $derived(quiz && attempt ? sectionScores(quiz, attempt.order, scores) : [])
 
+  const flat = $derived((quiz?.items ?? []).filter((it) => it.kind !== 'note'))
+  let wi = $state(0)
+  const cur = $derived(wrong[Math.min(wi, wrong.length - 1)])
+
   function again(onlyWrong: boolean) {
     if (!attempt) return
     startOptions.fresh = true
@@ -63,12 +70,13 @@
     <h1>{quiz.title}</h1>
     {#if played.length}
       <div class="score">
-        <p class="big num">{percent}%</p>
+        <p class="big num"><Mark on strong delay={200}>{percent}%</Mark></p>
         <p class="ten num">{ten}/10</p>
       </div>
     {:else}
-      <div class="score"><p class="big num">{cards.known}/{cards.total}</p></div>
+      <div class="score"><p class="big num"><Mark on strong delay={200}>{cards.known}/{cards.total}</Mark></p></div>
     {/if}
+    <Fingerprint size="lg" kinds={flat.map((it) => it.kind)} done={flat.map((it) => (scores[it.id] ?? 0) >= 0.999)} label="Kết quả từng câu" />
     <p class="meta num">
       <span>{attempt.mode === 'test' ? 'Làm bài' : 'Luyện tập'}</span>
       {#if played.length}<span>Đúng {right}/{played.length} câu</span>{/if}
@@ -76,16 +84,18 @@
     </p>
 
     {#if sections.length > 1}
-      <ul class="sections">
-        {#each sections as s, i (i)}
-          {@const r = s.max ? s.got / s.max : 0}
-          <li>
-            <span class="name">{s.title || 'Khác'}</span>
-            <span class="num pct">{Math.round(r * 100)}%</span>
-            <span class="bar" aria-hidden="true"><span style:transform="scaleX({r})"></span></span>
-          </li>
-        {/each}
-      </ul>
+      <IndexCard>
+        <ul class="sections">
+          {#each sections as s, i (i)}
+            {@const r = s.max ? s.got / s.max : 0}
+            <li>
+              <span class="name">{s.title || 'Khác'}</span>
+              <span class="num pct">{Math.round(r * 100)}%</span>
+              <span class="bar" aria-hidden="true"><span style:transform="scaleX({r})"></span></span>
+            </li>
+          {/each}
+        </ul>
+      </IndexCard>
     {/if}
 
     <div class="actions">
@@ -95,18 +105,23 @@
       <span class="home"><Button variant="quiet" icon="back" onclick={() => go('/')}>Thư viện</Button></span>
     </div>
 
-    {#if wrong.length}
+    {#if cur}
+      {@const s = scores[cur.it.id] ?? 0}
+      {@const left = wrong.length - 1 - wi}
       <h2>Câu sai</h2>
-      <ol class="wrong">
-        {#each wrong as { it, n } (it.id)}
-          {@const s = scores[it.id] ?? 0}
-          <li>
-            <span class="n num">{n + 1}</span>
-            <span class="text"><Rich inline src={promptText(it)} /></span>
-            <span class="tag" class:part={s > 0}>{s > 0 ? 'Đúng một phần' : 'Sai'}</span>
-          </li>
-        {/each}
-      </ol>
+      <IndexCard class={left > 1 ? 'stack' : left === 1 ? 'stack stack-1' : ''}>
+        <div class="wcard">
+          <p class="n num">Câu {cur.n + 1} · {wi + 1}/{wrong.length}</p>
+          <p class="text"><Rich inline src={promptText(cur.it)} /></p>
+          <p class="tag" class:part={s > 0}>{s > 0 ? 'Đúng một phần' : 'Sai'}</p>
+          {#if wrong.length > 1}
+            <div class="step">
+              <Button variant="quiet" icon="back" label="Câu trước" disabled={wi === 0} onclick={() => (wi = Math.max(0, wi - 1))} />
+              <Button variant="quiet" icon="next" label="Câu sau" disabled={wi >= wrong.length - 1} onclick={() => (wi = Math.min(wrong.length - 1, wi + 1))} />
+            </div>
+          {/if}
+        </div>
+      </IndexCard>
     {/if}
   </section>
 {:else if missing}
@@ -130,20 +145,17 @@
   .sections li { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; }
   .name { min-width: 0; overflow-wrap: anywhere; }
   .pct { color: var(--muted); }
-  .bar { grid-column: 1 / -1; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
-  .bar span { display: block; height: 100%; background: var(--mark); transform-origin: left center; }
+  .bar { grid-column: 1 / -1; height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
+  .bar span { display: block; height: 100%; background: var(--mark-strong); transform-origin: left center; }
   .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .actions > :global(:first-child) { grid-column: 1 / -1; }
   .home { grid-column: 1 / -1; margin-left: -12px; }
   h2 { font-size: var(--fs-lg); margin-top: 8px; }
-  .wrong { list-style: none; padding: 0; display: grid; gap: 8px; }
-  .wrong li {
-    display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; padding: 12px 14px;
-    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-ctl); content-visibility: auto;
-  }
-  .n { font-weight: 600; color: var(--muted); }
-  .text { min-width: 0; overflow-wrap: anywhere; line-height: 1.4; }
-  .tag { grid-column: 2; font-size: var(--fs-xs); font-weight: 600; color: var(--bad); }
+  .wcard { display: grid; gap: 6px; }
+  .n { font-weight: 600; color: var(--muted); font-size: var(--fs-xs); }
+  .text { overflow-wrap: anywhere; line-height: 1.5; }
+  .tag { font-size: var(--fs-xs); font-weight: 600; color: var(--bad); }
   .tag.part { color: var(--muted); }
+  .step { display: flex; justify-content: space-between; margin: 4px -12px -8px; }
   @media (min-width: 600px) { .actions { grid-template-columns: repeat(4, auto); justify-content: start; } .actions > :global(:first-child), .home { grid-column: auto; } }
 </style>

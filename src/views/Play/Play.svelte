@@ -126,9 +126,7 @@
     <header class="head">
       <h1>{player.set.title}</h1>
       {#if player.attempt.endsAt && !player.review}<Timer endsAt={player.attempt.endsAt} onexpire={expire} />{/if}
-      <Button variant="quiet" icon="grid" label="Danh sách câu" onclick={() => (gridOpen = true)}>
-        <span class="num">{player.pos + 1}/{player.items.length}</span>
-      </Button>
+      <Button variant="quiet" icon="grid" label="Danh sách câu" onclick={() => (gridOpen = true)} />
     </header>
     <Deck {player} />
     <Controls {player} onprimary={primary} />
@@ -149,7 +147,7 @@
   }
   .stroke { position: sticky; top: calc(56px + var(--safe-t)); z-index: 5; height: 4px; margin: 0 -4px; border-radius: 2px; overflow: hidden; }
   .stroke span {
-    display: block; height: 100%; background: var(--mark); border-radius: 2px;
+    display: block; height: 100%; background: var(--mark-strong); border-radius: 2px;
     transform-origin: left center; transition: transform var(--t-large) var(--ease-out);
   }
   .head { display: flex; align-items: center; gap: 12px; min-height: 44px; }
