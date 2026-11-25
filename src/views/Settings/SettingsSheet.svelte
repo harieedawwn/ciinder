@@ -1,12 +1,13 @@
 <script lang="ts">
   import { canVibrate } from '../../lib/haptics'
+  import type { Snippet } from 'svelte'
   import { play } from '../../lib/sound'
   import { SOUND_PACKS, TEXT_SIZES, THEMES, activeTheme, settings, type ThemeId } from '../../state/settings.svelte'
   import Segmented from '../../ui/Segmented.svelte'
   import Sheet from '../../ui/Sheet.svelte'
   import Switch from '../../ui/Switch.svelte'
 
-  let { open = $bindable(false) }: { open?: boolean } = $props()
+  let { open = $bindable(false), sound = true, extra }: { open?: boolean; sound?: boolean; extra?: Snippet } = $props()
 
   const sizes = TEXT_SIZES.map((n) => ({ id: n, name: `${n}%` }))
 
@@ -38,10 +39,12 @@
     </div>
   </section>
 
-  <section>
-    <h3>Âm thanh</h3>
-    <Segmented bind:value={settings.sound} options={SOUND_PACKS} label="Âm thanh" />
-  </section>
+  {#if sound}
+    <section>
+      <h3>Âm thanh</h3>
+      <Segmented bind:value={settings.sound} options={SOUND_PACKS} label="Âm thanh" />
+    </section>
+  {/if}
 
   <section>
     <h3>Cỡ chữ</h3>
@@ -52,6 +55,7 @@
     {#if canVibrate}<Switch bind:checked={settings.haptics} label="Rung" />{/if}
     <Switch bind:checked={settings.reduceMotion} label="Giảm chuyển động" />
   </section>
+  {@render extra?.()}
 </Sheet>
 
 <style>

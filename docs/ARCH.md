@@ -39,7 +39,7 @@ src/
                           + registry.ts mapping kind → component (adding a kind = 1 file + 1 registry line + parser case)
   lib/                    browser helpers: sound.ts, fullscreen.ts, env.ts (in-app browser detection), download.ts, haptics.ts
   styles/                 tokens.css (themes), base.css, motion.css
-player.html + src/player-main.ts   entry for the standalone offline player (Phase 7)
+player.html + src/player-main.ts   entry for the standalone offline player (vite.player.config.ts → dist/player.html; src/player/ holds its localStorage + CDN-KaTeX swaps)
 public/                   ciinder-guide.md, sfx/<pack>/*.mp3, icons, manifest
 docs/                     specs for AI developers (this folder)
 ```
@@ -51,7 +51,7 @@ Shared link: `#s=A...` (FORMAT §8). Opening it: decode → parse → play immed
 ## Storage
 IndexedDB via idb-keyval: keys `set:<id>` {id, title, source, createdAt, updatedAt}, `prog:<id>` progress, `settings`.
 Parse on open (fast) instead of storing the parsed model. Library list keeps a small index `sets:index` for instant render.
-Backup: export/import all as one `.json` (Phase 7).
+Backup: Settings → Sao lưu exports/imports all sets + progress as one `.json` (`core/backup.ts`, merge by id).
 
 ## Performance budget (phones first)
 - Initial JS ≤ 90 KB gzip for library + player. Editor, KaTeX, marked, export code are lazy `import()`.

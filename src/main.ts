@@ -1,4 +1,6 @@
 import { mount } from 'svelte'
+import './styles/fonts-ui.css'
+import './styles/fonts-lora.css'
 import './styles/tokens.css'
 import './styles/motion.css'
 import './styles/base.css'

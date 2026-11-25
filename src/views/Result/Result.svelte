@@ -9,6 +9,7 @@
   import { startOptions } from '../../state/session.svelte'
   import Button from '../../ui/Button.svelte'
   import { promptText } from '../Editor/summary'
+  import SaveBar from '../Shared/SaveBar.svelte'
 
   let { id }: { id: string } = $props()
 
@@ -58,6 +59,7 @@
 
 {#if quiz && attempt}
   <section class="result">
+    <SaveBar {id} />
     <h1>{quiz.title}</h1>
     {#if played.length}
       <div class="score">

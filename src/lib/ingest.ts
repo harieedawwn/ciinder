@@ -1,5 +1,6 @@
 // Route freshly obtained text (file, drop, clipboard) to the right place: JSON → library, text → editor draft.
 import { jsonSources } from '../core/importjson'
+import { importBackup } from '../state/backup.svelte'
 import { parse } from '../core/parse'
 import { hasErrors } from '../core/issues'
 import { saveSet } from '../state/library.svelte'
@@ -12,6 +13,12 @@ import { pickFile, readClipboard, readFileText } from './clipboard'
 export async function ingestText(text: string): Promise<string | null> {
   const sources = jsonSources(text)
   if (sources === null) return text
+  const merged = await importBackup(text)
+  if (merged !== null) {
+    toast(merged ? `Đã khôi phục ${merged} bộ câu hỏi` : 'Không có bộ nào mới để khôi phục')
+    go('/')
+    return null
+  }
   const good = sources.filter((s) => !hasErrors(parse(s).issues))
   if (!good.length) {
     toast('Tệp JSON không có bộ câu hỏi đọc được. Hãy dùng tệp nội dung hoặc bản sao lưu của ciinder.')

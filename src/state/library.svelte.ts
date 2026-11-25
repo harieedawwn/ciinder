@@ -1,5 +1,6 @@
 // Saved sets in IndexedDB (docs/ARCH.md "Storage"): `set:<id>` records + a small `sets:index` for instant render.
 import { del, get, set } from 'idb-keyval'
+import { sourceId } from '../core/export'
 import { parse } from '../core/parse'
 
 export interface SetRecord {
@@ -53,8 +54,42 @@ function summarize(source: string): Pick<SetEntry, 'title' | 'subject' | 'count'
   return { title: quiz.title, subject: quiz.meta.subject, count: quiz.items.length }
 }
 
+/** Sets opened from a shared link: playable but not in the library until saved. */
+const temp = new Map<string, SetRecord>()
+
+/** Stable id for a shared set, so its progress survives a reload of the link. */
+export function registerTemp(source: string): string {
+  const id = sourceId(source)
+  const now = Date.now()
+  temp.set(id, { id, title: summarize(source).title, source, createdAt: now, updatedAt: now })
+  return id
+}
+
+export const isTemp = (id: string): boolean => temp.has(id)
+
 export async function getSet(id: string): Promise<SetRecord | undefined> {
-  return get<SetRecord>(setKey(id))
+  return temp.get(id) ?? get<SetRecord>(setKey(id))
+}
+
+/** Save a shared set into the library; returns the new id. */
+export async function adoptTemp(id: string): Promise<string | undefined> {
+  const rec = temp.get(id)
+  if (!rec) return
+  const newId = await saveSet(rec.source)
+  temp.delete(id)
+  return newId
+}
+
+/** Add whole records (backup import); ids already present are skipped by the caller. */
+export async function addRecords(records: SetRecord[]): Promise<void> {
+  if (!records.length) return
+  const added: SetEntry[] = []
+  for (const r of records) {
+    await set(setKey(r.id), r)
+    added.push({ id: r.id, ...summarize(r.source), updatedAt: r.updatedAt })
+  }
+  library.entries = [...added, ...library.entries]
+  await persistIndex()
 }
 
 /** Create (no id) or update a set from its source text. Returns the id. */

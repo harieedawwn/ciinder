@@ -1,0 +1,78 @@
+<script lang="ts">
+  // Mode choice + start/resume buttons for one set; used by the library sheet and the standalone player.
+  import type { Snippet } from 'svelte'
+  import { STUDY_KINDS } from '../../core/attempt'
+  import { parse } from '../../core/parse'
+  import { getSet, touchSet } from '../../state/library.svelte'
+  import { loadProgress } from '../../state/progress.svelte'
+  import { go } from '../../state/router.svelte'
+  import { startOptions } from '../../state/session.svelte'
+  import Button from '../../ui/Button.svelte'
+  import Segmented from '../../ui/Segmented.svelte'
+  import Switch from '../../ui/Switch.svelte'
+
+  type Info = { id: string; subject?: string; count: number }
+  let { entry, active = true, onstart, extra }: { entry: Info; active?: boolean; onstart?: () => void; extra?: Snippet } = $props()
+
+  const MODES = [
+    { id: 'practice', name: 'Luyện tập' },
+    { id: 'test', name: 'Làm bài' },
+  ] as const
+
+  let loaded = $state<string | null>(null)
+  /** Essay + flash items (Học tự luận). */
+  let studyCount = $state(0)
+  /** Position of an unfinished attempt ("Tiếp tục"), e.g. "5/20". */
+  let resume = $state('')
+
+  $effect(() => {
+    const id = entry.id
+    if (!active) return
+    resume = ''
+    void loadProgress(id).then((p) => {
+      if (entry.id === id && p.current) resume = `${Math.min(p.current.pos + 1, p.current.order.length)}/${p.current.order.length}`
+    })
+    if (loaded === id) return
+    void getSet(id).then((rec) => {
+      if (!rec) return
+      const { meta, items } = parse(rec.source).set
+      studyCount = items.filter((it) => STUDY_KINDS.has(it.kind)).length
+      startOptions.mode = meta.mode
+      startOptions.shuffle = meta.shuffle
+      loaded = id
+    })
+  })
+
+  function start(fresh: boolean, study = false) {
+    startOptions.fresh = fresh
+    startOptions.only = null
+    startOptions.study = study
+    void touchSet(entry.id, { openedAt: Date.now() })
+    onstart?.()
+    go(`/play/${entry.id}`)
+  }
+</script>
+
+<div class="stack">
+  <p class="meta">
+    {#if entry.subject}<span>{entry.subject}</span>{/if}
+    <span class="num">{entry.count} câu</span>
+  </p>
+  <Segmented bind:value={startOptions.mode} options={MODES} label="Chế độ" />
+  <Switch bind:checked={startOptions.shuffle} label="Trộn thứ tự" />
+  {#if resume}
+    <Button variant="primary" icon="next" onclick={() => start(false)}>Tiếp tục <span class="num">{resume}</span></Button>
+    <Button icon="retry" onclick={() => start(true)}>Bắt đầu</Button>
+  {:else}
+    <Button variant="primary" icon="check" onclick={() => start(true)}>Bắt đầu</Button>
+  {/if}
+  {#if studyCount && loaded === entry.id}
+    <Button icon="eye" onclick={() => start(true, true)}>Học tự luận <span class="num">{studyCount}</span></Button>
+  {/if}
+  {@render extra?.()}
+</div>
+
+<style>
+  .stack { display: grid; gap: 12px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: var(--fs-sm); color: var(--muted); }
+</style>

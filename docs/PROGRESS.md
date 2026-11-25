@@ -2,6 +2,16 @@
 
 Newest on top. Each phase adds ≤ 8 lines: what was done, decisions, known issues. Last line of each entry: `Next: Phase N — <model>, <effort>`.
 
+## Phase 7 — sharing, export, offline
+- Share sheet (SetSheet → Chia sẻ): copy link, `navigator.share`, long-link note > 12000, Tải tệp HTML / nội dung. `lib/download.svelte.ts` falls back to a sheet (copy link / content) inside Zalo/Facebook/etc. File names are ASCII-folded (headless Chromium dropped name + extension for diacritics).
+- `#s=` links: `views/Shared` decodes from the full href, registers a temp set (`library.registerTemp`, id = hash of source), plays at once with `SaveBar` ("Lưu vào thư viện" moves progress to the new id); broken link → friendly screen. Zalo-polluted URLs covered by share tests.
+- Standalone: `player.html` + `src/player-main.ts` built by `vite.player.config.ts` (singlefile; `idb-keyval` → localStorage shim, bundled KaTeX → CDN loader, text shows source offline, `BASE_URL` = hosted site so sfx play online). `dist/player.html` is emitted by the main build; `npm run build` builds both (367 KB, 163 KB gzip). Source is embedded as JSON with every `<` escaped (`core/export.ts`, tested). Fonts split into `fonts-ui/lite/lora.css` (standalone: UI 400/600 only, Lora falls back to serif).
+- Backup: Settings → Sao lưu (Tải về / Mở tệp), `core/backup.ts` (tested) + merge by id; opening a backup `.json` anywhere (Home file picker, drop) merges too.
+- PWA: vite-plugin-pwa generateSW, precache 49 files (1.4 MB; KaTeX ttf/woff skipped), sfx runtime cache, `lib/pwa.ts` toast "Đã có bản mới" + Tải lại. Decision: `registerType: 'prompt'` instead of autoUpdate so a quiz is never reloaded mid-question.
+- Checked (Playwright): fresh-profile shared link plays, saved HTML opens from file:// offline and resumes, KaTeX loads from CDN, backup export/import into a fresh profile, app reloads offline after first visit, Zalo UA download fallback. Initial JS 72 KB gzip.
+- Known: standalone sound needs network; shared set progress is lost if its link is reopened after saving (it becomes a new library set).
+Next: Phase 8 — Opus 5.5, medium
+
 ## Phase 6 — essay study + rich content
 - `src/render/`: `tokens.ts` (math → private-use tokens before marked, `[[kw]]` → `<mark class="kw">`, tested), `markdown.ts` (marked subset: no headings / indented code; DOMPurify; links new tab, images lazy), `math.ts` (KaTeX + mhchem + CSS, cached, errors show source in --bad), `Rich.svelte` (only `{@html}` for content). Applied to prompts, notes, options, tf, match/order/group, cloze text + bank, flash, short answer, hint/explain, editor preview, result list.
 - Chunks are lazy: Play awaits markdown (+ KaTeX if the set has `$`) while reading progress, so no raw text flashes. Initial JS 63 KB gzip; markdown 28 KB, math 86 KB. Fixed base `svg{max-width:100%}` hiding KaTeX accent arrows (`\vec`).

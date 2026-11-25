@@ -2,20 +2,24 @@
   import type { Component } from 'svelte'
   import { fade } from 'svelte/transition'
   import { fullscreenKeys } from './lib/fullscreen.svelte'
+  import { startPwa } from './lib/pwa'
   import { preloadSounds, unlockAudio } from './lib/sound'
   import { loadLibrary } from './state/library.svelte'
   import { router, viewTransitions } from './state/router.svelte'
   import { applySettings, motionReduced } from './state/settings.svelte'
   import Toast from './ui/Toast.svelte'
   import Home from './views/Home/Home.svelte'
-  import Placeholder from './views/Placeholder.svelte'
   import Play from './views/Play/Play.svelte'
   import Result from './views/Result/Result.svelte'
+  import FallbackSheet from './views/Share/FallbackSheet.svelte'
+  import BackupSection from './views/Settings/BackupSection.svelte'
+  import Shared from './views/Shared/Shared.svelte'
   import SettingsSheet from './views/Settings/SettingsSheet.svelte'
   import TopBar from './views/TopBar.svelte'
 
   applySettings()
   void loadLibrary()
+  if (import.meta.env.PROD) startPwa()
 
   let settingsOpen = $state(false)
   let warmed = false
@@ -50,10 +54,13 @@
     {:else if router.route.name === 'result'}
       <Result id={router.route.id} />
     {:else}
-      <Placeholder title="Bộ được chia sẻ" />
+      <Shared />
     {/if}
   </main>
 {/key}
 
-<SettingsSheet bind:open={settingsOpen} />
+<SettingsSheet bind:open={settingsOpen}>
+  {#snippet extra()}<BackupSection onclose={() => (settingsOpen = false)} />{/snippet}
+</SettingsSheet>
+<FallbackSheet />
 <Toast />

@@ -64,6 +64,12 @@ export async function loadProgress(setId: string): Promise<Progress> {
   return progress.data
 }
 
+/** The loaded progress now belongs to another set id (a shared set saved to the library). */
+export function moveProgress(newId: string): void {
+  progress.setId = newId
+  flush()
+}
+
 /** Persist now (pagehide, route change). */
 export function flush(): void {
   clearTimeout(timer)

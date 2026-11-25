@@ -3,12 +3,13 @@
   import { parse } from '../../core/parse'
   import { PLAYABLE } from '../../play/registry'
   import { hasMath, loadRender } from '../../render/rich.svelte'
-  import { getSet } from '../../state/library.svelte'
+  import { getSet, isTemp } from '../../state/library.svelte'
   import { flush, loadProgress, startAttempt, type Attempt } from '../../state/progress.svelte'
   import { go } from '../../state/router.svelte'
   import { startOptions } from '../../state/session.svelte'
   import Button from '../../ui/Button.svelte'
   import { toast } from '../../ui/toast.svelte'
+  import SaveBar from '../Shared/SaveBar.svelte'
   import Controls from './Controls.svelte'
   import Deck from './Deck.svelte'
   import GridSheet from './GridSheet.svelte'
@@ -119,8 +120,9 @@
 <svelte:window onkeydown={keys} />
 
 {#if player}
-  <section class="play">
+  <section class="play" class:shared={isTemp(id)}>
     <div class="stroke" aria-hidden="true"><span style:transform="scaleX({progressValue})"></span></div>
+    <SaveBar {id} />
     <header class="head">
       <h1>{player.set.title}</h1>
       {#if player.attempt.endsAt && !player.review}<Timer endsAt={player.attempt.endsAt} onexpire={expire} />{/if}
@@ -157,6 +159,7 @@
   /* Phones: controls stay in the thumb zone at the bottom. */
   @media (max-width: 699px) {
     .play:not(.empty) { grid-template-rows: auto auto 1fr auto; min-height: calc(100dvh - 56px - var(--safe-t)); }
+    .play.shared { grid-template-rows: auto auto auto 1fr auto; }
   }
   @media (max-height: 500px) { .stroke { top: calc(48px + var(--safe-t)); } }
 </style>
