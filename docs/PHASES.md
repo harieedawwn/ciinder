@@ -18,6 +18,7 @@ Model/effort is chosen by the user before the session; it's listed so the previo
 | 10 | Redesign v2 B: editor, sheets, theme reveal, morph into player | Sonnet 5.5 | medium | yes |
 | 11 | Redesign v2 C: player, question kinds, result | Sonnet 5.5 | medium | yes |
 | 12 | Short share links via Firebase Firestore (REST, no SDK) | Sonnet 5.5 | medium | yes |
+| 13 | Start options (filters, count, shuffle answers), answer key / print, AI prompts in Guide sheet | Sonnet 5.5 | medium | yes |
 
 Why these picks: Sonnet 5.5 medium for well-specified, testable logic (cheapest that holds quality); Opus 5.5 medium where taste,
 interaction feel or tricky pointer logic matter (Opus medium ≥ Sonnet high at similar cost). Phase 7 is fiddly build config → Sonnet high.
@@ -209,6 +210,27 @@ Tasks:
    `commit` with `transform setToServerValue: REQUEST_TIME` and keep the rule.)
 6. Tests for id format, href parsing with Zalo params, fallback path (mock fetch).
 Done when: verify passes; with config filled, a 300-question set shares as a ~60-char link that opens on another device.
+
+## Phase 13 — Start options, answer key & print, AI prompts
+Read: src/views/Home/StartPanel.svelte, src/state/session.svelte.ts, src/core/attempt.ts, src/views/Guide/GuideSheet.svelte,
+src/lib/aiPrompts.ts (planner wrote the texts — use them verbatim), docs/DESIGN.md "Layout v2" + "Words".
+Tasks:
+1. StartPanel "Tùy chọn" (collapsed by default, one tab-like toggle on the panel; remembers last choice per set):
+   - Xáo thứ tự câu hỏi (existing) + **Xáo đáp án** (new switch; off = keep author order everywhere, still respects shuffle=no).
+   - **Dạng câu hỏi**: chips per kind present in the set with counts (e.g. "Trắc nghiệm · 96"); none selected = all.
+   - **Phần**: chips per `##` section with counts; none selected = all. Show max 8 then "Xem thêm".
+   - **Số câu**: Tất cả · 10 · 20 · 30 · 40 (only values < available); picks randomly (seeded) from the filtered pool.
+   - One summary line above Bắt đầu: "20 câu · Luyện tập · từ 26 câu" (numbers in tabular 600; no extra wording).
+   Implement selection in `core/attempt.ts` as a pure function `selectItems(set, {kinds, sections, count, seed})` + tests.
+   Chips: our style (radius 8px, 1px line, selected = --ink fill + --surface text). NOT pills, NOT neon, no helper captions.
+2. **Đáp án & in** (button in StartPanel, quiet variant): route `#/key/<id>` — clean printable answer key of the filtered
+   selection: each item with correct answer marked (Mark), explanation; segmented "Đề" / "Đáp án" (Đề hides answers).
+   Print CSS: white bg, black text, no UI chrome, `break-inside: avoid` per item, A4 margins; button "In" calls window.print().
+3. GuideSheet: keep Sao chép / Tải về for the guide file; add below a second IndexCard tab "Lời nhắn cho AI" with the 3 prompts
+   from `AI_PROMPTS` as a Segmented (Lên kế hoạch trước · Làm ngay · Chuyển đề có sẵn), the selected text shown in a quiet
+   read-only box, and a Sao chép button. One short line on top only: "Gửi tệp hướng dẫn và tài liệu cho AI, kèm một lời nhắn."
+4. Check 360px (no overflow, long section names wrap) and 1280px; print preview of the key looks clean.
+Done when: verify passes; filters + count produce the right attempt; key page prints well.
 
 ## Backlog (not scheduled; only if the user asks)
 - In-app AI using the user's own free Gemini key (BYOK, key stays in localStorage) to generate sets directly.

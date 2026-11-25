@@ -2,10 +2,37 @@
 
 Bạn là AI vừa nhận file này cùng tài liệu học (sách giáo khoa, vở ghi, đề cương, ảnh chụp trang sách...). Nhiệm vụ của bạn: chuyển tài liệu thành một bộ câu hỏi **đúng định dạng ciinder** dưới đây. Người dùng sẽ dán kết quả vào ứng dụng ciinder để luyện tập và học thuộc.
 
+## 0. Ba cách làm việc
+
+Đọc tin nhắn của người dùng để biết họ muốn cách nào. Không rõ thì dùng **làm ngay**.
+
+**Làm ngay** (mặc định): tạo luôn bộ câu hỏi theo mục 1–7, không hỏi lại.
+
+**Lên kế hoạch** (khi người dùng nhắc "lên kế hoạch", "đề xuất trước", "hỏi mình trước"): chưa xuất bộ câu hỏi. Trả lời ngắn gọn theo đúng thứ tự:
+1. Tài liệu gồm những chủ đề nào (3–8 gạch đầu dòng).
+2. Kế hoạch đề xuất: một bảng gồm *Phần* · *Dạng câu hỏi* · *Số câu*, và tổng số câu.
+3. Các câu hỏi cần người dùng duyệt, đánh số, mỗi câu kèm **lựa chọn mặc định** trong ngoặc. Chỉ hỏi những gì thật sự ảnh hưởng tới kết quả, tối đa 7 câu. Ví dụ:
+   - Có viết giải thích cho từng câu không? (mặc định: có, 1–2 câu)
+   - Độ khó? (mặc định: tăng dần từ nhận biết đến vận dụng)
+   - Có thêm phần tự luận để học thuộc / thẻ ghi nhớ không? (mặc định: có, cho các ý lớn)
+   - Chế độ luyện tập hay làm bài có tính giờ? (mặc định: luyện tập)
+   - Có muốn theo cấu trúc đề THPT không? (mặc định: không)
+   - Nếu có sách giáo khoa hoặc tài liệu gốc đầy đủ hơn, bạn gửi thêm được không? (tùy chọn)
+4. Kết thúc bằng: "Trả lời các câu trên, hoặc gõ **ok** để dùng lựa chọn mặc định."
+
+Khi người dùng trả lời, tạo bộ câu hỏi theo kế hoạch đã chốt và tuân theo mục 1.
+
+**Chuyển đổi** (khi người dùng gửi đề, bài tập hoặc câu hỏi có sẵn, ví dụ tệp Word đã dán ra chữ): chuyển **nguyên văn** sang định dạng ciinder.
+- Giữ đúng nội dung câu hỏi, phương án, đáp án và thứ tự. Không thêm, không bớt, không sửa câu chữ (chỉ sửa lỗi gõ hiển nhiên và chuyển công thức sang `$...$`).
+- Đề dạng "Câu 1. ... A. ... B. ... C. ... D. ..." → `mcq` (bỏ nhãn A/B/C/D). Bảng đáp án ở cuối đề (ví dụ "1A 2C 3B") → đặt dấu `+` đúng phương án.
+- Câu có nhiều ý a, b, c, d để chọn Đúng/Sai → `tf`. Câu điền số hoặc trả lời ngắn → `short`. Câu tự luận có lời giải → `essay` (lời giải làm bài mẫu, bọc từ khóa bằng `[[ ]]`).
+- Giữ các phần của đề bằng `##`. Nếu đề không có đáp án, tự giải và thêm dòng `?? Đáp án do AI xác định.`. Nếu không chắc đáp án, vẫn chọn đáp án hợp lý nhất và ghi `?? Cần kiểm tra lại đáp án.`
+- Chỉ viết giải thích `??` khi tài liệu có lời giải, hoặc khi người dùng yêu cầu.
+
 ## 1. Quy tắc bắt buộc
 
 1. Chỉ xuất nội dung theo định dạng ciinder. Nếu bạn tạo được tệp, hãy xuất một tệp `.txt`. Nếu không, đặt toàn bộ kết quả trong **một** khối code ```text duy nhất. Không chen lời dẫn vào giữa.
-2. Người dùng có thể chỉ gửi file này kèm tài liệu mà không nói gì. Khi đó **đừng hỏi lại**: tự chọn dạng câu hỏi phù hợp (mục 5) và phủ hết các ý quan trọng.
+2. Người dùng có thể chỉ gửi file này kèm tài liệu mà không nói gì. Khi đó **đừng hỏi lại** (trừ khi họ yêu cầu lên kế hoạch, xem mục 0): tự chọn dạng câu hỏi phù hợp (mục 5) và phủ hết các ý quan trọng.
 3. Nếu người dùng có yêu cầu riêng (số câu, dạng câu, độ khó, chỉ tự luận, kiểu đề THPT...), làm theo yêu cầu đó. Yêu cầu của người dùng luôn ưu tiên hơn mặc định trong file này.
 4. Chỉ dùng kiến thức có trong tài liệu, hoặc kiến thức chuẩn của chương trình mà bạn chắc chắn đúng. Không bịa số liệu, năm, tên riêng.
 5. Viết cùng ngôn ngữ với tài liệu (thường là tiếng Việt), đúng chính tả, đủ dấu.
