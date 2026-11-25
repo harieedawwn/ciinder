@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Rich from '../render/Rich.svelte'
   import { bankWords } from '../core/attempt'
   import { matchesAnswer } from '../core/normalize'
   import type { ClozeItem } from '../core/types'
@@ -56,11 +57,11 @@
 
 <p class="text">
   {#each item.segments as seg, si (si)}
-    {#if seg.t === 'text'}{seg.text}{:else}
+    {#if seg.t === 'text'}<Rich inline src={seg.text} />{:else}
       {@const b = blankAt[si]}
       {@const state = reveal ? (ok[b] ? 'good' : 'bad') : ''}
       {#if item.bank}
-        <button class="slot {state}" class:filled={!!values[b]} aria-disabled={locked} aria-label="Ô {b + 1}" onclick={() => clear(b)}>{values[b] || ' '}</button>
+        <button class="slot {state}" class:filled={!!values[b]} aria-disabled={locked} aria-label="Ô {b + 1}" onclick={() => clear(b)}>{#if values[b]}<Rich inline src={values[b]} />{:else}{' '}{/if}</button>
       {:else}
         <input
           class="slot {state}"
@@ -88,7 +89,7 @@
 {/if}
 
 <style>
-  .text { font-size: var(--fs-lg); line-height: 2.3; overflow-wrap: anywhere; white-space: pre-wrap; }
+  .text { font-size: var(--fs-lg); line-height: 2.3; overflow-wrap: anywhere; }
   .slot {
     display: inline-block; min-width: 4.5em; max-width: 100%; height: 2em; padding: 0 8px; margin: 0 2px;
     vertical-align: baseline; border: 0; border-bottom: 2px solid var(--muted); border-radius: 6px 6px 0 0;

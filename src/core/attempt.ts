@@ -1,5 +1,5 @@
 // Attempt helpers: question order, option order, answered checks, bank words, section breakdown. Pure, seeded.
-import type { Answer } from './grade'
+import type { Answer, Mastery } from './grade'
 import { seedFrom, shuffle, shuffledIndices } from './shuffle'
 import { isScored, type ClozeItem, type GroupItem, type Item, type Kind, type MatchItem, type OrderItem, type QuizSet } from './types'
 
@@ -22,6 +22,17 @@ export function buildOrder(set: QuizSet, opts: { shuffle: boolean; seed: number;
   }
   return runs.flatMap((blocks, i) => (opts.shuffle ? shuffle(blocks, opts.seed + i) : blocks)).flat().map((it) => it.id)
 }
+
+const MASTERY_RANK = { again: 0, partial: 1, known: 2 } as const
+
+/** Study session (essay + flash): not-yet-rated and Chưa thuộc first, Đã thuộc last; set order kept within a rank. */
+export function studyOrder(set: QuizSet, mastery: Readonly<Record<string, Mastery>>): string[] {
+  const ids = buildOrder(set, { shuffle: false, seed: 0, kinds: STUDY_KINDS })
+  const rank = (id: string) => (mastery[id] ? MASTERY_RANK[mastery[id]] : -1)
+  return ids.map((id, i) => ({ id, i, r: rank(id) })).sort((a, b) => a.r - b.r || a.i - b.i).map((x) => x.id)
+}
+
+export const STUDY_KINDS: ReadonlySet<Kind> = new Set(['essay', 'flash'])
 
 /** Display order of an item's options/statements as original indices. */
 export function optionOrder(item: Item, seed: number): number[] {
@@ -74,6 +85,7 @@ export function isAnswered(answer: Answer | undefined): boolean {
     case 'group':
       return answer.placements.some((g) => g.some((p) => p !== null))
     case 'flash':
+    case 'essay':
       return true
   }
 }

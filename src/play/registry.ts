@@ -3,6 +3,7 @@ import type { Component } from 'svelte'
 import type { Answer } from '../core/grade'
 import type { Item, Kind } from '../core/types'
 import Cloze from './Cloze.svelte'
+import Essay from './Essay.svelte'
 import Flash from './Flash.svelte'
 import Group from './Group.svelte'
 import Match from './Match.svelte'
@@ -23,6 +24,8 @@ export interface KindProps<I extends Item = Item> {
   reveal: boolean
   /** Item score 0..1 once revealed. */
   score: number | undefined
+  /** Go to the next item (absent on the last one). */
+  onnext?: () => void
 }
 
 /** Exports a kind component may offer to the player (keyboard 1–9). */
@@ -42,6 +45,7 @@ export const REGISTRY: Partial<Record<Kind, KindComponent>> = {
   order: Order,
   group: Group,
   flash: Flash,
+  essay: Essay,
 }
 
 export const PLAYABLE: ReadonlySet<Kind> = new Set(Object.keys(REGISTRY) as Kind[])

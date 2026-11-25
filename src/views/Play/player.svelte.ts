@@ -61,7 +61,7 @@ export class Player {
   setAnswer(id: string, a: Answer): void {
     if (this.locked(id)) return
     this.attempt.answers[id] = a
-    if (a.kind === 'flash') progress.data.mastery[id] = a.rating
+    if (a.kind === 'flash' || a.kind === 'essay') progress.data.mastery[id] = a.rating
     saveSoon()
   }
 

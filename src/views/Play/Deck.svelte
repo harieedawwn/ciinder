@@ -8,7 +8,7 @@
   const behind = $derived(Math.min(2, player.items.length - 1 - player.pos))
 
   // Horizontal swipe navigates, unless it starts on a control or the user is selecting/scrolling.
-  const CONTROL = 'button, input, textarea, select, a, label, [role="radio"], [role="checkbox"]'
+  const CONTROL = 'button, input, textarea, select, a, label, [role="radio"], [role="checkbox"], [data-noswipe]'
   let sx = 0
   let sy = 0
   let tracking = false

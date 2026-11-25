@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { STUDY_KINDS } from '../../core/attempt'
   import { parse } from '../../core/parse'
   import { getSet, touchSet, type SetEntry } from '../../state/library.svelte'
   import { loadProgress } from '../../state/progress.svelte'
@@ -17,6 +18,8 @@
   ] as const
 
   let loaded = $state<string | null>(null)
+  /** Essay + flash items (Học tự luận). */
+  let studyCount = $state(0)
   /** Position of an unfinished attempt ("Tiếp tục"), e.g. "5/20". */
   let resume = $state('')
 
@@ -30,17 +33,19 @@
     if (loaded === id) return
     void getSet(id).then((rec) => {
       if (!rec) return
-      const { meta } = parse(rec.source).set
+      const { meta, items } = parse(rec.source).set
+      studyCount = items.filter((it) => STUDY_KINDS.has(it.kind)).length
       startOptions.mode = meta.mode
       startOptions.shuffle = meta.shuffle
       loaded = id
     })
   })
 
-  function start(fresh: boolean) {
+  function start(fresh: boolean, study = false) {
     if (!entry) return
     startOptions.fresh = fresh
     startOptions.only = null
+    startOptions.study = study
     void touchSet(entry.id, { openedAt: Date.now() })
     open = false
     go(`/play/${entry.id}`)
@@ -67,6 +72,9 @@
         <Button icon="retry" onclick={() => start(true)}>Bắt đầu</Button>
       {:else}
         <Button variant="primary" icon="check" onclick={() => start(true)}>Bắt đầu</Button>
+      {/if}
+      {#if studyCount && loaded === entry.id}
+        <Button icon="eye" onclick={() => start(true, true)}>Học tự luận <span class="num">{studyCount}</span></Button>
       {/if}
       <div class="row">
         <Button icon="edit" onclick={edit}>Sửa</Button>

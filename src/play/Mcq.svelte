@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Rich from '../render/Rich.svelte'
   import { optionOrder } from '../core/attempt'
   import type { McqItem } from '../core/types'
   import { ink } from '../lib/ink'
@@ -46,7 +47,7 @@
       use:ink
     >
       <span class="key" class:box={item.multi}>{LETTERS[d]}</span>
-      <span class="text"><span class:hl={opt.correct} class:strike={sel && !opt.correct} class:on={reveal}>{opt.text}</span></span>
+      <span class="text"><span class:hl={opt.correct} class:strike={sel && !opt.correct} class:on={reveal}><Rich inline src={opt.text} /></span></span>
     </button>
   {/each}
 </div>
@@ -72,6 +73,6 @@
   .bad .key { background: var(--bad); border-color: var(--bad); color: var(--on-accent); }
   .good .key { border-color: var(--good); color: var(--good); }
   .sel.good .key { background: var(--good); color: var(--on-accent); }
-  .text { flex: 1; min-width: 0; font-size: var(--fs-md); line-height: 1.45; overflow-wrap: anywhere; white-space: pre-wrap; }
+  .text { flex: 1; min-width: 0; font-size: var(--fs-md); line-height: 1.45; overflow-wrap: anywhere; }
   @media (hover: hover) { .opt:not([aria-disabled='true']):hover { border-color: var(--muted); } .opt.sel:hover { border-color: var(--accent); } }
 </style>

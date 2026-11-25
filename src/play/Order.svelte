@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Rich from '../render/Rich.svelte'
   import { tick } from 'svelte'
   import { flip } from 'svelte/animate'
   import { cubicOut } from 'svelte/easing'
@@ -70,7 +71,7 @@
     >
       <span class="grip" aria-hidden="true"><Icon name="grip" size={20} /></span>
       <span class="key">{pos + 1}</span>
-      <span class="text"><span class:hl={good} class:strike={bad} class:on={reveal}>{item.items[oi]}</span></span>
+      <span class="text"><span class:hl={good} class:strike={bad} class:on={reveal}><Rich inline src={item.items[oi]} /></span></span>
       {#if bad}<span class="fix" aria-label="Vị trí đúng {oi + 1}">{oi + 1}</span>{/if}
       {#if !locked}
         <span class="moves">
@@ -100,7 +101,7 @@
   .good .key { border-color: var(--good); color: var(--good); }
   .bad .key { background: var(--bad); border-color: var(--bad); color: var(--on-accent); }
   .fix { margin: 0 8px 0 0; border-color: var(--good); color: var(--good); }
-  .text { flex: 1; min-width: 0; padding: 8px 0; font-size: var(--fs-md); line-height: 1.45; overflow-wrap: anywhere; white-space: pre-wrap; }
+  .text { flex: 1; min-width: 0; padding: 8px 0; font-size: var(--fs-md); line-height: 1.45; overflow-wrap: anywhere; }
   .moves { flex: none; display: flex; }
   .mv { display: grid; place-items: center; width: 40px; height: 44px; border-radius: var(--r-ctl); color: var(--muted); }
   .mv:disabled { opacity: 0.3; }

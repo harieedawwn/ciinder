@@ -3,6 +3,7 @@ import './styles/tokens.css'
 import './styles/motion.css'
 import './styles/base.css'
 import './styles/feedback.css'
+import './styles/rich.css'
 import App from './App.svelte'
 import { loadSettings } from './state/settings.svelte'
 

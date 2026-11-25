@@ -2,6 +2,14 @@
 
 Newest on top. Each phase adds ≤ 8 lines: what was done, decisions, known issues. Last line of each entry: `Next: Phase N — <model>, <effort>`.
 
+## Phase 6 — essay study + rich content
+- `src/render/`: `tokens.ts` (math → private-use tokens before marked, `[[kw]]` → `<mark class="kw">`, tested), `markdown.ts` (marked subset: no headings / indented code; DOMPurify; links new tab, images lazy), `math.ts` (KaTeX + mhchem + CSS, cached, errors show source in --bad), `Rich.svelte` (only `{@html}` for content). Applied to prompts, notes, options, tf, match/order/group, cloze text + bank, flash, short answer, hint/explain, editor preview, result list.
+- Chunks are lazy: Play awaits markdown (+ KaTeX if the set has `$`) while reading progress, so no raw text flashes. Initial JS 63 KB gzip; markdown 28 KB, math 86 KB. Fixed base `svg{max-width:100%}` hiding KaTeX accent arrows (`\vec`).
+- Essay (`play/Essay.svelte` + `essay/Reveal|Masks|Recall`, `words.ts`): Đọc dần (slider, touch drag on text, faint same-size word blocks, +1 câu / Hiện hết, progress-step at sentence ends), Che từ khóa (wipe reveal, Gõ từ khóa typing check, Hiện tất cả), Tự nhớ (textarea, Hiện đáp án). Then shared `Rate.svelte` → mastery; Xong goes next. Mode kept in session. Lora for answers, ≤ 68ch.
+- `Answer` kind `essay` (unscored, counts as answered). `studyOrder` + SetSheet "Học tự luận n" (essay + flash, Chưa thuộc/unrated first). Enter no longer triggers the player inside forms / role=button.
+- Checked 390×844 (touch drag reveal: no height change, no page overflow, every guide §3 formula renders) and 1280×800 (typed keyword check); no console errors.
+Next: Phase 7 — Sonnet 5.5, high
+
 ## Phase 5 — interactive kinds
 - `play/drag.ts`: Pointer Events drag action (touch/mouse/pen, 6px threshold, per-frame re-measure so the node stays under the pointer through edge auto-scroll and live reorders, click after drag swallowed, `touch-action: none` only on handles/chips, no text selection while dragging).
 - Match (tap left/right in either order, pair number badges, tap paired to re-pick; keys 1–9 pick left then right; reveal: wrong pairs show the correct right with highlighter). Stacked columns below 520px card width.

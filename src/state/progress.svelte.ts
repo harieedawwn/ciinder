@@ -21,6 +21,8 @@ export interface Attempt {
   percent?: number
   /** Only the wrong items of a previous attempt. */
   retry?: boolean
+  /** Học tự luận: essay + flash only. */
+  study?: boolean
 }
 
 export interface HistoryRow {

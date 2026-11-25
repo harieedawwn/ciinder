@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Rich from '../render/Rich.svelte'
   import { matchRights } from '../core/attempt'
   import type { MatchItem } from '../core/types'
   import { ink } from '../lib/ink'
@@ -74,8 +75,8 @@
       >
         <span class="key">{li + 1}</span>
         <span class="text">
-          {p.left}
-          {#if bad}<span class="fix"><span class="hl" class:on={reveal}>{p.right}</span></span>{/if}
+          <Rich inline src={p.left} />
+          {#if bad}<span class="fix"><span class="hl" class:on={reveal}><Rich inline src={p.right} /></span></span>{/if}
         </span>
       </button>
     {/each}
@@ -98,7 +99,7 @@
         use:ink
       >
         <span class="key">{li !== -1 ? li + 1 : ''}</span>
-        <span class="text"><span class:strike={bad} class:on={reveal}>{text}</span></span>
+        <span class="text"><span class:strike={bad} class:on={reveal}><Rich inline src={text} /></span></span>
       </button>
     {/each}
   </div>
@@ -125,7 +126,7 @@
   .paired .key { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
   .good .key { background: var(--good); border-color: var(--good); }
   .bad .key { background: var(--bad); border-color: var(--bad); }
-  .text { flex: 1; min-width: 0; font-size: var(--fs-md); line-height: 1.45; overflow-wrap: anywhere; white-space: pre-wrap; }
+  .text { flex: 1; min-width: 0; font-size: var(--fs-md); line-height: 1.45; overflow-wrap: anywhere; }
   .fix { display: block; margin-top: 4px; }
   @media (hover: hover) { .cell:not([aria-disabled='true']):hover { border-color: var(--muted); } .cell.sel:hover { border-color: var(--accent); } }
 </style>

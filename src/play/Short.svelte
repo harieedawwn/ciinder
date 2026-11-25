@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Rich from '../render/Rich.svelte'
   import type { ShortItem } from '../core/types'
   import { wipe } from '../lib/wipe'
   import type { KindProps } from './registry'
@@ -24,7 +25,7 @@
   />
 </label>
 {#if reveal && !right}
-  <p class="answer"><span class="hl" use:wipe>{item.answers.join(' / ')}</span></p>
+  <p class="answer"><span class="hl" use:wipe><Rich inline src={item.answers.join(' / ')} /></span></p>
 {/if}
 
 <style>

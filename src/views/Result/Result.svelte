@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Rich from '../../render/Rich.svelte'
   import { sectionScores } from '../../core/attempt'
   import { parse } from '../../core/parse'
   import { isScored, type QuizSet } from '../../core/types'
@@ -33,12 +34,12 @@
       return it && isScored(it) ? [{ it, n }] : []
     })
   })
-  /** Flash-only sets have no score: show how many cards were rated Đã thuộc. */
+  /** Self-rated (flash/essay) sessions have no score: show how many cards were rated Đã thuộc. */
   const cards = $derived.by(() => {
-    const ids = new Set(quiz?.items.filter((it) => it.kind === 'flash').map((it) => it.id))
+    const ids = new Set(quiz?.items.filter((it) => it.kind === 'flash' || it.kind === 'essay').map((it) => it.id))
     const seen = (attempt?.order ?? []).filter((iid) => ids.has(iid))
     const answers = attempt?.answers ?? {}
-    return { total: seen.length, known: seen.filter((iid) => { const a = answers[iid]; return a?.kind === 'flash' && a.rating === 'known' }).length }
+    return { total: seen.length, known: seen.filter((iid) => { const a = answers[iid]; return (a?.kind === 'flash' || a?.kind === 'essay') && a.rating === 'known' }).length }
   })
   const wrong = $derived(played.filter(({ it }) => (scores[it.id] ?? 0) < 1))
   const right = $derived(played.length - wrong.length)
@@ -99,7 +100,7 @@
           {@const s = scores[it.id] ?? 0}
           <li>
             <span class="n num">{n + 1}</span>
-            <span class="text">{promptText(it)}</span>
+            <span class="text"><Rich inline src={promptText(it)} /></span>
             <span class="tag" class:part={s > 0}>{s > 0 ? 'Đúng một phần' : 'Sai'}</span>
           </li>
         {/each}

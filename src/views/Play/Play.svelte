@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { buildOrder } from '../../core/attempt'
+  import { buildOrder, studyOrder } from '../../core/attempt'
   import { parse } from '../../core/parse'
   import { PLAYABLE } from '../../play/registry'
+  import { hasMath, loadRender } from '../../render/rich.svelte'
   import { getSet } from '../../state/library.svelte'
   import { flush, loadProgress, startAttempt, type Attempt } from '../../state/progress.svelte'
   import { go } from '../../state/router.svelte'
@@ -31,7 +32,10 @@
     const rec = await getSet(setId).catch(() => undefined)
     if (!rec) return void (problem = 'missing')
     const { set } = parse(rec.source)
+    // Render chunks (markdown, and KaTeX when needed) load while progress is read, so cards never show raw text.
+    const render = loadRender(hasMath(rec.source))
     const data = await loadProgress(setId)
+    await render
     if (isReview) {
       if (!data.last) return go(`/result/${setId}`)
       data.last.pos = 0
@@ -45,14 +49,18 @@
     }
     const fresh = startOptions.fresh
     const only = startOptions.only ?? undefined
+    const study = fresh && startOptions.study
     startOptions.fresh = false
     startOptions.only = null
+    startOptions.study = false
     const seed = (Math.random() * 2 ** 32) >>> 0
-    const order = buildOrder(set, { shuffle: fresh ? startOptions.shuffle : set.meta.shuffle, seed, kinds: PLAYABLE, only })
+    const order = study
+      ? studyOrder(set, data.mastery)
+      : buildOrder(set, { shuffle: fresh ? startOptions.shuffle : set.meta.shuffle, seed, kinds: PLAYABLE, only })
     if (!order.length) return void (problem = 'empty')
-    const mode = fresh ? startOptions.mode : set.meta.mode
+    const mode = study ? 'practice' : fresh ? startOptions.mode : set.meta.mode
     const endsAt = mode === 'test' && set.meta.time ? Date.now() + set.meta.time * 60_000 : undefined
-    attempt = startAttempt({ mode, seed, order, endsAt, retry: !!only })
+    attempt = startAttempt({ mode, seed, order, endsAt, retry: !!only, study })
     player = new Player(setId, set, attempt, false)
   }
 
@@ -89,7 +97,7 @@
     if (/^[1-9]$/.test(e.key) && !typing(e.target)) {
       player.choose(Number(e.key))
       e.preventDefault()
-    } else if (e.key === 'Enter' && !(e.target instanceof HTMLButtonElement) && !(e.target instanceof HTMLTextAreaElement)) {
+    } else if (e.key === 'Enter' && !(e.target as Element).closest('button, textarea, form, [role="button"]')) {
       e.preventDefault()
       primary()
     } else if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && !typing(e.target)) {

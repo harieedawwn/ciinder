@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Rich from '../../render/Rich.svelte'
   import type { Item, NoteItem } from '../../core/types'
   import { play } from '../../lib/sound'
   import Note from '../../play/Note.svelte'
@@ -35,9 +36,9 @@
 
 <article class="card" aria-label="Câu {player.pos + 1}">
   {#if note}<Note item={note} />{/if}
-  {#if item.kind !== 'cloze' && item.kind !== 'flash'}<h2 class="prompt">{item.prompt}</h2>{/if}
+  {#if item.kind !== 'cloze' && item.kind !== 'flash'}<div class="prompt" role="heading" aria-level="2"><Rich src={item.prompt} /></div>{/if}
   {#if Kind}
-    <Kind bind:this={api} {item} answer={player.answer(item.id)} onanswer={(a) => player.setAnswer(item.id, a)} seed={player.attempt.seed} locked={player.locked(item.id)} {reveal} {score} />
+    <Kind bind:this={api} {item} answer={player.answer(item.id)} onanswer={(a) => player.setAnswer(item.id, a)} seed={player.attempt.seed} locked={player.locked(item.id)} {reveal} {score} onnext={player.last ? undefined : () => player.next()} />
   {/if}
 
   {#if reveal}
@@ -47,12 +48,12 @@
         <Button variant="quiet" icon="down" sound={false} aria-expanded={explain} onclick={() => toggle('explain')}>Giải thích</Button>
       {/if}
     </div>
-    {#if explain && item.explain}<p class="more">{item.explain}</p>{/if}
+    {#if explain && item.explain}<div class="more"><Rich src={item.explain} /></div>{/if}
   {:else if item.hint && player.practice && !player.review}
     <div class="after">
       <Button variant="quiet" icon="hint" sound={false} aria-expanded={hint} onclick={() => toggle('hint')}>Gợi ý</Button>
     </div>
-    {#if hint}<p class="more">{item.hint}</p>{/if}
+    {#if hint}<div class="more"><Rich src={item.hint} /></div>{/if}
   {/if}
 </article>
 
@@ -62,13 +63,13 @@
     display: grid; gap: 16px; align-content: start; padding: 20px;
     background: var(--raised); border: 1px solid var(--line); border-radius: var(--r-card); box-shadow: var(--shadow);
   }
-  .prompt { font-size: var(--fs-lg); font-weight: 500; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .prompt { font-size: var(--fs-lg); font-weight: 500; line-height: 1.5; overflow-wrap: anywhere; }
   .after { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 12px; margin: -4px 0 -8px; }
   .after :global(.quiet) { color: var(--muted); }
   .after > :global(.quiet:first-child) { margin-left: -12px; }
   .verdict { font-weight: 600; }
   .verdict.good { color: var(--good); }
   .verdict.bad { color: var(--bad); }
-  .more { padding: 12px 14px; border-radius: var(--r-ctl); background: var(--bg); line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .more { padding: 12px 14px; border-radius: var(--r-ctl); background: var(--bg); line-height: 1.55; overflow-wrap: anywhere; }
   @media (max-width: 420px) { .card { padding: 16px; } }
 </style>

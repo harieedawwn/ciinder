@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { groupTray, isAnswered, matchRights, orderStart } from './attempt'
+import { groupTray, isAnswered, matchRights, orderStart, studyOrder } from './attempt'
 import { gradeItem } from './grade'
 import { parse } from './parse'
 import type { GroupItem, MatchItem, OrderItem } from './types'
@@ -64,5 +64,42 @@ describe('interactive kinds', () => {
     expect(flash.kind).toBe('flash')
     expect(isAnswered({ kind: 'flash', rating: 'known' })).toBe(true)
     expect(gradeItem(flash, { kind: 'flash', rating: 'known' })).toBeNull()
+  })
+})
+
+describe('study session', () => {
+  const set = parse(`# S
+
+--- essay
+E1
+>>>
+Đáp án [[một]]
+
+--- mcq
+Q
++ a
+- b
+
+--- flash
+F1
+>>>
+B1
+
+--- essay
+E2
+>>>
+Đáp án [[hai]]
+`).set
+  const [e1, , f1, e2] = set.items.map((it) => it.id)
+
+  it('plays only essay + flash, not-yet-mastered first', () => {
+    expect(studyOrder(set, {})).toEqual([e1, f1, e2])
+    expect(studyOrder(set, { [e1]: 'known', [f1]: 'partial', [e2]: 'again' })).toEqual([e2, f1, e1])
+    expect(studyOrder(set, { [e1]: 'again' })).toEqual([f1, e2, e1])
+  })
+
+  it('essay ratings count as answered, never scored', () => {
+    expect(isAnswered({ kind: 'essay', rating: 'partial' })).toBe(true)
+    expect(gradeItem(set.items[0], { kind: 'essay', rating: 'known' })).toBeNull()
   })
 })

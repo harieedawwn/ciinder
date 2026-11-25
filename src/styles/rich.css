@@ -1,0 +1,35 @@
+/* Rendered content (src/render/Rich.svelte): markdown subset, math, essay keywords. Lora is fetched only when used. */
+@font-face { font-family: 'Lora'; font-weight: 400; font-display: swap; src: url('@fontsource/lora/files/lora-vietnamese-400-normal.woff2') format('woff2'); unicode-range: U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB; }
+@font-face { font-family: 'Lora'; font-weight: 600; font-display: swap; src: url('@fontsource/lora/files/lora-vietnamese-600-normal.woff2') format('woff2'); unicode-range: U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB; }
+@font-face { font-family: 'Lora'; font-weight: 400; font-display: swap; src: url('@fontsource/lora/files/lora-latin-400-normal.woff2') format('woff2'); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: 'Lora'; font-weight: 600; font-display: swap; src: url('@fontsource/lora/files/lora-latin-600-normal.woff2') format('woff2'); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+
+.rich { overflow-wrap: anywhere; min-width: 0; }
+.rich.md { display: grid; gap: 0.6em; max-width: 100%; }
+.rich.md > * { margin: 0; min-width: 0; }
+.rich ul, .rich ol { padding-left: 1.4em; display: grid; gap: 0.25em; }
+.rich li > p { margin: 0; }
+.rich strong { font-weight: 600; }
+.rich a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.rich code { padding: 0 4px; border-radius: 4px; background: var(--bg); font-size: 0.92em; }
+.rich pre { overflow-x: auto; padding: 10px 12px; border-radius: var(--r-ctl); background: var(--bg); white-space: pre; }
+.rich pre code { padding: 0; background: none; }
+.rich img { display: block; max-width: 100%; height: auto; border-radius: var(--r-ctl); }
+.rich blockquote { padding-left: 12px; border-left: 2px solid var(--line); color: var(--muted); }
+.rich hr { border: 0; border-top: 1px solid var(--line); }
+/* Tables scroll inside the card instead of widening it. */
+.rich table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; font-size: 0.95em; }
+.rich th, .rich td { padding: 6px 10px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+.rich th { font-weight: 600; background: var(--bg); }
+
+/* Math: color follows the text (ink, or good/bad inside feedback). */
+.rich .katex { font-size: 1.05em; color: inherit; line-height: 1.2; text-indent: 0; }
+.rich .katex svg, .rich .katex img { max-width: none; }
+.rich .math-block { display: block; max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 2px 0; text-align: center; -webkit-overflow-scrolling: touch; }
+.rich .math-block .katex-display { display: inline-block; margin: 0.4em 0; text-align: center; }
+.rich .math-block .katex-display > .katex { white-space: nowrap; }
+.rich .math-src { white-space: pre-wrap; }
+.rich .math-err { color: var(--bad); }
+
+/* Essay keyword (outside masking modes it reads as a highlighter mark). */
+.rich mark.kw { color: inherit; background: none; position: relative; isolation: isolate; font-weight: 600; }

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Rich from '../../render/Rich.svelte'
   import type { QuizSet } from '../../core/types'
   import { KIND_NAME, countByKind, promptText, rows } from './summary'
 
@@ -20,9 +21,9 @@
       {#if sectionAt.has(i)}<li class="section"><h3>{sectionAt.get(i)}</h3></li>{/if}
       <li class="item">
         <span class="tag">{KIND_NAME[item.kind]}</span>
-        <p class="prompt">{promptText(item)}</p>
+        <p class="prompt"><Rich inline src={promptText(item)} /></p>
         {#each rows(item) as r, j (j)}
-          <p class="row" class:good={r.good}>{r.text}</p>
+          <p class="row" class:good={r.good}><Rich inline src={r.text} /></p>
         {/each}
       </li>
     {/each}

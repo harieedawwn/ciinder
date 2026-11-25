@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Rich from '../render/Rich.svelte'
   import { optionOrder } from '../core/attempt'
   import type { TfItem } from '../core/types'
   import { ink } from '../lib/ink'
@@ -34,7 +35,7 @@
     {@const right = m === st.correct}
     <li class="row" class:shake={reveal && !right}>
       <span class="label">{TF_LETTERS[d]})</span>
-      <span class="text"><span class="hl" class:on={reveal && right}>{st.text}</span></span>
+      <span class="text"><span class="hl" class:on={reveal && right}><Rich inline src={st.text} /></span></span>
       <span class="pair" role="radiogroup" aria-label="{TF_LETTERS[d]})">
         {#each [true, false] as v (v)}
           <button
@@ -61,7 +62,7 @@
     padding: 8px 8px 8px 14px; border: 1px solid var(--line); border-radius: var(--r-ctl); background: var(--raised);
   }
   .label { align-self: start; padding-top: 1px; font-weight: 600; color: var(--muted); }
-  .text { min-width: 0; line-height: 1.45; overflow-wrap: anywhere; white-space: pre-wrap; }
+  .text { min-width: 0; line-height: 1.45; overflow-wrap: anywhere; }
   .pair { display: flex; gap: 4px; }
   button {
     width: 44px; height: 44px; border-radius: var(--r-ctl); border: 1px solid var(--line);

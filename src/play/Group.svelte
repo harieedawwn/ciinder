@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Rich from '../render/Rich.svelte'
   import { groupTray } from '../core/attempt'
   import type { GroupItem } from '../core/types'
   import { play } from '../lib/sound'
@@ -79,8 +80,8 @@
       },
     }}
   >
-    <span class:strike={bad} class:on={reveal}>{item.groups[g].items[i]}</span>
-    {#if bad}<span class="fix"><span class="hl" class:on={reveal}>{item.groups[g].name}</span></span>{/if}
+    <span class:strike={bad} class:on={reveal}><Rich inline src={item.groups[g].items[i]} /></span>
+    {#if bad}<span class="fix"><span class="hl" class:on={reveal}><Rich inline src={item.groups[g].name} /></span></span>{/if}
   </button>
 {/snippet}
 
@@ -90,7 +91,7 @@
     <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
     <div class="box" class:over={hover === b} data-drop={b} onclick={(e) => e.target === e.currentTarget && putPicked(b)}>
       <button class="name" aria-disabled={locked || !picked} onclick={() => putPicked(b)}>
-        <span class="key">{b + 1}</span>{grp.name}
+        <span class="key">{b + 1}</span><Rich inline src={grp.name} />
       </button>
       <div class="chips">
         {#each tray as [g, i] (key(g, i))}
