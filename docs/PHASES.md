@@ -79,6 +79,7 @@ Done when: verify passes; all four kinds usable with thumb only on a 360px phone
 Read: docs/DESIGN.md (Motion 4, Sound), docs/FORMAT.md §4, src/play/registry.ts.
 Tasks:
 1. `render/markdown.ts` (marked subset + DOMPurify, links target=_blank rel=noopener, images lazy) and `render/math.ts` (KaTeX + mhchem lazy-loaded only when `$` present; render errors show source text, never crash). Apply everywhere content is shown.
+   Math must look good: every syntax in guide §3 tables renders (test them on one page); `$$` blocks centered, horizontally scrollable on phones (never overflow the card); inline math vertically aligned with text and sized ~1.05em; KaTeX CSS + fonts loaded lazily with the math chunk; math color follows --ink (and --good/--bad inside feedback). Also render math inside options, tf statements, match/order/group items, cloze text, flash and essay. Parser treats `$...$` as atomic (never split on `{{`, `[[`, `::` inside math).
 2. Essay component with modes (segmented: Đọc dần · Che từ khóa · Tự nhớ):
    - Đọc dần: slider (and drag anywhere on text on phones) reveals the answer word by word; unrevealed words shown as faint placeholders of the same width so layout never jumps; buttons +1 câu / hiện hết.
    - Che từ khóa: [[keywords]] masked with --mark blocks; tap to reveal one (keyword reveal motion); "Hiện tất cả"; optional typing check: tap a mask → small input; correct → reveal with check sound.
