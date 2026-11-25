@@ -42,7 +42,7 @@
   {#if note}<Note item={note} />{/if}
   {#if item.kind !== 'cloze' && item.kind !== 'flash'}<div class="prompt" role="heading" aria-level="2"><Rich src={item.prompt} /></div>{/if}
   {#if Kind}
-    <Kind bind:this={api} {item} answer={player.answer(item.id)} onanswer={(a) => player.setAnswer(item.id, a)} seed={player.attempt.seed} locked={player.locked(item.id)} {reveal} {score} onnext={player.last ? undefined : () => player.next()} />
+    <Kind bind:this={api} {item} answer={player.answer(item.id)} onanswer={(a) => player.setAnswer(item.id, a)} seed={player.attempt.seed} mixOptions={!player.attempt.fixedOptions} locked={player.locked(item.id)} {reveal} {score} onnext={player.last ? undefined : () => player.next()} />
   {/if}
 
   {#if reveal}

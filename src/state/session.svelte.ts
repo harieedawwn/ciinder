@@ -5,4 +5,4 @@ export type EssayMode = 'read' | 'mask' | 'recall'
 /** Essay study mode, kept while moving between cards. */
 export const essayMode = $state({ mode: 'read' as EssayMode })
 /** `fresh` starts a new attempt instead of resuming; `only` limits it to these item ids (Làm lại câu sai); `study` plays only essay + flash, not-yet-mastered first. */
-export const startOptions = $state({ mode: 'practice' as 'practice' | 'test', shuffle: true, fresh: false, only: null as string[] | null, study: false })
+export const startOptions = $state({ mode: 'practice' as 'practice' | 'test', shuffle: true, mixOptions: true, pick: null as string[] | null, fresh: false, only: null as string[] | null, study: false })

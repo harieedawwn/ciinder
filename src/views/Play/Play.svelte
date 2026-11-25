@@ -49,10 +49,13 @@
       return
     }
     const fresh = startOptions.fresh
-    const only = startOptions.only ?? undefined
+    const only = startOptions.only ?? startOptions.pick ?? undefined
+    const retry = !!startOptions.only
+    const fixedOptions = fresh && !startOptions.mixOptions
     const study = fresh && startOptions.study
     startOptions.fresh = false
     startOptions.only = null
+    startOptions.pick = null
     startOptions.study = false
     const seed = (Math.random() * 2 ** 32) >>> 0
     const order = study
@@ -61,7 +64,7 @@
     if (!order.length) return void (problem = 'empty')
     const mode = study ? 'practice' : fresh ? startOptions.mode : set.meta.mode
     const endsAt = mode === 'test' && set.meta.time ? Date.now() + set.meta.time * 60_000 : undefined
-    attempt = startAttempt({ mode, seed, order, endsAt, retry: !!only, study })
+    attempt = startAttempt({ mode, seed, order, endsAt, retry, study, fixedOptions })
     player = new Player(setId, set, attempt, false)
   }
 

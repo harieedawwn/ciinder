@@ -11,6 +11,7 @@
   import Home from './views/Home/Home.svelte'
   import Play from './views/Play/Play.svelte'
   import Result from './views/Result/Result.svelte'
+  import Key from './views/Key/Key.svelte'
   import FallbackSheet from './views/Share/FallbackSheet.svelte'
   import BackupSection from './views/Settings/BackupSection.svelte'
   import Shared from './views/Shared/Shared.svelte'
@@ -51,6 +52,8 @@
       {#if Editor}<Editor id={router.route.name === 'edit' ? router.route.id : undefined} />{/if}
     {:else if router.route.name === 'play' || router.route.name === 'review'}
       <Play id={router.route.id} review={router.route.name === 'review'} />
+    {:else if router.route.name === 'key'}
+      <Key id={router.route.id} />
     {:else if router.route.name === 'result'}
       <Result id={router.route.id} />
     {:else}

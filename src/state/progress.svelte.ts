@@ -23,6 +23,8 @@ export interface Attempt {
   retry?: boolean
   /** Học tự luận: essay + flash only. */
   study?: boolean
+  /** Options keep the author's order (Xáo đáp án off). */
+  fixedOptions?: boolean
 }
 
 export interface HistoryRow {

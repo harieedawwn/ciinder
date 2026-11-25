@@ -2,6 +2,14 @@
 
 Newest on top. Each phase adds ≤ 8 lines: what was done, decisions, known issues. Last line of each entry: `Next: Phase N — <model>, <effort>`.
 
+## Phase 13 — Start options, answer key & print, AI prompts
+- `selectItems`/`kindCounts`/`sectionCounts` in `core/attempt.ts` (+ tests). StartPanel "Tùy chọn" (collapsed): Xáo thứ tự, Xáo đáp án, Dạng câu hỏi / Phần chips (`ui/Chip`), Số câu; summary line; last choice per set in localStorage (`startPrefs.ts`, includes pick seed).
+- Xáo đáp án off = `Attempt.fixedOptions`, honoured by Mcq/Tf only (match/order/group/cloze keep their seeded mix, otherwise they would start solved).
+- `#/key/<id>` (`views/Key`): Đề / Đáp án segmented, In = window.print(), A4 print CSS, uses the saved filter + seed of the set. Button "Đáp án & in" only in the library sheet.
+- GuideSheet: second card "Lời nhắn cho AI" with the 3 `AI_PROMPTS`, read-only box + Sao chép.
+- Known: not checked in a browser (headless); verify passes. All phases are now done.
+Next: none — all phases complete (only Backlog items remain, on request)
+
 ## Phase 12 — Short share links (Firestore REST)
 - `src/lib/cloud.ts` (plain fetch, no SDK): `put`/`get`/`shortIdFor` (id cached in IndexedDB `short:<hash>`), 8 s timeout, typed `CloudFailure`. Empty `cloud.config.ts` = feature off, app unchanged.
 - Share sheet: "Sao chép liên kết"/"Chia sẻ" create `#k=<id>`; on failure fall back to the long link + toast; "Liên kết đầy đủ" kept as secondary. `#k=` opens via `Shared.svelte` (loading / offline / not-found screens); router treats `k=` like `s=`.

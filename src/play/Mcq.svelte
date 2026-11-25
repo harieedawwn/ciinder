@@ -7,9 +7,9 @@
   import Mark from '../ui/Mark.svelte'
   import { LETTERS, type KindProps } from './registry'
 
-  let { item, answer, onanswer, seed, locked, reveal }: KindProps<McqItem> = $props()
+  let { item, answer, onanswer, seed, mixOptions = true, locked, reveal }: KindProps<McqItem> = $props()
 
-  const order = $derived(optionOrder(item, seed))
+  const order = $derived(optionOrder(item, seed, mixOptions))
   const picks = $derived(answer?.kind === 'mcq' ? answer.picks : [])
 
   function toggle(i: number) {

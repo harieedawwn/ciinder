@@ -7,9 +7,9 @@
   import { play } from '../lib/sound'
   import { TF_LETTERS, type KindProps } from './registry'
 
-  let { item, answer, onanswer, seed, locked, reveal }: KindProps<TfItem> = $props()
+  let { item, answer, onanswer, seed, mixOptions = true, locked, reveal }: KindProps<TfItem> = $props()
 
-  const order = $derived(optionOrder(item, seed))
+  const order = $derived(optionOrder(item, seed, mixOptions))
   const marks = $derived(answer?.kind === 'tf' ? answer.marks : item.statements.map(() => null))
 
   function mark(i: number, v: boolean) {

@@ -18,6 +18,8 @@ export interface KindProps<I extends Item = Item> {
   onanswer: (a: Answer) => void
   /** Attempt seed (option / bank order). */
   seed: number
+  /** False when the learner turned off Xáo đáp án. */
+  mixOptions?: boolean
   /** No more input (checked or review). */
   locked: boolean
   /** Show correct / wrong marks. */

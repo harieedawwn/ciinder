@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bankWords, buildOrder, isAnswered, optionOrder, sectionScores } from './attempt'
+import { bankWords, buildOrder, isAnswered, kindCounts, optionOrder, sectionCounts, sectionScores, selectItems, type Selection } from './attempt'
 import { parse } from './parse'
 import type { ClozeItem, Kind } from './types'
 
@@ -97,5 +97,36 @@ describe('attempt', () => {
       ['A', 3, 3],
       ['B', 3, 3],
     ])
+  })
+})
+
+describe('selectItems', () => {
+  const all: Selection = { kinds: [], sections: [], count: 0, seed: 1 }
+  const ids = (o: Partial<Selection>) => selectItems(set, { ...all, ...o }, kinds)
+
+  it('returns every askable item in set order by default', () => {
+    expect(ids({})).toHaveLength(6)
+  })
+  it('filters by kind and by section', () => {
+    expect(ids({ kinds: ['mcq'] })).toHaveLength(3)
+    const b = set.sections[1].id
+    expect(ids({ sections: [b] })).toHaveLength(3)
+    expect(ids({ kinds: ['mcq'], sections: [b] })).toHaveLength(1)
+  })
+  it('picks a seeded subset of the filtered pool, keeping set order', () => {
+    const a = ids({ count: 3, seed: 7 })
+    expect(a).toHaveLength(3)
+    expect(ids({ count: 3, seed: 7 })).toEqual(a)
+    const order = ids({})
+    expect(a).toEqual(order.filter((id) => a.includes(id)))
+    expect(ids({ count: 99 })).toHaveLength(6)
+  })
+  it('counts kinds and sections', () => {
+    expect(kindCounts(set, kinds).find((k) => k.kind === 'mcq')?.n).toBe(3)
+    expect(sectionCounts(set, kinds).map((s) => s.n)).toEqual([3, 3])
+  })
+  it('keeps author option order when mixing is off', () => {
+    const q = set.items.find((it) => it.kind === 'mcq')!
+    expect(optionOrder(q, 5, false)).toEqual([0, 1, 2])
   })
 })

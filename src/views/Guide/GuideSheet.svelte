@@ -2,6 +2,8 @@
   import { copyText, downloadText } from '../../lib/clipboard'
   import IndexCard from '../../ui/IndexCard.svelte'
   import Button from '../../ui/Button.svelte'
+  import Segmented from '../../ui/Segmented.svelte'
+  import { AI_PROMPTS } from '../../lib/aiPrompts'
   import Sheet from '../../ui/Sheet.svelte'
   import { toast } from '../../ui/toast.svelte'
 
@@ -10,6 +12,8 @@
   let text = $state('')
   let failed = $state(false)
   let showText = $state(false)
+  let promptId = $state<(typeof AI_PROMPTS)[number]['id']>('plan')
+  const prompt = $derived(AI_PROMPTS.find((p) => p.id === promptId)?.text ?? '')
   let area = $state<HTMLTextAreaElement>()
 
   $effect(() => {
@@ -20,6 +24,11 @@
         .catch(() => (failed = true))
     }
   })
+
+  async function copyPrompt() {
+    if (await copyText(prompt)) toast('Đã sao chép')
+    else toast('Không sao chép được. Hãy nhấn giữ trong ô rồi chọn Sao chép.')
+  }
 
   async function copy() {
     if (await copyText(text)) toast('Đã sao chép')
@@ -34,7 +43,7 @@
 <Sheet bind:open title="Hướng dẫn cho AI">
   <IndexCard plain tabs={[{ label: 'Gửi cho AI' }]}>
    <div class="stack">
-    <p>Gửi tệp này cho AI cùng với tài liệu học, rồi dán kết quả vào ciinder.</p>
+    <p>Gửi tệp hướng dẫn và tài liệu cho AI, kèm một lời nhắn.</p>
     {#if failed}
       <p class="err">Không tải được hướng dẫn. Hãy kiểm tra mạng rồi mở lại.</p>
     {:else}
@@ -48,10 +57,18 @@
     {/if}
    </div>
   </IndexCard>
+  <IndexCard plain tabs={[{ label: 'Lời nhắn cho AI' }]}>
+    <div class="stack">
+      <Segmented bind:value={promptId} options={AI_PROMPTS} label="Lời nhắn" />
+      <textarea class="prompt" readonly value={prompt} aria-label="Lời nhắn cho AI"></textarea>
+      <div class="row"><Button variant="primary" icon="copy" onclick={copyPrompt}>Sao chép</Button></div>
+    </div>
+  </IndexCard>
 </Sheet>
 
 <style>
   .stack { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  textarea.prompt { height: 9.5rem; }
   p { line-height: 1.5; }
   .err { color: var(--bad); }
   .row { display: flex; flex-wrap: wrap; gap: 12px; }

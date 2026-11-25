@@ -35,9 +35,9 @@ export function studyOrder(set: QuizSet, mastery: Readonly<Record<string, Master
 export const STUDY_KINDS: ReadonlySet<Kind> = new Set(['essay', 'flash'])
 
 /** Display order of an item's options/statements as original indices. */
-export function optionOrder(item: Item, seed: number): number[] {
+export function optionOrder(item: Item, seed: number, mix = true): number[] {
   const n = item.kind === 'mcq' ? item.options.length : item.kind === 'tf' ? item.statements.length : 0
-  const mixed = (item.kind === 'mcq' || item.kind === 'tf') && item.shuffle
+  const mixed = mix && (item.kind === 'mcq' || item.kind === 'tf') && item.shuffle
   return mixed ? shuffledIndices(n, seedFrom(`${seed}:${item.id}`)) : Array.from({ length: n }, (_, i) => i)
 }
 
@@ -110,4 +110,41 @@ export function sectionScores(set: QuizSet, ids: readonly string[], scores: Reco
     out.set(key, row)
   }
   return [...out.values()]
+}
+
+export interface Selection {
+  /** Kinds to keep; empty = all. */
+  kinds: readonly Kind[]
+  /** Section ids to keep; empty = all. */
+  sections: readonly string[]
+  /** Max items picked at random from the filtered pool; 0 = all. */
+  count: number
+  seed: number
+}
+
+const askable = (it: Item, kinds: ReadonlySet<Kind>) => it.kind !== 'note' && kinds.has(it.kind)
+
+/** Item ids of the filtered pool, in set order. `count` picks a seeded random subset of it. */
+export function selectItems(set: QuizSet, sel: Selection, playable: ReadonlySet<Kind>): string[] {
+  const kinds = new Set(sel.kinds)
+  const sections = new Set(sel.sections)
+  const pool = set.items.filter(
+    (it) => askable(it, playable) && (!kinds.size || kinds.has(it.kind)) && (!sections.size || sections.has(it.sectionId ?? '')),
+  )
+  const ids = pool.length > sel.count && sel.count > 0 ? new Set(shuffle(pool, sel.seed).slice(0, sel.count).map((it) => it.id)) : null
+  return pool.filter((it) => !ids || ids.has(it.id)).map((it) => it.id)
+}
+
+/** Askable items per kind, in order of first appearance. */
+export function kindCounts(set: QuizSet, playable: ReadonlySet<Kind>): { kind: Kind; n: number }[] {
+  const m = new Map<Kind, number>()
+  for (const it of set.items) if (askable(it, playable)) m.set(it.kind, (m.get(it.kind) ?? 0) + 1)
+  return [...m].map(([kind, n]) => ({ kind, n }))
+}
+
+/** Askable items per section (items before the first section are skipped). */
+export function sectionCounts(set: QuizSet, playable: ReadonlySet<Kind>): { id: string; title: string; n: number }[] {
+  return set.sections
+    .map((s) => ({ id: s.id, title: s.title, n: set.items.filter((it) => askable(it, playable) && it.sectionId === s.id).length }))
+    .filter((s) => s.n > 0)
 }
