@@ -2,6 +2,13 @@
 
 Newest on top. Each phase adds ≤ 8 lines: what was done, decisions, known issues. Last line of each entry: `Next: Phase N — <model>, <effort>`.
 
+## Phase 9 — Redesign v2 A: Home
+- Home = desk: `HomeNav` (rail ≥ 1024 with Mark on active tab; bottom bar below), TopBar hidden on Home/Guide ≥ 1024. SetCard = tilted IndexCard + Fingerprint + Mark score, `stack` when not all answered correctly. Subject groups headed by a divider tab (≥ 2 subjects). `EmptyDesk` card with paste area; global paste on Home → editor.
+- Fingerprint data comes from `views/Home/print.ts` (parses the set + last results lazily per card; no SetEntry schema change).
+- Set sheet: large fingerprint + two mode IndexCards (selected = `stack-1` + `hot`); StartPanel's local `.stack` renamed `.panel` (clashes with global `.stack`).
+- Decision: set sheet body is not wrapped in an extra IndexCard (Sheet gets the margin line in Phase 10). Checked empty state at 390×844 and 1280×800; library grid not screenshotted.
+Next: Phase 10 — Sonnet 5.5, medium
+
 ## Review after Phase 8 (planner)
 - User feedback: UI too basic/generic; sound packs sounded bad. → New brief "Layout v2" in DESIGN.md, Phases 9–10 added.
 - Sound rewritten by planner: `src/lib/sound.ts` now synthesizes all cues (tick + thock), `public/sfx` removed, setting is a

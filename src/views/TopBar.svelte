@@ -2,10 +2,10 @@
   import { fullscreen, toggleFullscreen } from '../lib/fullscreen.svelte'
   import Button from '../ui/Button.svelte'
 
-  let { onsettings }: { onsettings: () => void } = $props()
+  let { onsettings, railed = false }: { onsettings: () => void; railed?: boolean } = $props()
 </script>
 
-<header class="bar" class:focus={fullscreen.focusMode}>
+<header class="bar" class:focus={fullscreen.focusMode} class:railed>
   <a class="word" href="#/">ciinder</a>
   <div class="actions">
     <Button
@@ -28,6 +28,7 @@
   }
   .word { font-size: var(--fs-xl); font-weight: 600; color: var(--ink); text-decoration: none; letter-spacing: -0.01em; border-radius: var(--r-chip); }
   .actions { display: flex; gap: 2px; }
+  @media (min-width: 1024px) { .railed { display: none; } }
   .focus { position: fixed; right: 0; left: auto; background: transparent; }
   .focus .word, .focus .actions > :global(:last-child) { display: none; }
   @media (max-height: 500px) { .bar { height: calc(48px + var(--safe-t)); } }

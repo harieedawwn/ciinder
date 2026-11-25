@@ -1,49 +1,46 @@
 <script lang="ts">
   import type { SetEntry } from '../../state/library.svelte'
+  import { tiltFor } from '../../ui/desk'
+  import Fingerprint from '../../ui/Fingerprint.svelte'
+  import IndexCard from '../../ui/IndexCard.svelte'
+  import Mark from '../../ui/Mark.svelte'
   import Menu, { type MenuItem } from '../../ui/Menu.svelte'
-  import { ago } from './time'
+  import { setPrint, type Print } from './print'
 
-  let { entry, actions, onopen }: { entry: SetEntry; actions: MenuItem[]; onopen: () => void } = $props()
+  let { entry, actions, index, onopen }: { entry: SetEntry; actions: MenuItem[]; index: number; onopen: () => void } = $props()
 
   const pct = $derived(entry.lastScore === undefined ? undefined : Math.round(entry.lastScore * 100))
+  let print = $state<Print | null>(null)
+  $effect(() => {
+    const id = entry.id
+    void entry.lastScore
+    void setPrint(id).then((p) => { if (entry.id === id) print = p })
+  })
+  const unfinished = $derived(!!print && print.done.some((d) => !d))
 </script>
 
-<article class="card">
-  <button class="main" onclick={onopen}>
-    <h2>{entry.title}</h2>
-    <p class="meta">
-      {#if entry.subject}<span>{entry.subject}</span>{/if}
-      <span class="num">{entry.count} câu</span>
-    </p>
-    <div class="foot">
-      {#if pct !== undefined}
-        <span class="score num" style:--p={pct / 100}><span class="stroke" aria-hidden="true"></span><b>{pct}%</b></span>
-      {/if}
-      <span class="when">{ago(entry.openedAt ?? entry.updatedAt)}</span>
-    </div>
-  </button>
-  <div class="more"><Menu items={actions} label="Tùy chọn" /></div>
-</article>
+<div class="slot" style="--tilt:{tiltFor(entry.id)}; --i:{index}">
+  <IndexCard class="tilt press fall {unfinished ? 'stack' : ''}">
+    <button class="main" onclick={onopen}>
+      <h2>{entry.title}</h2>
+      <p class="meta">
+        {#if entry.subject}<span>{entry.subject}</span>{/if}
+        <span class="num">{entry.count} câu</span>
+      </p>
+      {#if print}<Fingerprint kinds={print.kinds} done={print.done} />{/if}
+      {#if pct !== undefined}<span class="score num"><Mark on strong>{pct}%</Mark></span>{/if}
+    </button>
+    <div class="more"><Menu items={actions} label="Tùy chọn" /></div>
+  </IndexCard>
+</div>
 
 <style>
-  .card {
-    position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card);
-    box-shadow: var(--shadow);
-    transition: transform var(--t-std) var(--ease-out), border-color var(--t-std) var(--ease-out);
-  }
-  .card:has(.main:active) { transform: scale(0.99); }
-  .card:has(:global([aria-expanded="true"])) { z-index: 2; }
-  @media (hover: hover) { .card:hover { border-color: var(--muted); } }
-  .main { display: grid; width: 100%; text-align: left; gap: 6px; padding: 16px 52px 16px 16px; color: inherit; text-decoration: none; border-radius: var(--r-card); }
-  h2 { font-size: var(--fs-lg); overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .slot { position: relative; }
+  .slot:has(:global([aria-expanded="true"])) { z-index: 2; }
+  .slot :global(.card) { height: 100%; }
+  .main { display: grid; width: 100%; text-align: left; gap: 8px; padding: 0 36px 0 0; color: inherit; align-content: start; }
+  h2 { font-size: 1.25rem; font-weight: 600; line-height: 1.25; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .meta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: var(--fs-sm); color: var(--muted); }
-  .foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 6px; min-height: 24px; }
-  .score { position: relative; display: inline-flex; align-items: center; padding: 0 8px; min-width: 64px; height: 24px; font-size: var(--fs-sm); }
-  .score .stroke {
-    position: absolute; inset: 3px 0; border-radius: 6px; background: var(--mark);
-    transform-origin: left; transform: scaleX(max(0.12, var(--p))) skewX(-8deg);
-  }
-  .score b { position: relative; font-weight: 600; }
-  .when { margin-left: auto; font-size: var(--fs-xs); color: var(--muted); }
+  .score { font-size: var(--fs-sm); font-weight: 600; justify-self: start; margin-left: 4px; }
   .more { position: absolute; top: 6px; right: 4px; }
 </style>

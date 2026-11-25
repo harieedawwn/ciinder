@@ -6,9 +6,11 @@
   import { getSet, touchSet } from '../../state/library.svelte'
   import { loadProgress } from '../../state/progress.svelte'
   import { go } from '../../state/router.svelte'
+  import { setPrint, type Print } from './print'
   import { startOptions } from '../../state/session.svelte'
   import Button from '../../ui/Button.svelte'
-  import Segmented from '../../ui/Segmented.svelte'
+  import Fingerprint from '../../ui/Fingerprint.svelte'
+  import IndexCard from '../../ui/IndexCard.svelte'
   import Switch from '../../ui/Switch.svelte'
 
   type Info = { id: string; subject?: string; count: number }
@@ -24,11 +26,13 @@
   let studyCount = $state(0)
   /** Position of an unfinished attempt ("Tiếp tục"), e.g. "5/20". */
   let resume = $state('')
+  let print = $state<Print | null>(null)
 
   $effect(() => {
     const id = entry.id
     if (!active) return
     resume = ''
+    void setPrint(id).then((p) => { if (entry.id === id) print = p })
     void loadProgress(id).then((p) => {
       if (entry.id === id && p.current) resume = `${Math.min(p.current.pos + 1, p.current.order.length)}/${p.current.order.length}`
     })
@@ -53,12 +57,20 @@
   }
 </script>
 
-<div class="stack">
+<div class="panel">
   <p class="meta">
     {#if entry.subject}<span>{entry.subject}</span>{/if}
     <span class="num">{entry.count} câu</span>
   </p>
-  <Segmented bind:value={startOptions.mode} options={MODES} label="Chế độ" />
+  {#if print}<Fingerprint size="lg" kinds={print.kinds} done={print.done} />{/if}
+  <div class="modes" role="radiogroup" aria-label="Chế độ">
+    {#each MODES as m (m.id)}
+      {@const on = startOptions.mode === m.id}
+      <IndexCard plain hot={on} class="mode press {on ? 'stack stack-1' : ''}">
+        <button role="radio" aria-checked={on} onclick={() => (startOptions.mode = m.id)}>{m.name}</button>
+      </IndexCard>
+    {/each}
+  </div>
   <Switch bind:checked={startOptions.shuffle} label="Trộn thứ tự" />
   {#if resume}
     <Button variant="primary" icon="next" onclick={() => start(false)}>Tiếp tục <span class="num">{resume}</span></Button>
@@ -73,6 +85,10 @@
 </div>
 
 <style>
-  .stack { display: grid; gap: 12px; }
+  .panel { display: grid; gap: 12px; }
+  .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 4px 14px 8px 0; }
+  .modes :global(.body) { padding: 0; }
+  .modes button { width: 100%; min-height: 48px; font-weight: 600; font-size: var(--fs-md); color: var(--muted); border-radius: var(--r-card); }
+  .modes button[aria-checked='true'] { color: var(--ink); }
   .meta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: var(--fs-sm); color: var(--muted); }
 </style>

@@ -41,12 +41,12 @@
 
 <svelte:window onpointerdown={gesture} onkeydown={fullscreenKeys} />
 
-<TopBar onsettings={() => (settingsOpen = true)} />
+<TopBar onsettings={() => (settingsOpen = true)} railed={router.route.name === 'home' || router.route.name === 'guide'} />
 
 {#key router.route}
   <main in:fade={{ duration: viewTransitions || motionReduced() ? 0 : 220 }}>
     {#if router.route.name === 'home' || router.route.name === 'guide'}
-      <Home />
+      <Home onsettings={() => (settingsOpen = true)} />
     {:else if router.route.name === 'new' || router.route.name === 'edit'}
       {#if Editor}<Editor id={router.route.name === 'edit' ? router.route.id : undefined} />{/if}
     {:else if router.route.name === 'play' || router.route.name === 'review'}

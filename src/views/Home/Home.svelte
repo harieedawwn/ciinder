@@ -1,16 +1,28 @@
 <script lang="ts">
-  import { startWithClipboard, startWithFile } from '../../lib/ingest'
+  import { ingestText, startWithFile } from '../../lib/ingest'
+  import { draft } from '../../state/session.svelte'
   import { go, router } from '../../state/router.svelte'
   import { library_ui } from '../../state/session.svelte'
   import GuideSheet from '../Guide/GuideSheet.svelte'
   import SetSheet from './SetSheet.svelte'
   import { duplicateSet, library, removeSet, renameSet, sortedEntries, type SetEntry } from '../../state/library.svelte'
   import Button from '../../ui/Button.svelte'
+  import EmptyDesk from './EmptyDesk.svelte'
+  import HomeNav from './HomeNav.svelte'
   import Sheet from '../../ui/Sheet.svelte'
   import { dismiss, toast } from '../../ui/toast.svelte'
   import SetCard from './SetCard.svelte'
 
+  let { onsettings }: { onsettings: () => void } = $props()
+
   const entries = $derived(sortedEntries())
+  /** Entries grouped by subject (only when ≥ 2 subjects); `index` keeps the fall-in stagger continuous. */
+  const groups = $derived.by(() => {
+    const subjects = new Set(entries.map((e) => e.subject ?? ''))
+    const list = subjects.size < 2 ? [{ name: '', items: entries }] : [...subjects].sort((a, b) => (a ? 0 : 1) - (b ? 0 : 1) || a.localeCompare(b, 'vi')).map((name) => ({ name, items: entries.filter((e) => (e.subject ?? '') === name) }))
+    let n = 0
+    return list.map((g) => ({ name: g.name, items: g.items.map((e) => ({ e, index: n++ })) }))
+  })
 
   let guideOpen = $state(router.route.name === 'guide')
   let selected = $state<SetEntry | null>(null)
@@ -74,15 +86,24 @@
     { label: 'Nhân bản', icon: 'copy' as const, run: () => void duplicate(e) },
     { label: 'Xóa', icon: 'trash' as const, danger: true, run: () => remove(e) },
   ]
+
+  function pasted(e: ClipboardEvent) {
+    const t = e.target as HTMLElement | null
+    if (t?.closest('input, textarea, [contenteditable], dialog')) return
+    const text = e.clipboardData?.getData('text')
+    if (!text?.trim()) return
+    e.preventDefault()
+    void ingestText(text).then((out) => {
+      if (out === null) return
+      draft.text = out
+      go('/new')
+    })
+  }
 </script>
 
-{#snippet starters(primary: boolean)}
-  <Button variant={primary ? 'primary' : 'secondary'} icon="guide" onclick={() => go('/guide')}>Hướng dẫn cho AI</Button>
-  <Button variant="secondary" icon="paste" onclick={() => void startWithClipboard()}>Dán nội dung</Button>
-  <Button variant="secondary" icon="file" onclick={() => void startWithFile()}>Mở tệp</Button>
-{/snippet}
 
 <svelte:window
+  onpaste={pasted}
   ondragover={(e) => {
     if (e.dataTransfer?.types.includes('Files')) {
       e.preventDefault()
@@ -95,24 +116,24 @@
   ondrop={dropFile}
 />
 
+<HomeNav {onsettings} />
+
 <section class="page" class:dragging>
   {#if !library.ready}
     <div aria-busy="true"></div>
   {:else if entries.length === 0}
-    <div class="empty">
-      <p>Chưa có bộ câu hỏi nào.</p>
-      <div class="starters">{@render starters(true)}</div>
-    </div>
+    <EmptyDesk hot={dragging} />
   {:else}
-    <div class="head">
-      <h1>Thư viện</h1>
-      <Button variant="primary" icon="plus" onclick={() => go('/new')}>Tạo bộ mới</Button>
-    </div>
-    <div class="grid">
-      {#each entries as e (e.id)}
-        <SetCard entry={e} actions={actionsFor(e)} onopen={() => openSet(e)} />
-      {/each}
-    </div>
+    {#each groups as g (g.name)}
+      <div class="group">
+        {#if g.name}<h2 class="subject"><span>{g.name}</span></h2>{/if}
+        <div class="grid">
+          {#each g.items as { e, index } (e.id)}
+            <SetCard entry={e} {index} actions={actionsFor(e)} onopen={() => openSet(e)} />
+          {/each}
+        </div>
+      </div>
+    {/each}
   {/if}
 </section>
 
@@ -129,17 +150,21 @@
 <style>
   .page {
     width: 100%; max-width: 1200px; margin: 0 auto;
-    padding: 8px max(16px, var(--safe-r)) calc(32px + var(--safe-b)) max(16px, var(--safe-l));
+    padding: 16px max(16px, var(--safe-r)) calc(88px + var(--safe-b)) max(16px, var(--safe-l));
   }
   .page.dragging { outline: 2px dashed var(--accent); outline-offset: -8px; }
-  .head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 8px 0 20px; }
-  h1 { font-size: var(--fs-2xl); }
+  .group + .group { margin-top: 36px; }
+  .subject { position: relative; height: 30px; margin-bottom: 18px; border-bottom: 1px solid var(--line); font-size: var(--fs-xs); font-weight: 600; }
+  .subject span {
+    position: absolute; left: 12px; bottom: -1px; height: 30px; padding: 0 14px; display: inline-flex; align-items: center;
+    background: var(--surface); border: 1px solid var(--line); border-bottom-color: var(--surface); border-radius: var(--r-chip) var(--r-chip) 0 0;
+  }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: 12px; }
-  .empty { display: grid; gap: 24px; max-width: 400px; margin: 12vh auto 0; }
-  .empty p { font-size: var(--fs-xl); font-weight: 600; line-height: 1.25; }
-  .starters { display: grid; gap: 12px; }
-  .starters :global(.btn) { justify-content: flex-start; }
-  @media (max-height: 500px) { .empty { margin-top: 16px; } .starters { grid-template-columns: repeat(3, auto); justify-content: start; } }
+  @media (min-width: 600px) { .grid { gap: 24px; } }
+  @media (min-width: 1024px) {
+    .page { max-width: none; margin: 0 0 0 248px; width: auto; padding: 40px 40px 48px; }
+  }
+  @media (max-height: 500px) and (max-width: 1023px) { .page { padding-bottom: calc(32px + var(--safe-b)); } }
   .rename { display: grid; gap: 12px; }
   input {
     min-height: 48px; padding: 0 14px; border-radius: var(--r-ctl); border: 1px solid var(--line);
