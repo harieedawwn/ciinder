@@ -17,6 +17,7 @@ Model/effort is chosen by the user before the session; it's listed so the previo
 | 9 | Redesign v2 A: Home desk, empty state, set sheet | Sonnet 5.5 | medium | no |
 | 10 | Redesign v2 B: editor, sheets, theme reveal, morph into player | Sonnet 5.5 | medium | yes |
 | 11 | Redesign v2 C: player, question kinds, result | Sonnet 5.5 | medium | yes |
+| 12 | Short share links via Firebase Firestore (REST, no SDK) | Sonnet 5.5 | medium | yes |
 
 Why these picks: Sonnet 5.5 medium for well-specified, testable logic (cheapest that holds quality); Opus 5.5 medium where taste,
 interaction feel or tricky pointer logic matter (Opus medium ≥ Sonnet high at similar cost). Phase 7 is fiddly build config → Sonnet high.
@@ -173,6 +174,41 @@ Tasks:
    section rows with thin bars (transform scaleX); wrong items as a `stack` IndexCard you can step through (prev/next).
 5. Standalone player inherits all of this (same components); keep its size < 400 KB.
 Done when: verify passes; full set plays on 390×844 and 1280×800 without layout jumps.
+
+## Phase 12 — Short share links (Firestore REST)
+Read: docs/FORMAT.md §8, src/core/share.ts, src/views/Share/ShareSheet.svelte, src/views/Shared/*, src/lib/cloud.config.ts (user fills it).
+Why: big sets make `#s=` links 10k+ chars (ugly, Zalo shows a wall of text). Store the compressed payload in Firestore, share `#k=<id>`.
+Tasks:
+1. `src/lib/cloud.config.ts` exports `{ apiKey, projectId }` (public web config, not a secret). If empty → feature off, app behaves as before.
+2. `src/lib/cloud.ts` with plain `fetch` (NO firebase SDK):
+   - `put(payload)`: id = 10 random chars [A-Za-z0-9] (crypto.getRandomValues); POST
+     `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/sets?documentId=${id}&key=${apiKey}`
+     body `{ fields: { z: { stringValue: payload }, t: { timestampValue: new Date().toISOString() } } }`. Retry once with a new id on 409.
+   - `get(id)`: GET `.../documents/sets/${id}?key=${apiKey}` → `fields.z.stringValue`. Timeout 8 s, clear errors.
+   - Cache: same source hash → reuse id (IndexedDB `short:<hash>`), so sharing twice doesn't create two docs.
+3. Share sheet: "Sao chép liên kết" creates the short link (`#k=<id>`), shows a quiet spinner ≤ 8 s; on failure/offline falls back to
+   the long `#s=` link with toast "Không tạo được liên kết ngắn, đã dùng liên kết đầy đủ". Keep "Liên kết đầy đủ" as a secondary option.
+4. Opening `#k=<id>`: same robust href parsing as `#s=` (regex `/[#&?]k=([A-Za-z0-9]{6,16})/`, survives Zalo params), fetch, decode, play.
+   Offline/not found → friendly screen. Saved sets remember their short id.
+5. Firestore rules text in `docs/firestore.rules` (user pastes it in the console):
+   ```
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{db}/documents {
+       match /sets/{id} {
+         allow get: if true;
+         allow list, update, delete: if false;
+         allow create: if request.resource.data.keys().hasOnly(['z','t'])
+           && request.resource.data.z is string && request.resource.data.z.size() < 900000
+           && request.resource.data.t == request.time;
+       }
+     }
+   }
+   ```
+   (Use `t: { timestampValue }` = server-checked; if `request.time` equality is too strict over REST, switch the write to a
+   `commit` with `transform setToServerValue: REQUEST_TIME` and keep the rule.)
+6. Tests for id format, href parsing with Zalo params, fallback path (mock fetch).
+Done when: verify passes; with config filled, a 300-question set shares as a ~60-char link that opens on another device.
 
 ## Backlog (not scheduled; only if the user asks)
 - In-app AI using the user's own free Gemini key (BYOK, key stays in localStorage) to generate sets directly.
