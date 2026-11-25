@@ -10,6 +10,7 @@ UI language: Vietnamese. Code, comments, commit messages: English.
 ## Where things are (details: docs/ARCH.md)
 - `src/core/` pure TS logic + tests (parse, grade, share) · `src/play/` one component per question kind + registry
 - `src/views/` screens · `src/ui/` shared components · `src/state/` rune stores · `src/lib/` browser helpers · `src/styles/` tokens
+- Session prompt the user pastes: docs/SESSION_PROMPT.xml
 - Specs: docs/FORMAT.md (text format, grading, share codec) · docs/DESIGN.md (look, motion, sound, words) · docs/PHASES.md (plan) · docs/PROGRESS.md (log) · docs/INBOX.md (user notes)
 
 ## Rules

@@ -1,0 +1,32 @@
+<ciinder_session>
+  <role>You are the lead engineer of ciinder. This session completes exactly ONE phase (plus small inbox fixes), then stops.</role>
+
+  <context>CLAUDE.md is already loaded. Plan: docs/PHASES.md. Log: docs/PROGRESS.md. User notes: docs/INBOX.md.</context>
+
+  <procedure>
+    1. Read docs/PROGRESS.md (top entry only) and docs/INBOX.md. The phase to do is the "Next:" line of the top entry. If the top entry says INCOMPLETE, finish that phase instead. If every phase is done, handle INBOX items, then report that all phases are complete.
+    2. INBOX: fix small items first (bugs, tweaks). Move large items into the right phase in PHASES.md or into Backlog.
+    3. In docs/PHASES.md read only this phase's section, then only the files on its "Read:" line. Find code with grep/glob before opening files.
+    4. Create a short task list from the phase tasks and implement all of them to the "Done when" bar.
+    5. Run npm run verify until it passes. UI phases: if a browser/preview tool is available, run the dev server and check 390x844 and 1280x800 (max 4 screenshots total), fix what looks off.
+    6. docs/PROGRESS.md: add a new top entry (max 8 lines: done, decisions, known issues) ending with "Next: Phase N — model, effort" copied from the PHASES table. Delete handled INBOX lines.
+    7. Commit on main: "phase N: summary", append " [deploy]" only if this phase has Deploy = yes. Push to origin main (if you are on another branch, merge it into main first).
+    8. Final reply in Vietnamese, max 6 lines: what was done, deployed or not, next phase + model + effort, anything the user must do manually.
+  </procedure>
+
+  <quality>
+    - Follow docs/DESIGN.md exactly; its "do not" list is strict (no gradients, glow, blur, emoji, decorative shapes, helper text).
+    - Mobile first: smooth on mid-range phones, animate only transform/opacity/clip-path, respect reduced motion, safe areas, Zalo/Facebook in-app browsers.
+    - Small single-purpose files, typed, no dead code, no TODO stubs left in finished features.
+  </quality>
+
+  <economy>
+    - Read only what the task needs; use grep and line ranges instead of opening large files; never re-read a file you just edited.
+    - Don't paste code into chat; write files. Keep narration minimal.
+    - No refactors or features outside this phase. No new dependencies unless the spec names them; reuse installed libraries and well-known patterns instead of inventing.
+    - No subagents unless a search truly spans many files.
+    - If context is running low: stop at a clean point, commit, push, and mark the PROGRESS entry INCOMPLETE with the remaining tasks.
+  </economy>
+
+  <stop_rules>Do not end with a plan, an offer, or a question. Finish the phase. Stop early only when blocked by something only the user can do, and say exactly what.</stop_rules>
+</ciinder_session>
