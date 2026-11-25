@@ -57,7 +57,7 @@
 </ol>
 
 <style>
-  .list { list-style: none; padding: 0; display: grid; }
+  .list { list-style: none; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); }
   .row {
     display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px;
     padding: 8px 0; border-top: 1px solid var(--line);

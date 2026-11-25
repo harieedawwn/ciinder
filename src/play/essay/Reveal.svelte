@@ -77,13 +77,13 @@
 </div>
 
 <style>
-  .reveal { display: grid; gap: 16px; }
+  .reveal { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
   .text { touch-action: pan-y; user-select: none; -webkit-user-select: none; }
   .text :global(.w:not(.on)) { color: transparent; background: var(--line); border-radius: 3px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
   .text :global(.w.u:not(.on) > *) { opacity: 0; }
   .text :global(img.w:not(.on)) { opacity: 0.15; }
   .text :global(a .w:not(.on)) { text-decoration-color: transparent; }
-  .bar { display: grid; gap: 8px; }
+  .bar { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .btns { display: flex; flex-wrap: wrap; gap: 8px; }
   input[type='range'] { width: 100%; height: 40px; accent-color: var(--accent); touch-action: pan-x; }
 </style>

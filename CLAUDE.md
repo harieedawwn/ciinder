@@ -21,6 +21,7 @@ UI language: Vietnamese. Code, comments, commit messages: English.
 - Follow docs/DESIGN.md strictly, especially the "do not" list. All user-facing strings Vietnamese, from the Words list when possible.
 - Content from links/files is untrusted: render only through `src/render/` (sanitized).
 - Hash routing only; never read data from `location.search`.
+- Mobile overflow: every `display: grid` container sets `grid-template-columns: minmax(0, 1fr)` (or explicit columns); flex/grid children holding text get `min-width: 0`. After UI changes, check at 360px that `scrollWidth == clientWidth` with a long title and formulas.
 
 ## Workflow
 - Work on `main`. Commit: `phase N: <summary>`; add `[deploy]` to the message only when the phase says Deploy: yes (CI deploys only then).

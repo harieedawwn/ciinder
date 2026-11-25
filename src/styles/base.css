@@ -33,3 +33,8 @@ a { color: var(--accent); }
   html { --fs-code: 16px; }
   input:not([type='range']):not([type='checkbox']):not([type='radio']), textarea, select { font-size: max(16px, 1em) !important; }
 }
+
+/* Mobile overflow guards: a single long title/word/formula must never widen the page. */
+html, body { overflow-x: clip; }
+h1, h2, h3, p, li, label, .rich { overflow-wrap: break-word; }
+.rich .katex-display { overflow-x: auto; overflow-y: hidden; max-width: 100%; }

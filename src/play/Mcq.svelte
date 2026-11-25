@@ -55,7 +55,7 @@
 
 <style>
   .multi { font-size: var(--fs-sm); color: var(--muted); }
-  .opts { display: grid; margin: 0 -4px; }
+  .opts { display: grid; grid-template-columns: minmax(0, 1fr); margin: 0 -4px; }
   .opt {
     display: flex; align-items: flex-start; gap: 12px; width: 100%; min-height: 48px; padding: 11px 4px;
     text-align: left; border-top: 1px solid var(--line); border-radius: 0; transition: background-color var(--t-std) var(--ease-out);

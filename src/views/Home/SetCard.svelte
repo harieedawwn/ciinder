@@ -39,7 +39,7 @@
   .slot { position: relative; }
   .slot:has(:global([aria-expanded="true"])) { z-index: 2; }
   .slot :global(.card) { height: 100%; }
-  .main { display: grid; width: 100%; text-align: left; gap: 8px; padding: 0 36px 0 0; color: inherit; align-content: start; }
+  .main { display: grid; grid-template-columns: minmax(0, 1fr); width: 100%; text-align: left; gap: 8px; padding: 0 36px 0 0; color: inherit; align-content: start; }
   h2 { font-size: 1.25rem; font-weight: 600; line-height: 1.25; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .meta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: var(--fs-sm); color: var(--muted); }
   .score { font-size: var(--fs-sm); font-weight: 600; justify-self: start; margin-left: 4px; }

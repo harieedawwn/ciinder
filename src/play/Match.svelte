@@ -106,9 +106,9 @@
 </div>
 
 <style>
-  .cols { display: grid; gap: 16px; }
+  .cols { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
   @container card (min-width: 520px) { .cols { grid-template-columns: 1fr 1fr; align-items: start; } }
-  .col { display: grid; gap: 8px; }
+  .col { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .cell {
     display: flex; align-items: flex-start; gap: 12px; width: 100%; min-height: 48px; padding: 11px 14px;
     text-align: left; border-radius: var(--r-ctl); border: 1px solid var(--line); background: var(--raised);

@@ -122,7 +122,7 @@
 </div>
 
 <style>
-  .masks { display: grid; gap: 16px; }
+  .masks { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
   .text :global(mark.kw) { cursor: pointer; border-radius: 4px; outline-offset: 2px; }
   .text :global(mark.kw.short) { white-space: nowrap; }
   .text :global(mark.kw::after) {

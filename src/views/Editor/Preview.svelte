@@ -31,12 +31,12 @@
 </div>
 
 <style>
-  .preview { display: grid; gap: 12px; align-content: start; }
+  .preview { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; align-content: start; }
   h2 { font-size: var(--fs-xl); overflow-wrap: anywhere; }
   .meta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: var(--fs-sm); color: var(--muted); }
-  ol { list-style: none; display: grid; gap: 8px; margin: 0; padding: 0; }
+  ol { list-style: none; display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; margin: 0; padding: 0; }
   .section h3 { font-size: var(--fs-lg); margin-top: 8px; }
-  .item { display: grid; gap: 4px; padding: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-ctl); }
+  .item { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-ctl); }
   .tag { font-size: var(--fs-xs); color: var(--muted); }
   .prompt { font-weight: 500; overflow-wrap: anywhere; line-height: 1.4; }
   .row { font-size: var(--fs-sm); color: var(--muted); overflow-wrap: anywhere; padding-left: 10px; border-left: 2px solid var(--line); }

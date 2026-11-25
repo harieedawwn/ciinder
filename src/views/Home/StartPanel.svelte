@@ -85,7 +85,7 @@
 </div>
 
 <style>
-  .panel { display: grid; gap: 12px; }
+  .panel { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 4px 14px 8px 0; }
   .modes :global(.body) { padding: 0; }
   .modes button { width: 100%; min-height: 48px; font-weight: 600; font-size: var(--fs-md); color: var(--muted); border-radius: var(--r-card); }

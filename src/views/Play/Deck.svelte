@@ -36,6 +36,6 @@
 </div>
 
 <style>
-  .deck { display: grid; align-content: start; position: relative; touch-action: pan-y; padding: 0 10px 12px 0; }
+  .deck { display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; position: relative; touch-action: pan-y; padding: 0 10px 12px 0; }
   .slot { grid-area: 1 / 1; position: relative; z-index: 1; min-width: 0; }
 </style>

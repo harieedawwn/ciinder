@@ -40,5 +40,5 @@
   .cell.good { background: var(--good-soft); color: var(--good); border-color: transparent; }
   .cell.bad { background: var(--bad-soft); color: var(--bad); border-color: transparent; }
   .cell.current { box-shadow: inset 0 0 0 2px var(--accent); color: var(--ink); }
-  .foot { display: grid; margin-top: 20px; }
+  .foot { display: grid; grid-template-columns: minmax(0, 1fr); margin-top: 20px; }
 </style>

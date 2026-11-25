@@ -63,7 +63,7 @@
       padding: 20px 16px calc(16px + var(--safe-b)) calc(24px + var(--safe-l)); border-right: 1px solid var(--line); background: var(--bg);
     }
     .word { font-size: var(--fs-xl); font-weight: 600; color: var(--ink); text-decoration: none; letter-spacing: -0.01em; margin-bottom: 32px; }
-    .tabs { display: grid; gap: 4px; }
+    .tabs { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; }
     .tab { text-align: left; min-height: 44px; padding: 0 8px; font-size: var(--fs-md); font-weight: 600; color: var(--muted); border-radius: var(--r-chip); }
     .tab[aria-current='page'] { color: var(--ink); }
     .tools { margin-top: auto; display: flex; gap: 2px; margin-left: -8px; }

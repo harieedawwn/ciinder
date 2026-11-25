@@ -41,7 +41,7 @@
 
 <style>
   .flip {
-    display: grid; width: 100%; min-height: 220px; perspective: 1200px;
+    display: grid; grid-template-columns: minmax(0, 1fr); width: 100%; min-height: 220px; perspective: 1200px;
     border-radius: var(--r-card); text-align: center; -webkit-tap-highlight-color: transparent;
   }
   .face {

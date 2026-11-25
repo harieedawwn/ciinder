@@ -26,7 +26,7 @@
 </div>
 
 <style>
-  .recall { display: grid; gap: 16px; }
+  .recall { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
   textarea {
     width: 100%; min-height: 112px; padding: 12px 14px; resize: vertical;
     border: 1px solid var(--line); border-radius: var(--r-ctl); background: var(--surface); color: var(--ink);

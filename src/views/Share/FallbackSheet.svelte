@@ -23,6 +23,6 @@
 </Sheet>
 
 <style>
-  .stack { display: grid; gap: 12px; }
+  .stack { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
   p { overflow-wrap: anywhere; }
 </style>

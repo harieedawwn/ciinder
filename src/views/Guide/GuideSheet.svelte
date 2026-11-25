@@ -51,7 +51,7 @@
 </Sheet>
 
 <style>
-  .stack { display: grid; gap: 16px; }
+  .stack { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
   p { line-height: 1.5; }
   .err { color: var(--bad); }
   .row { display: flex; flex-wrap: wrap; gap: 12px; }

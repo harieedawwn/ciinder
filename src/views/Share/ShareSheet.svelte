@@ -69,7 +69,7 @@
 </Sheet>
 
 <style>
-  .sections { display: grid; gap: 8px; }
-  .stack { display: grid; gap: 12px; }
+  .sections { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .stack { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .warn { font-size: var(--fs-sm); color: var(--muted); }
 </style>

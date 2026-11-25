@@ -63,7 +63,7 @@
 </IndexCard>
 
 <style>
-  .inner { container: card / inline-size; display: grid; gap: 16px; align-content: start; }
+  .inner { container: card / inline-size; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-content: start; }
   .count { font-size: var(--fs-xs); font-weight: 600; color: var(--muted); }
   .prompt { font-size: var(--fs-lg); font-weight: 500; line-height: 1.5; overflow-wrap: anywhere; }
   .after { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 12px; margin: -4px 0 -8px; }

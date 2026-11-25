@@ -142,7 +142,7 @@
 
 <style>
   .play {
-    display: grid; gap: 12px; max-width: 680px; margin: 0 auto;
+    display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; max-width: 680px; margin: 0 auto;
     padding: 0 max(16px, var(--safe-r)) 0 max(16px, var(--safe-l));
   }
   .stroke { position: sticky; top: calc(56px + var(--safe-t)); z-index: 5; height: 4px; margin: 0 -4px; border-radius: 2px; overflow: hidden; }

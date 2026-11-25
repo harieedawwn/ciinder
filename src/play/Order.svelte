@@ -84,7 +84,7 @@
 </ol>
 
 <style>
-  .rows { display: grid; gap: 8px; padding: 0; list-style: none; }
+  .rows { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 0; list-style: none; }
   .row {
     display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 4px 4px 4px 0;
     border-radius: var(--r-ctl); border: 1px solid var(--line); background: var(--raised);

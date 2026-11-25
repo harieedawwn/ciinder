@@ -167,7 +167,7 @@
     .page { max-width: none; margin: 0 0 0 248px; width: auto; padding: 40px 40px 48px; }
   }
   @media (max-height: 500px) and (max-width: 1023px) { .page { padding-bottom: calc(32px + var(--safe-b)); } }
-  .rename { display: grid; gap: 12px; }
+  .rename { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
   input {
     min-height: 48px; padding: 0 14px; border-radius: var(--r-ctl); border: 1px solid var(--line);
     background: var(--raised); font-size: var(--fs-md);

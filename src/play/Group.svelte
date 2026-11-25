@@ -112,10 +112,10 @@
 {/if}
 
 <style>
-  .zones { display: grid; gap: 8px; }
+  .zones { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
   @container card (min-width: 520px) { .zones { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); } }
   .box {
-    display: grid; gap: 8px; align-content: start; min-height: 96px; padding: 8px;
+    display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; align-content: start; min-height: 96px; padding: 8px;
     border: 1px solid var(--line); border-radius: var(--r-ctl); background: var(--bg);
     transition: border-color var(--t-std) var(--ease-out);
   }
@@ -133,7 +133,7 @@
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .tray { min-height: 56px; padding: 8px; border: 1px dashed var(--line); border-radius: var(--r-ctl); }
   .chip {
-    display: grid; gap: 2px; min-height: 40px; max-width: 100%; padding: 8px 12px; text-align: left;
+    display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; min-height: 40px; max-width: 100%; padding: 8px 12px; text-align: left;
     border: 1px solid var(--line); border-radius: var(--r-chip); background: var(--raised); box-shadow: var(--shadow);
     font-size: var(--fs-md); line-height: 1.35; overflow-wrap: anywhere; cursor: grab;
     user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;

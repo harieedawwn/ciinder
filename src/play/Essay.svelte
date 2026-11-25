@@ -68,5 +68,5 @@
   }
   .answer::before { content: ''; position: absolute; top: 0; bottom: 0; left: 14px; width: 1px; background: var(--accent-soft); }
   .answer :global(.rich) { font-family: var(--font-read); font-size: 1.0625rem; line-height: 1.7; }
-  .done { display: grid; }
+  .done { display: grid; grid-template-columns: minmax(0, 1fr); }
 </style>

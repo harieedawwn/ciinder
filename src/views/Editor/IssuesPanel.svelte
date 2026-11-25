@@ -50,8 +50,8 @@
 {/if}
 
 <style>
-  .issues { display: grid; gap: 8px; padding: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-ctl); max-height: 40vh; overflow-y: auto; }
-  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+  .issues { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-ctl); max-height: 40vh; overflow-y: auto; }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; }
   li button { display: flex; gap: 10px; width: 100%; min-height: 40px; align-items: baseline; text-align: left; padding: 8px; border-radius: var(--r-chip); font-size: var(--fs-sm); }
   li b { flex: none; color: var(--bad); font-weight: 600; }
   .w b { color: var(--muted); }

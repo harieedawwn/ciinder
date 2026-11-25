@@ -212,14 +212,14 @@
   .bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
   .tools { display: flex; gap: 8px; flex-wrap: wrap; }
   .main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
-  .left { display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 12px; min-height: 0; }
-  .right { display: grid; min-height: 0; }
-  .main :global(.pane) { margin-top: 30px; min-height: 0; display: grid; }
-  .main :global(.pane > .body) { padding: 12px; min-height: 0; display: grid; }
+  .left { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; gap: 12px; min-height: 0; }
+  .right { display: grid; grid-template-columns: minmax(0, 1fr); min-height: 0; }
+  .main :global(.pane) { margin-top: 30px; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr); }
+  .main :global(.pane > .body) { padding: 12px; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr); }
   .scroll { overflow-y: auto; overscroll-behavior: contain; min-height: 0; padding: 4px 8px; }
   .hide { display: none; }
   .empty { color: var(--muted); }
-  .leave { display: grid; gap: 12px; }
+  .leave { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
   @media (min-width: 900px) {
     .main { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   }

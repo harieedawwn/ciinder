@@ -133,7 +133,7 @@
 
 <style>
   .result {
-    display: grid; gap: 16px; align-content: start; max-width: 680px; margin: 0 auto;
+    display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-content: start; max-width: 680px; margin: 0 auto;
     padding: 8px max(16px, var(--safe-r)) calc(32px + var(--safe-b)) max(16px, var(--safe-l));
   }
   h1 { font-size: var(--fs-md); color: var(--muted); overflow-wrap: anywhere; }
@@ -141,7 +141,7 @@
   .big { font-size: 3.5rem; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
   .ten { font-size: var(--fs-xl); color: var(--muted); font-weight: 500; }
   .meta { display: flex; flex-wrap: wrap; gap: 4px 16px; color: var(--muted); font-size: var(--fs-sm); }
-  .sections { list-style: none; padding: 0; display: grid; gap: 12px; }
+  .sections { list-style: none; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .sections li { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; }
   .name { min-width: 0; overflow-wrap: anywhere; }
   .pct { color: var(--muted); }
@@ -151,7 +151,7 @@
   .actions > :global(:first-child) { grid-column: 1 / -1; }
   .home { grid-column: 1 / -1; margin-left: -12px; }
   h2 { font-size: var(--fs-lg); margin-top: 8px; }
-  .wcard { display: grid; gap: 6px; }
+  .wcard { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
   .n { font-weight: 600; color: var(--muted); font-size: var(--fs-xs); }
   .text { overflow-wrap: anywhere; line-height: 1.5; }
   .tag { font-size: var(--fs-xs); font-weight: 600; color: var(--bad); }

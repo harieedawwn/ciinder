@@ -10,6 +10,6 @@
 </section>
 
 <style>
-  .start { display: grid; gap: 16px; max-width: 480px; margin: 0 auto; padding: 8px max(16px, var(--safe-r)) calc(32px + var(--safe-b)) max(16px, var(--safe-l)); }
+  .start { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; max-width: 480px; margin: 0 auto; padding: 8px max(16px, var(--safe-r)) calc(32px + var(--safe-b)) max(16px, var(--safe-l)); }
   h1 { font-size: var(--fs-2xl); overflow-wrap: anywhere; }
 </style>
