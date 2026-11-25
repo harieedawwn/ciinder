@@ -2,6 +2,13 @@
 
 Newest on top. Each phase adds ≤ 8 lines: what was done, decisions, known issues. Last line of each entry: `Next: Phase N — <model>, <effort>`.
 
+## Phase 12 — Short share links (Firestore REST)
+- `src/lib/cloud.ts` (plain fetch, no SDK): `put`/`get`/`shortIdFor` (id cached in IndexedDB `short:<hash>`), 8 s timeout, typed `CloudFailure`. Empty `cloud.config.ts` = feature off, app unchanged.
+- Share sheet: "Sao chép liên kết"/"Chia sẻ" create `#k=<id>`; on failure fall back to the long link + toast; "Liên kết đầy đủ" kept as secondary. `#k=` opens via `Shared.svelte` (loading / offline / not-found screens); router treats `k=` like `s=`.
+- Decision: write uses Firestore `:commit` with `REQUEST_TIME` transform (so `t == request.time` in docs/firestore.rules holds); collision = HTTP 409, retried once.
+- Known: not tested against a real Firestore (config empty). User must: create Firestore, paste docs/firestore.rules, fill src/lib/cloud.config.ts.
+Next: Phase 13 — Sonnet 5.5, medium
+
 ## Phase 11 — Redesign v2 C: player + result
 - Player: each question is an IndexCard with `stack` (2/1/0 edges by remaining), counter `3 / 20` inside the card; Deck's own edges removed; top progress bar uses `--mark-strong`.
 - Mcq/Tf rows are ruled (1px --line), 24px letter stamp r6 (selected = filled --ink); correct text in `<Mark>`, wrong in `strike`. Flash faces/essay answer = card with margin line; Rate = three small tabs (selected on --mark).

@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { LINK_SOFT_MAX, shareLink } from '../../core/share'
+  import { LINK_SOFT_MAX, encodeShare, shareLink } from '../../core/share'
+  import { cloudEnabled, shortIdFor, shortLink } from '../../lib/cloud'
   import { copyText } from '../../lib/clipboard'
   import { downloadHtml, downloadSource } from '../../lib/exportHtml'
   import { play } from '../../lib/sound'
@@ -13,8 +14,11 @@
 
   let source = $state('')
   let busy = $state(false)
+  let making = $state(false)
+  const base = location.origin + import.meta.env.BASE_URL
 
-  const link = $derived(source ? shareLink(source, location.origin + import.meta.env.BASE_URL) : '')
+  const link = $derived(source ? shareLink(source, base) : '')
+  const short = cloudEnabled()
   const long = $derived(link.length > LINK_SOFT_MAX)
   const canShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function'
 
@@ -27,8 +31,22 @@
     })
   })
 
-  async function copy() {
-    if (await copyText(link)) {
+  /** Short `#k=` link when cloud is on and reachable; otherwise the long link. */
+  async function bestLink(): Promise<string> {
+    if (!cloudEnabled()) return link
+    making = true
+    try {
+      return shortLink(await shortIdFor(source, encodeShare(source)), base)
+    } catch {
+      toast('Không tạo được liên kết ngắn, đã dùng liên kết đầy đủ')
+      return link
+    } finally {
+      making = false
+    }
+  }
+
+  async function copy(full = false) {
+    if (await copyText(full ? link : await bestLink())) {
       play('copy')
       toast('Đã sao chép liên kết')
     } else toast('Không sao chép được. Hãy nhấn giữ liên kết rồi chọn Sao chép.')
@@ -36,7 +54,7 @@
 
   async function share() {
     try {
-      await navigator.share({ title: entry?.title, url: link })
+      await navigator.share({ title: entry?.title, url: await bestLink() })
     } catch {
       // Cancelled by the user.
     }
@@ -54,9 +72,12 @@
   <div class="sections">
     <IndexCard plain tabs={[{ label: 'Liên kết' }]}>
       <div class="stack">
-        {#if long}<p class="warn">Liên kết dài, nên gửi tệp HTML.</p>{/if}
-        <Button variant={long ? 'secondary' : 'primary'} icon="copy" disabled={!link} onclick={copy}>Sao chép liên kết</Button>
-        {#if canShare}<Button icon="next" disabled={!link} onclick={share}>Chia sẻ</Button>{/if}
+        {#if long && !short}<p class="warn">Liên kết dài, nên gửi tệp HTML.</p>{/if}
+        <Button variant={long && !short ? 'secondary' : 'primary'} icon="copy" disabled={!link || making} onclick={() => copy()}>
+          {making ? 'Đang tạo liên kết…' : 'Sao chép liên kết'}
+        </Button>
+        {#if short}<Button icon="copy" disabled={!link} onclick={() => copy(true)}>Liên kết đầy đủ</Button>{/if}
+        {#if canShare}<Button icon="next" disabled={!link || making} onclick={share}>Chia sẻ</Button>{/if}
       </div>
     </IndexCard>
     <IndexCard plain tabs={[{ label: 'Tệp' }]}>

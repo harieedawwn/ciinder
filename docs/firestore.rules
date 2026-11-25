@@ -1,0 +1,12 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+    match /sets/{id} {
+      allow get: if true;
+      allow list, update, delete: if false;
+      allow create: if request.resource.data.keys().hasOnly(['z','t'])
+        && request.resource.data.z is string && request.resource.data.z.size() < 900000
+        && request.resource.data.t == request.time;
+    }
+  }
+}

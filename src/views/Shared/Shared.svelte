@@ -1,22 +1,53 @@
 <script lang="ts">
-  // `#s=A…` links: decode from the full href (Zalo/Facebook append junk), then play at once.
+  // `#s=A…` (inline payload) and `#k=<id>` (short link) links: parse from the full href (Zalo/Facebook append junk), then play at once.
   import { decodeShare } from '../../core/share'
+  import { CloudFailure, get, parseShortId } from '../../lib/cloud'
   import { registerTemp } from '../../state/library.svelte'
   import { go } from '../../state/router.svelte'
   import Button from '../../ui/Button.svelte'
   import Play from '../Play/Play.svelte'
 
-  const decoded = decodeShare(location.href)
-  const id = decoded.ok ? registerTemp(decoded.source) : ''
+  type State = { kind: 'loading' } | { kind: 'ready'; id: string } | { kind: 'error'; message: string }
+
+  const shortId = parseShortId(location.href)
+  let state = $state<State>(shortId ? { kind: 'loading' } : fromPayload(location.href))
+
+  function fromPayload(href: string): State {
+    const decoded = decodeShare(href)
+    return decoded.ok ? { kind: 'ready', id: registerTemp(decoded.source) } : { kind: 'error', message: 'Liên kết bị thiếu hoặc hỏng.' }
+  }
+
+  function messageFor(e: unknown): string {
+    const kind = e instanceof CloudFailure ? e.kind : 'failed'
+    if (kind === 'offline') return 'Không có mạng. Hãy kết nối mạng rồi mở lại liên kết.'
+    if (kind === 'notfound') return 'Không tìm thấy bộ đề của liên kết này.'
+    return 'Không mở được liên kết. Hãy thử lại sau.'
+  }
+
+  $effect(() => {
+    if (!shortId) return
+    let live = true
+    get(shortId).then(
+      (payload) => {
+        if (live) state = fromPayload('#s=' + payload)
+      },
+      (e) => {
+        if (live) state = { kind: 'error', message: messageFor(e) }
+      },
+    )
+    return () => (live = false)
+  })
 </script>
 
-{#if decoded.ok}
-  <Play {id} />
-{:else}
+{#if state.kind === 'ready'}
+  <Play id={state.id} />
+{:else if state.kind === 'error'}
   <section class="broken">
-    <p>Liên kết bị thiếu hoặc hỏng.</p>
+    <p>{state.message}</p>
     <Button variant="primary" icon="back" onclick={() => go('/')}>Thư viện</Button>
   </section>
+{:else}
+  <section class="broken"><p>Đang mở bộ đề…</p></section>
 {/if}
 
 <style>

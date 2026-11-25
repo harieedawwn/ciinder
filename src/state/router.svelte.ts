@@ -14,7 +14,7 @@ export type Route =
 
 export function parseHash(hash: string): Route {
   const h = hash.replace(/^#/, '')
-  if (h.startsWith('s=')) return { name: 'shared', payload: h.slice(2) }
+  if (h.startsWith('s=') || h.startsWith('k=')) return { name: 'shared', payload: h.slice(2) }
   const [, a = '', b = ''] = h.split('/')
   const id = decodeURIComponent(b)
   if (a === 'new') return { name: 'new' }
