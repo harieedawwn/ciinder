@@ -1,7 +1,9 @@
 <script lang="ts">
   import { canVibrate } from '../../lib/haptics'
-  import type { Snippet } from 'svelte'
+  import { tick, type Snippet } from 'svelte'
   import { play } from '../../lib/sound'
+  import { themeReveal } from '../../lib/vt'
+  import Mark from '../../ui/Mark.svelte'
   import { TEXT_SIZES, THEMES, activeTheme, settings, type ThemeId } from '../../state/settings.svelte'
   import Segmented from '../../ui/Segmented.svelte'
   import Sheet from '../../ui/Sheet.svelte'
@@ -11,9 +13,9 @@
 
   const sizes = TEXT_SIZES.map((n) => ({ id: n, name: `${n}%` }))
 
-  function pickTheme(id: ThemeId) {
+  function pickTheme(e: MouseEvent, id: ThemeId) {
     if (id === activeTheme()) return
-    settings.theme = id
+    void themeReveal(e.clientX, e.clientY, async () => { settings.theme = id; await tick() })
     play('select')
   }
 </script>
@@ -27,13 +29,13 @@
           class="swatch"
           role="radio"
           aria-checked={activeTheme() === t.id}
-          onclick={() => pickTheme(t.id)}
+          onclick={(e) => pickTheme(e, t.id)}
         >
           <span class="chip" style:background={t.bg} aria-hidden="true">
             <span class="a" style:background={t.accent}></span>
             <span class="m" style:background={t.mark}></span>
           </span>
-          <span class="name">{t.name}</span>
+          <span class="name"><Mark on={activeTheme() === t.id}>{t.name}</Mark></span>
         </button>
       {/each}
     </div>

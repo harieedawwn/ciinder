@@ -4,6 +4,7 @@
   import { downloadHtml, downloadSource } from '../../lib/exportHtml'
   import { play } from '../../lib/sound'
   import { getSet, type SetEntry } from '../../state/library.svelte'
+  import IndexCard from '../../ui/IndexCard.svelte'
   import Button from '../../ui/Button.svelte'
   import Sheet from '../../ui/Sheet.svelte'
   import { toast } from '../../ui/toast.svelte'
@@ -50,16 +51,25 @@
 </script>
 
 <Sheet bind:open title="Chia sẻ">
-  <div class="stack">
-    {#if long}<p class="warn">Liên kết dài, nên gửi tệp HTML.</p>{/if}
-    <Button variant={long ? 'secondary' : 'primary'} icon="copy" disabled={!link} onclick={copy}>Sao chép liên kết</Button>
-    {#if canShare}<Button icon="next" disabled={!link} onclick={share}>Chia sẻ</Button>{/if}
-    <Button variant={long ? 'primary' : 'secondary'} icon="file" disabled={!source || busy} onclick={html}>Tải tệp HTML</Button>
-    <Button icon="file" disabled={!source} onclick={() => downloadSource(entry?.title ?? '', source)}>Tải tệp nội dung</Button>
+  <div class="sections">
+    <IndexCard plain tabs={[{ label: 'Liên kết' }]}>
+      <div class="stack">
+        {#if long}<p class="warn">Liên kết dài, nên gửi tệp HTML.</p>{/if}
+        <Button variant={long ? 'secondary' : 'primary'} icon="copy" disabled={!link} onclick={copy}>Sao chép liên kết</Button>
+        {#if canShare}<Button icon="next" disabled={!link} onclick={share}>Chia sẻ</Button>{/if}
+      </div>
+    </IndexCard>
+    <IndexCard plain tabs={[{ label: 'Tệp' }]}>
+      <div class="stack">
+        <Button variant={long ? 'primary' : 'secondary'} icon="file" disabled={!source || busy} onclick={html}>Tải tệp HTML</Button>
+        <Button icon="file" disabled={!source} onclick={() => downloadSource(entry?.title ?? '', source)}>Tải tệp nội dung</Button>
+      </div>
+    </IndexCard>
   </div>
 </Sheet>
 
 <style>
+  .sections { display: grid; gap: 8px; }
   .stack { display: grid; gap: 12px; }
   .warn { font-size: var(--fs-sm); color: var(--muted); }
 </style>

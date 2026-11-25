@@ -8,7 +8,7 @@
   import { go, leaveGuard } from '../../state/router.svelte'
   import { draft, library_ui } from '../../state/session.svelte'
   import Button from '../../ui/Button.svelte'
-  import Segmented from '../../ui/Segmented.svelte'
+  import IndexCard, { type CardTab } from '../../ui/IndexCard.svelte'
   import Sheet from '../../ui/Sheet.svelte'
   import { toast } from '../../ui/toast.svelte'
   import IssuesPanel from './IssuesPanel.svelte'
@@ -17,10 +17,8 @@
 
   let { id }: { id?: string } = $props()
 
-  const TABS = [
-    { id: 'src', name: 'Nội dung' },
-    { id: 'view', name: 'Xem trước' },
-  ] as const
+  const wideQuery = matchMedia('(min-width: 900px)')
+  let wide = $state(wideQuery.matches)
 
   let source = $state(draft.text)
   let initial = draft.text
@@ -41,6 +39,8 @@
   const canSave = $derived(source.trim() !== '' && !errors && !saving)
 
   onMount(() => {
+    const onWide = () => (wide = wideQuery.matches)
+    wideQuery.addEventListener('change', onWide)
     if (id) {
       void getSet(id).then((rec) => {
         if (!rec) {
@@ -63,6 +63,7 @@
     }
     addEventListener('beforeunload', warn)
     return () => {
+      wideQuery.removeEventListener('change', onWide)
       leaveGuard.check = null
       removeEventListener('beforeunload', warn)
     }
@@ -136,6 +137,15 @@
   }
 
   const back = () => go('/')
+
+  function tabsFor(which: 'src' | 'view'): CardTab[] {
+    const label = which === 'src' ? 'Nội dung' : 'Xem trước'
+    // Desktop: both cards are visible, tabs are plain labels. Phone: tabs switch the pane.
+    if (wide) return [{ label, active: true }]
+    return (['src', 'view'] as const).map((k) => ({
+      label: k === 'src' ? 'Nội dung' : 'Xem trước', active: tab === k, onclick: () => (tab = k),
+    }))
+  }
 </script>
 
 <svelte:window
@@ -161,20 +171,24 @@
     </div>
   </div>
 
-  <div class="tabs"><Segmented bind:value={tab} options={TABS} label="Chế độ xem" /></div>
-
   {#if ready}
     <div class="main">
-      <div class="left" class:hide={tab !== 'src'}>
-        <SourceBox bind:value={source} {flagged} bind:el={box} />
+      <div class="left" class:hide={!wide && tab !== 'src'}>
+        <IndexCard class="pane" plain tabs={tabsFor('src')}>
+          <SourceBox bind:value={source} {flagged} bind:el={box} />
+        </IndexCard>
         <IssuesPanel issues={result.issues} {source} onjump={jump} />
       </div>
-      <div class="right" class:hide={tab !== 'view'}>
-        {#if result.set.items.length}
-          <Preview set={result.set} />
-        {:else}
-          <p class="empty">Chưa có câu hỏi nào để xem.</p>
-        {/if}
+      <div class="right" class:hide={!wide && tab !== 'view'}>
+        <IndexCard class="pane" plain tabs={tabsFor('view')}>
+          <div class="scroll">
+            {#if result.set.items.length}
+              <Preview set={result.set} />
+            {:else}
+              <p class="empty">Chưa có câu hỏi nào để xem.</p>
+            {/if}
+          </div>
+        </IndexCard>
       </div>
     </div>
   {/if}
@@ -197,18 +211,17 @@
   .ed.dragging { outline: 2px dashed var(--accent); outline-offset: -8px; }
   .bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
   .tools { display: flex; gap: 8px; flex-wrap: wrap; }
-  .tabs { max-width: 320px; }
   .main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .left { display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 12px; min-height: 0; }
-  .right { overflow-y: auto; overscroll-behavior: contain; min-height: 0; }
+  .right { display: grid; min-height: 0; }
+  .main :global(.pane) { margin-top: 30px; min-height: 0; display: grid; }
+  .main :global(.pane > .body) { padding: 12px; min-height: 0; display: grid; }
+  .scroll { overflow-y: auto; overscroll-behavior: contain; min-height: 0; padding: 4px 8px; }
   .hide { display: none; }
   .empty { color: var(--muted); }
   .leave { display: grid; gap: 12px; }
   @media (min-width: 900px) {
-    .tabs { display: none; }
     .main { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-    .hide { display: grid; }
-    .right.hide { display: block; }
   }
   @media (max-width: 480px) { .tools :global(.btn) { padding: 0 12px; } }
 </style>

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { copyText, downloadText } from '../../lib/clipboard'
+  import IndexCard from '../../ui/IndexCard.svelte'
   import Button from '../../ui/Button.svelte'
   import Sheet from '../../ui/Sheet.svelte'
   import { toast } from '../../ui/toast.svelte'
@@ -31,7 +32,8 @@
 </script>
 
 <Sheet bind:open title="Hướng dẫn cho AI">
-  <div class="stack">
+  <IndexCard plain tabs={[{ label: 'Gửi cho AI' }]}>
+   <div class="stack">
     <p>Gửi tệp này cho AI cùng với tài liệu học, rồi dán kết quả vào ciinder.</p>
     {#if failed}
       <p class="err">Không tải được hướng dẫn. Hãy kiểm tra mạng rồi mở lại.</p>
@@ -44,7 +46,8 @@
         <textarea bind:this={area} readonly value={text} aria-label="Nội dung hướng dẫn"></textarea>
       {/if}
     {/if}
-  </div>
+   </div>
+  </IndexCard>
 </Sheet>
 
 <style>

@@ -4,6 +4,7 @@
   import { go, router } from '../../state/router.svelte'
   import { library_ui } from '../../state/session.svelte'
   import GuideSheet from '../Guide/GuideSheet.svelte'
+  import { morph } from '../../lib/vt'
   import SetSheet from './SetSheet.svelte'
   import { duplicateSet, library, removeSet, renameSet, sortedEntries, type SetEntry } from '../../state/library.svelte'
   import Button from '../../ui/Button.svelte'
@@ -44,9 +45,10 @@
     }
   })
 
-  function openSet(e: SetEntry) {
-    selected = e
-    setOpen = true
+  function openSet(e: SetEntry, el: HTMLElement | null = null) {
+    const open = () => { selected = e; setOpen = true }
+    if (el) void morph(el, 'set-card', open)
+    else open()
   }
 
   const dropFile = (e: DragEvent) => {
@@ -129,7 +131,7 @@
         {#if g.name}<h2 class="subject"><span>{g.name}</span></h2>{/if}
         <div class="grid">
           {#each g.items as { e, index } (e.id)}
-            <SetCard entry={e} {index} actions={actionsFor(e)} onopen={() => openSet(e)} />
+            <SetCard entry={e} {index} actions={actionsFor(e)} onopen={(el) => openSet(e, el)} />
           {/each}
         </div>
       </div>

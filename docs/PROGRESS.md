@@ -2,6 +2,13 @@
 
 Newest on top. Each phase adds ≤ 8 lines: what was done, decisions, known issues. Last line of each entry: `Next: Phase N — <model>, <effort>`.
 
+## Phase 10 — Redesign v2 B: editor, sheets, transitions
+- Editor = two IndexCards (desktop, plain labels) / one card whose tabs switch panes (< 900px); Segmented removed. Issues stay under the source card.
+- Sheet: margin line, `pull-in` on ≥ 600px (phones keep the slide so the spring does not fight the transform transition), optional `vtName`. Settings: `themeReveal` + `<Mark>` under the selected theme. Guide/Share content = IndexCard sections.
+- Router navigation now uses `transition()`; Home opens a set with `morph(card, 'set-card')`, the set sheet panel takes the same name (opens already shown during a morph).
+- Decision: sheet-closing back-morph not built (only route changes reverse). Checked editor at 390×844 and 1280×800; transitions not visually verified in a real browser (headless).
+Next: Phase 11 — Sonnet 5.5, medium
+
 ## Phase 9 — Redesign v2 A: Home
 - Home = desk: `HomeNav` (rail ≥ 1024 with Mark on active tab; bottom bar below), TopBar hidden on Home/Guide ≥ 1024. SetCard = tilted IndexCard + Fingerprint + Mark score, `stack` when not all answered correctly. Subject groups headed by a divider tab (≥ 2 subjects). `EmptyDesk` card with paste area; global paste on Home → editor.
 - Fingerprint data comes from `views/Home/print.ts` (parses the set + last results lazily per card; no SetEntry schema change).

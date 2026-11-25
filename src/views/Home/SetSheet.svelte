@@ -17,7 +17,7 @@
   }
 </script>
 
-<Sheet bind:open title={entry?.title ?? ''}>
+<Sheet bind:open title={entry?.title ?? ''} vtName={open ? 'set-card' : undefined}>
   {#if entry}
     <StartPanel {entry} active={open} onstart={() => (open = false)}>
       {#snippet extra()}

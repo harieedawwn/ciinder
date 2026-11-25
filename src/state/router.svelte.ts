@@ -1,5 +1,6 @@
 // Hash router (docs/ARCH.md "Routing"). Never reads location.search.
 import { tick } from 'svelte'
+import { transition } from '../lib/vt'
 
 export type Route =
   | { name: 'home' }
@@ -26,8 +27,6 @@ export const router = $state({ route: parseHash(location.hash) as Route })
 
 export const viewTransitions = 'startViewTransition' in document
 
-type DocWithVT = Document & { startViewTransition?: (cb: () => void) => unknown }
-
 /** Set by a view with unsaved work: return true to block leaving (hash is restored; the view decides what to do). */
 export const leaveGuard = { check: null as ((target: string) => boolean) | null }
 let accepted = location.hash
@@ -40,13 +39,10 @@ window.addEventListener('hashchange', () => {
   }
   accepted = location.hash
   const next = parseHash(location.hash)
-  const doc = document as DocWithVT
-  const reduce = document.documentElement.dataset.motion === 'reduce'
-  if (doc.startViewTransition && !reduce) doc.startViewTransition(async () => {
-      router.route = next
-      await tick()
-    })
-  else router.route = next
+  void transition(async () => {
+    router.route = next
+    await tick()
+  })
 })
 
 export function go(path: string): void {

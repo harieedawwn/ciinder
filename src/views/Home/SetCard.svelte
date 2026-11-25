@@ -7,8 +7,9 @@
   import Menu, { type MenuItem } from '../../ui/Menu.svelte'
   import { setPrint, type Print } from './print'
 
-  let { entry, actions, index, onopen }: { entry: SetEntry; actions: MenuItem[]; index: number; onopen: () => void } = $props()
+  let { entry, actions, index, onopen }: { entry: SetEntry; actions: MenuItem[]; index: number; onopen: (el: HTMLElement | null) => void } = $props()
 
+  let slot = $state<HTMLElement | null>(null)
   const pct = $derived(entry.lastScore === undefined ? undefined : Math.round(entry.lastScore * 100))
   let print = $state<Print | null>(null)
   $effect(() => {
@@ -19,9 +20,9 @@
   const unfinished = $derived(!!print && print.done.some((d) => !d))
 </script>
 
-<div class="slot" style="--tilt:{tiltFor(entry.id)}; --i:{index}">
+<div class="slot" bind:this={slot} style="--tilt:{tiltFor(entry.id)}; --i:{index}">
   <IndexCard class="tilt press fall {unfinished ? 'stack' : ''}">
-    <button class="main" onclick={onopen}>
+    <button class="main" onclick={() => onopen(slot)}>
       <h2>{entry.title}</h2>
       <p class="meta">
         {#if entry.subject}<span>{entry.subject}</span>{/if}

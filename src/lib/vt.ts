@@ -1,4 +1,5 @@
 // View Transitions helper (docs/DESIGN.md "Layout v2" Transitions). Falls back to running the update directly.
+import { tick } from 'svelte'
 import { settings } from '../state/settings.svelte'
 
 type Doc = Document & { startViewTransition?: (cb: () => void | Promise<void>) => { finished: Promise<void> } }
@@ -19,11 +20,12 @@ export function morph(el: HTMLElement | null, name: string, update: () => void |
   return transition(async () => {
     if (el) el.style.viewTransitionName = ''
     await update()
+    await tick()
   }, 'morph')
 }
 
 /** Theme change revealed as a circle growing from (x, y). */
-export function themeReveal(x: number, y: number, update: () => void): Promise<void> {
+export function themeReveal(x: number, y: number, update: () => void | Promise<void>): Promise<void> {
   const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))
   const root = document.documentElement
   root.style.setProperty('--vt-x', `${x}px`)
