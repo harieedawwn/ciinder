@@ -1,16 +1,12 @@
 /* Answer feedback (docs/DESIGN.md motion #3): highlighter wipe on correct text, shake + strike on wrong. */
-.hl, .strike { position: relative; display: inline; isolation: isolate; }
-.hl::before {
-  content: ''; position: absolute; inset: -1px -4px; z-index: -1; border-radius: 6px;
-  background: var(--mark); transform: skewX(-6deg);
-  clip-path: inset(0 100% 0 0 round 6px);
+/* Multi-line safe: inline backgrounds/decorations repeat per line (box-decoration-break: clone). */
+.hl {
+  background: linear-gradient(var(--mark), var(--mark)) no-repeat 0 68% / 0% 62%;
+  padding: 0 0.12em; margin: 0 -0.12em; border-radius: 0.35em 0.2em 0.4em 0.25em;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
 }
-.hl.on::before { clip-path: inset(0 0 0 0 round 6px); transition: clip-path var(--t-large) var(--ease-out); }
-.strike::after {
-  content: ''; position: absolute; left: -2px; right: -2px; top: 55%; height: 2px; border-radius: 1px;
-  background: var(--bad); transform: scaleX(0); transform-origin: left center;
-}
-.strike.on::after { transform: none; transition: transform var(--t-std) var(--ease-out) 60ms; }
+.hl.on { background-size: 100% 62%; transition: background-size var(--t-large) var(--ease-out); }
+/* .strike lives in desk.css (text-decoration line-through). */
 .shake { animation: shake 180ms var(--ease-in-out) 1; }
 @keyframes shake {
   25% { transform: translateX(-2px); }

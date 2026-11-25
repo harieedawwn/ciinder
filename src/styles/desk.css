@@ -31,9 +31,9 @@
 .pull-in { animation: desk-pull var(--t-large) var(--spring) both; }
 @keyframes desk-pull { from { opacity: 0; transform: translateY(24px) rotate(1.5deg); } }
 
-/* Strike-through for wrong answers: wrap text in <span class="strike">, add .on to draw it. */
-.strike { background: linear-gradient(var(--bad), var(--bad)) no-repeat 0 55% / 0% 2px; transition: background-size var(--t-large) var(--ease-out); }
-.strike.on { background-size: 100% 2px; }
+/* Strike-through for wrong answers (multi-line safe): wrap text in <span class="strike">, add .on to show it. */
+.strike { text-decoration: line-through 2px transparent; text-decoration-skip-ink: none; transition: text-decoration-color var(--t-large) var(--ease-out); }
+.strike.on { text-decoration-color: var(--bad); }
 
 [data-motion='reduce'] .fall, [data-motion='reduce'] .pull-in { animation: vt-fade 120ms both; }
 [data-motion='reduce'] .tilt, [data-motion='reduce'] .tilt:hover { transform: none; }
