@@ -47,8 +47,53 @@ Công thức chung của ancol no, đơn chức, mạch hở là
 ## 3. Định dạng chữ
 
 - `**in đậm**`, `*in nghiêng*`. Xuống dòng bình thường là xuống dòng.
-- Toán: `$...$` trong dòng, `$$...$$` cho công thức đứng riêng (cú pháp LaTeX).
-- Hóa: `$\ce{H2SO4}$`, `$\ce{2H2 + O2 -> 2H2O}$`, `$\ce{Fe^{3+}}$`.
+- Công thức luôn đặt trong `$...$` (cùng dòng với chữ) hoặc `$$...$$` (công thức đứng riêng, căn giữa). Bên trong dùng cú pháp LaTeX (KaTeX).
+- Không viết công thức bằng ký tự thường (`x^2`, `sqrt(x)`, `H2O`), không dùng Unicode chỉ số (`x²`, `H₂O`), không dùng `\(...\)` hay `\[...\]`.
+- Số thập phân kiểu Việt Nam trong công thức: `$2{,}5$` (bọc dấu phẩy trong `{}` để không bị giãn cách).
+- Chữ tiếng Việt bên trong công thức: `$v = \dfrac{s}{t}\ \text{(m/s)}$`.
+
+Bảng cú pháp thường dùng:
+
+| Muốn viết | Gõ |
+|---|---|
+| Lũy thừa, chỉ số | `$x^{2}$`, `$a_{n+1}$`, `$e^{-x}$` |
+| Phân số | `$\dfrac{a}{b}$` (to, rõ) · `$\frac{1}{2}$` (nhỏ, trong dòng) |
+| Căn | `$\sqrt{x}$`, `$\sqrt[3]{x}$` |
+| Dấu so sánh, xấp xỉ | `$\le$ $\ge$ $\ne$ $\approx$ $\pm$ $\infty$` |
+| Nhân, chia, độ | `$\times$ $\div$ $\cdot$ $30^\circ$` |
+| Vectơ, góc, tam giác | `$\vec{AB}$`, `$\overrightarrow{AB}$`, `$\widehat{ABC}$`, `$\triangle ABC$` |
+| Song song, vuông góc, thuộc | `$\parallel$ $\perp$ $\in$ $\notin$ $\subset$ $\cup$ $\cap$ $\varnothing$` |
+| Hàm, giới hạn, đạo hàm, tích phân | `$\sin x$`, `$\log_{2} x$`, `$\ln x$`, `$\lim_{x \to 0}$`, `$f'(x)$`, `$\int_{0}^{1} x\,dx$`, `$\sum_{i=1}^{n}$` |
+| Tập hợp số, khoảng | `$\mathbb{R}$`, `$\mathbb{N}^*$`, `$[a; b)$`, `$\{1; 2; 3\}$` |
+| Hệ phương trình | `$\begin{cases} x + y = 3 \\ x - y = 1 \end{cases}$` |
+| Ma trận, bảng số | `$\begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}$` |
+| Chữ Hy Lạp | `$\alpha \beta \gamma \Delta \lambda \mu \pi \omega \Omega$` |
+| Đơn vị vật lý | `$9{,}8\ \text{m/s}^2$`, `$220\ \text{V}$`, `$\Omega$` |
+
+Hóa học: luôn dùng `\ce{...}` bên trong `$...$`. Lệnh này tự xử lý chỉ số, điện tích và mũi tên.
+
+| Muốn viết | Gõ |
+|---|---|
+| Công thức chất | `$\ce{H2SO4}$`, `$\ce{CuSO4.5H2O}$`, `$\ce{CH3COOH}$` |
+| Ion | `$\ce{Fe^{3+}}$`, `$\ce{SO4^{2-}}$`, `$\ce{NH4+}$` |
+| Phương trình | `$\ce{2H2 + O2 -> 2H2O}$` |
+| Thuận nghịch | `$\ce{N2 + 3H2 <=> 2NH3}$` |
+| Điều kiện phản ứng | `$\ce{CaCO3 ->[t^\circ] CaO + CO2}$`, `$\ce{A ->[xt, t^\circ][p] B}$` |
+| Kết tủa, khí bay lên | `$\ce{BaSO4 v}$`, `$\ce{CO2 ^}$` |
+| Trạng thái | `$\ce{NaCl(aq)}$`, `$\ce{H2O(l)}$` |
+| Số oxi hóa | `$\ce{\overset{+2}{Fe}}$` |
+| Cấu hình electron | `$1s^{2}2s^{2}2p^{6}3s^{1}$` |
+| Đồng vị | `$\ce{^{14}_{6}C}$` |
+
+Ví dụ một câu có công thức:
+
+```text
+--- short tol=0.01
+Đốt cháy hoàn toàn $2{,}24$ lít khí $\ce{CH4}$ (đktc) theo phản ứng $\ce{CH4 + 2O2 ->[t^\circ] CO2 + 2H2O}$. Tính khối lượng nước tạo thành (gam).
+= 3,6
+?? $n_{\ce{CH4}} = \dfrac{2{,}24}{22{,}4} = 0{,}1$ mol $\Rightarrow n_{\ce{H2O}} = 0{,}2$ mol $\Rightarrow m = 0{,}2 \times 18 = 3{,}6$ g.
+```
+
 - Bảng markdown dùng được trong nội dung câu hỏi và trong `note`.
 - Ảnh: `![mô tả](https://...)` — chỉ khi có đường dẫn ảnh thật.
 - Nếu một dòng nội dung tình cờ bắt đầu bằng ký hiệu đặc biệt (`+ - = ? ! [ : > /`), thêm `\` vào đầu dòng: `\- 5 là số nguyên âm`.
@@ -270,7 +315,7 @@ Nếu người dùng yêu cầu **"kiểu đề THPT"**: dùng `@mode: test`, ba
 - [ ] `order` có ít nhất 3 dòng `-`, đã đúng thứ tự.
 - [ ] `group` có ít nhất 2 nhóm `[ ]`.
 - [ ] `essay` và `flash` có dòng `>>>`.
-- [ ] Công thức đặt trong `$...$`, ngoặc `{}` cân bằng.
+- [ ] Mọi công thức toán/lý/hóa nằm trong `$...$` hoặc `$$...$$`; hóa học dùng `\ce{}`; ngoặc `{}` cân bằng; không dùng `x²`, `H₂O`.
 - [ ] Không có lời dẫn hay lời chào lẫn vào nội dung.
 
 ## 8. Khi ứng dụng báo lỗi
