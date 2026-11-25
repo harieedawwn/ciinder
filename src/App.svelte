@@ -9,6 +9,8 @@
   import Toast from './ui/Toast.svelte'
   import Home from './views/Home/Home.svelte'
   import Placeholder from './views/Placeholder.svelte'
+  import Play from './views/Play/Play.svelte'
+  import Result from './views/Result/Result.svelte'
   import SettingsSheet from './views/Settings/SettingsSheet.svelte'
   import TopBar from './views/TopBar.svelte'
 
@@ -31,11 +33,6 @@
     if ((router.route.name === 'new' || router.route.name === 'edit') && !Editor) void import('./views/Editor/Editor.svelte').then((m) => (Editor = m.default))
   })
 
-  const TITLES = {
-    play: 'Bắt đầu',
-    result: 'Xem lại',
-    shared: 'Bộ được chia sẻ',
-  } as const
 </script>
 
 <svelte:window onpointerdown={gesture} onkeydown={fullscreenKeys} />
@@ -48,8 +45,12 @@
       <Home />
     {:else if router.route.name === 'new' || router.route.name === 'edit'}
       {#if Editor}<Editor id={router.route.name === 'edit' ? router.route.id : undefined} />{/if}
+    {:else if router.route.name === 'play' || router.route.name === 'review'}
+      <Play id={router.route.id} review={router.route.name === 'review'} />
+    {:else if router.route.name === 'result'}
+      <Result id={router.route.id} />
     {:else}
-      <Placeholder title={TITLES[router.route.name]} />
+      <Placeholder title="Bộ được chia sẻ" />
     {/if}
   </main>
 {/key}

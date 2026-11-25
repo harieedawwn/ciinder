@@ -45,7 +45,7 @@ docs/                     specs for AI developers (this folder)
 ```
 
 ## Routing (hash only — GitHub Pages has no SPA fallback)
-`#/` library · `#/new` editor (paste/open) · `#/edit/<id>` · `#/play/<id>` · `#/result/<id>` · `#/settings` as a sheet over current view.
+`#/` library · `#/new` editor (paste/open) · `#/edit/<id>` · `#/play/<id>` · `#/result/<id>` · `#/review/<id>` (read-only replay of the last attempt) · `#/settings` as a sheet over current view.
 Shared link: `#s=A...` (FORMAT §8). Opening it: decode → parse → play immediately in a temporary set with a "Lưu vào thư viện" action. Never put data in the query string.
 
 ## Storage

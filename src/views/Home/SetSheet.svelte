@@ -1,6 +1,7 @@
 <script lang="ts">
   import { parse } from '../../core/parse'
   import { getSet, touchSet, type SetEntry } from '../../state/library.svelte'
+  import { loadProgress } from '../../state/progress.svelte'
   import { go } from '../../state/router.svelte'
   import { startOptions } from '../../state/session.svelte'
   import Button from '../../ui/Button.svelte'
@@ -16,10 +17,17 @@
   ] as const
 
   let loaded = $state<string | null>(null)
+  /** Position of an unfinished attempt ("Tiếp tục"), e.g. "5/20". */
+  let resume = $state('')
 
   $effect(() => {
     const id = entry?.id
-    if (!open || !id || loaded === id) return
+    if (!open || !id) return
+    resume = ''
+    void loadProgress(id).then((p) => {
+      if (entry?.id === id && p.current) resume = `${Math.min(p.current.pos + 1, p.current.order.length)}/${p.current.order.length}`
+    })
+    if (loaded === id) return
     void getSet(id).then((rec) => {
       if (!rec) return
       const { meta } = parse(rec.source).set
@@ -29,8 +37,10 @@
     })
   })
 
-  function start() {
+  function start(fresh: boolean) {
     if (!entry) return
+    startOptions.fresh = fresh
+    startOptions.only = null
     void touchSet(entry.id, { openedAt: Date.now() })
     open = false
     go(`/play/${entry.id}`)
@@ -52,7 +62,12 @@
       </p>
       <Segmented bind:value={startOptions.mode} options={MODES} label="Chế độ" />
       <Switch bind:checked={startOptions.shuffle} label="Trộn thứ tự" />
-      <Button variant="primary" icon="check" onclick={start}>Bắt đầu</Button>
+      {#if resume}
+        <Button variant="primary" icon="next" onclick={() => start(false)}>Tiếp tục <span class="num">{resume}</span></Button>
+        <Button icon="retry" onclick={() => start(true)}>Bắt đầu</Button>
+      {:else}
+        <Button variant="primary" icon="check" onclick={() => start(true)}>Bắt đầu</Button>
+      {/if}
       <div class="row">
         <Button icon="edit" onclick={edit}>Sửa</Button>
         <Button icon="copy" disabled>Chia sẻ</Button>

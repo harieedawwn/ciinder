@@ -30,7 +30,10 @@
     }
   })
 
+  $effect(() => () => clearTimeout(closeTimer))
+
   function finish() {
+    if (!dialog) return
     dialog.close()
     delete dialog.dataset.sheetOpen
     dragY = 0

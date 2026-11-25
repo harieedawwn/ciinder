@@ -2,6 +2,15 @@
 
 Newest on top. Each phase adds ≤ 8 lines: what was done, decisions, known issues. Last line of each entry: `Next: Phase N — <model>, <effort>`.
 
+## Phase 4 — player core
+- `play/` registry + Mcq (single/multi), Tf (Đ/S per statement, a–f labels), Short (decimal keyboard when numeric), Cloze (inputs or tap bank), Note (collapsible above its questions). Feedback: highlighter wipe / shake + strike (`styles/feedback.css`, `lib/wipe.ts`).
+- Play view: card deal (`views/Play/deal.ts`, JS twin of --spring), stack edges, highlighter progress stroke, counter → question grid sheet, keys 1–9 / Enter / ←→, touch swipe outside controls. Practice: Kiểm tra, verdict, Giải thích, Gợi ý; streak sounds 3/5/10. Test: timer from `@time` (deadline stored, auto-submit), Nộp bài confirm when unanswered.
+- `core/attempt.ts` (tested): seeded question order (within sections, note groups kept together), option order (respects shuffle=no), bank words, section breakdown. `state/progress.svelte.ts`: `prog:<id>` with current attempt (resume), last attempt, history, per-item results.
+- Result view: %, /10, per-section bars, wrong list; Làm lại câu sai / Làm lại / Xem lại (new `#/review/<id>` route, read-only replay). Set sheet shows Tiếp tục n/N when an attempt is open.
+- Decisions: only kinds in the registry are played (match/order/group/flash join in Phase 5, essay in 6); prompts are plain text until `src/render/` (Phase 6). Fixed Sheet crash when a route change unmounts a closing sheet.
+- Checked 390×844 and 1280×800 (Playwright end-to-end: practice, reload resume, retry wrong, test submit, review). Initial JS 54 KB gzip.
+Next: Phase 5 — Opus 5.5, medium
+
 ## Phase 3 — import & editor
 - Guide sheet (`#/guide` opens it over the library): Sao chép (clipboard + execCommand fallback, then visible textarea) / Tải về. Editor (lazy chunk, 4 KB gzip): textarea + line gutter, 250 ms debounced parse, issues panel (tap → selects line; warnings collapsed), "Sao chép báo cáo lỗi", preview (tabs on phones, side-by-side ≥ 900px), save → library → set sheet opens.
 - Set sheet on card tap: Luyện tập/Làm bài + shuffle (defaults from `@mode`/`@shuffle`, stored in `state/session.svelte.ts`), Sửa, Chia sẻ (disabled until Phase 7).

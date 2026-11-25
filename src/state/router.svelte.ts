@@ -7,6 +7,7 @@ export type Route =
   | { name: 'edit'; id: string }
   | { name: 'play'; id: string }
   | { name: 'result'; id: string }
+  | { name: 'review'; id: string }
   | { name: 'guide' }
   | { name: 'shared'; payload: string }
 
@@ -17,7 +18,7 @@ export function parseHash(hash: string): Route {
   const id = decodeURIComponent(b)
   if (a === 'new') return { name: 'new' }
   if (a === 'guide') return { name: 'guide' }
-  if ((a === 'edit' || a === 'play' || a === 'result') && id) return { name: a, id }
+  if ((a === 'edit' || a === 'play' || a === 'result' || a === 'review') && id) return { name: a, id }
   return { name: 'home' }
 }
 

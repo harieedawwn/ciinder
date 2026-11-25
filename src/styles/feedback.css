@@ -1,0 +1,19 @@
+/* Answer feedback (docs/DESIGN.md motion #3): highlighter wipe on correct text, shake + strike on wrong. */
+.hl, .strike { position: relative; display: inline; isolation: isolate; }
+.hl::before {
+  content: ''; position: absolute; inset: -1px -4px; z-index: -1; border-radius: 6px;
+  background: var(--mark); transform: skewX(-6deg);
+  clip-path: inset(0 100% 0 0 round 6px);
+}
+.hl.on::before { clip-path: inset(0 0 0 0 round 6px); transition: clip-path var(--t-large) var(--ease-out); }
+.strike::after {
+  content: ''; position: absolute; left: -2px; right: -2px; top: 55%; height: 2px; border-radius: 1px;
+  background: var(--bad); transform: scaleX(0); transform-origin: left center;
+}
+.strike.on::after { transform: none; transition: transform var(--t-std) var(--ease-out) 60ms; }
+.shake { animation: shake 180ms var(--ease-in-out) 1; }
+@keyframes shake {
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+[data-motion='reduce'] .shake { animation: none; }
