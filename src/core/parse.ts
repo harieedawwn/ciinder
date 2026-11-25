@@ -1,6 +1,7 @@
 // Text → QuizSet + issues (docs/FORMAT.md §1–§5). Line numbers always refer to the original text.
 import { parseBlock, type Attrs, type BlockItem, type Line } from './block'
 import { makeIssue, type Issue } from './issues'
+import { mathBalanced } from './mathspan'
 import { parseNumber } from './normalize'
 import { KINDS, SCORED_KINDS, isScored, type Item, type Kind, type Meta, type QuizSet, type Section } from './types'
 
@@ -92,21 +93,6 @@ function applyMeta(meta: Meta, key: string, value: string, line: number, issues:
   else if (k === 'time' && (parseNumber(v) ?? 0) > 0) meta.time = parseNumber(v)!
   else if (k === 'shuffle' && ['yes', 'no'].includes(lv)) meta.shuffle = lv === 'yes'
   else issues.push(makeIssue('W_UNKNOWN_META', line, `(@${key})`))
-}
-
-/** Best-effort check of `$` pairing and `{}` balance inside math. */
-export function mathBalanced(text: string): boolean {
-  const s = text.replace(/\\[$\\{}]/g, '')
-  if ((s.match(/\$/g) ?? []).length % 2) return false
-  for (const m of s.matchAll(/\$\$([\s\S]*?)\$\$|\$([^$]*)\$/g)) {
-    let depth = 0
-    for (const c of m[1] ?? m[2]) {
-      if (c === '{') depth++
-      else if (c === '}' && --depth < 0) return false
-    }
-    if (depth) return false
-  }
-  return true
 }
 
 function hash(s: string): string {

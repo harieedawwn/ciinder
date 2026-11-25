@@ -263,3 +263,17 @@ describe('perf', () => {
     expect(r.set.items).toHaveLength(300)
   })
 })
+
+describe('math is atomic', () => {
+  it('never splits on {{ [[ :: inside $…$', () => {
+    const c = parse('--- cloze\n$\\frac{{a}}{b}$ bằng {{x}} và $$\\vec{{u}}$$').set.items[0] as ClozeItem
+    expect(c.segments.filter((s) => s.t === 'blank')).toEqual([{ t: 'blank', answers: ['x'] }])
+    const m = parse('--- match\nQ\n$a::b$ :: một\n$\\ce{H2O}$ :: hai').set.items[0] as MatchItem
+    expect(m.pairs).toEqual([{ left: '$a::b$', right: 'một' }, { left: '$\\ce{H2O}$', right: 'hai' }])
+    const e = parse('--- essay\nQ\n>>>\n$[[x]]$ là [[biến]]').set.items[0] as EssayItem
+    expect(e.keywords).toEqual(['biến'])
+  })
+  it('accepts \\{ \\} and \\\\ inside math', () => {
+    expect(errors('--- short\n$\\{1; 2\\}$ và $\\begin{cases} x \\\\ y \\end{cases}$ giá \\$5\n= 1')).toEqual([])
+  })
+})

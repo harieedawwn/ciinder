@@ -1,5 +1,6 @@
 // Parses the body of one `--- kind` block into an Item (docs/FORMAT.md §3, §5).
 import { makeIssue, type Issue, type IssueCode } from './issues'
+import { delimited, maskMath } from './mathspan'
 import { normText, parseNumber } from './normalize'
 import type { Choice, ClozeSegment, Group, Item, Kind, Pair } from './types'
 
@@ -75,7 +76,10 @@ function roleOf(kind: Kind, t: string, hasGroup: boolean): Role | null {
     case 'cloze':
       return (m = /^-\s+(.+)$/.exec(t)) ? { r: 'distractor', text: m[1].trim() } : null
     case 'match':
-      return (m = /^(.*?)\s*::\s*(.*)$/.exec(t)) ? { r: 'pair', left: m[1].trim(), right: m[2].trim() } : null
+    {
+      const at = maskMath(t).indexOf('::')
+      return at < 0 ? null : { r: 'pair', left: t.slice(0, at).trim(), right: t.slice(at + 2).trim() }
+    }
     case 'order':
       if ((m = /^-\s+(.+)$/.exec(t))) return { r: 'entry', text: m[1].trim() }
       return (m = /^\d{1,2}[.)]\s+(.+)$/.exec(t)) ? { r: 'entry', text: m[1].trim(), styled: true } : null
@@ -246,7 +250,7 @@ export function parseBlock(kind: Kind, attrs: Attrs, header: number, lines: Line
     case 'flash': {
       if (!w.sep || !w.answer) add('E_SEPARATOR')
       if (kind === 'flash') return { ...base, kind, back: w.answer }
-      const keywords = [...w.answer.matchAll(/\[\[(.+?)\]\]/g)].map((m) => m[1].trim())
+      const keywords = delimited(w.answer, '[[', ']]').map((m) => m.inner.trim()).filter(Boolean)
       if (w.answer && !keywords.length) add('W_ESSAY_NO_KEYWORD')
       return { ...base, kind, answer: w.answer, keywords }
     }
@@ -256,10 +260,10 @@ export function parseBlock(kind: Kind, attrs: Attrs, header: number, lines: Line
 export function clozeSegments(text: string): ClozeSegment[] {
   const out: ClozeSegment[] = []
   let at = 0
-  for (const m of text.matchAll(/\{\{([\s\S]*?)\}\}/g)) {
+  for (const m of delimited(text, '{{', '}}')) {
     if (m.index > at) out.push({ t: 'text', text: text.slice(at, m.index) })
-    out.push({ t: 'blank', answers: m[1].split('|').map((a) => a.trim()).filter(Boolean) })
-    at = m.index + m[0].length
+    out.push({ t: 'blank', answers: m.inner.split('|').map((a) => a.trim()).filter(Boolean) })
+    at = m.end
   }
   if (at < text.length) out.push({ t: 'text', text: text.slice(at) })
   return out

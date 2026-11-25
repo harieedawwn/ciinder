@@ -8,6 +8,7 @@ Newest on top. Each phase adds ≤ 8 lines: what was done, decisions, known issu
 - `note` content is `prompt` (no separate `body`); empty notes are dropped. tf `(Đ)/(S)` suffix overrides a `+`/`-` prefix (spec).
 - `grade.ts` `Answer` union fixes response shapes for players (indices are original, unshuffled order); `scoreSet` gives ratio/percent/ten.
 - Share decode verifies adler32 itself (fflate's `unzlibSync` doesn't) → truncated links fail cleanly; `LINK_SOFT_MAX = 12000`.
+- Math spans are atomic (`core/mathspan.ts`): `{{ [[ ::` inside `$…$` never split (from Phase 6 note, done now).
 - Known: single `.` in numbers is decimal ("1.234" = 1.234), multiple must group by 3.
 Next: Phase 2 — Opus 5.5, medium
 
