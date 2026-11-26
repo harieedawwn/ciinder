@@ -32,7 +32,9 @@ export function newShortId(length = 10): string {
 /** Short id from any href (survives Zalo/Facebook params), or null. */
 export const parseShortId = (href: string): string | null => SHORT_ID.exec(href)?.[1] ?? null
 
-export const shortLink = (id: string, base: string): string => `${base}#k=${id}`
+/** Through the preview Worker when configured (link cards show the set's title), else straight to the app. */
+export const shortLink = (id: string, base: string): string =>
+  cloudConfig.previewBase ? `${cloudConfig.previewBase.replace(/\/$/, '')}/s/${id}` : `${base}#k=${id}`
 
 const root = () => `https://firestore.googleapis.com/v1/projects/${cloudConfig.projectId}/databases/(default)/documents`
 
